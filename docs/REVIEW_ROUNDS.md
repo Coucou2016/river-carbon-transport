@@ -2,8 +2,9 @@
 
 **Dialog:** https://chatgpt.com/c/6a818974-cd6c-83ea-8241-812dc9fd2598  
 **Prior dialogs:** https://chatgpt.com/c/6a809d47-8f3c-83ea-af37-a6a1f643f726 , https://chatgpt.com/c/6a815d47-94ec-83ea-90fc-f12041638002  
-**Public repo given to ChatGPT:** https://github.com/Coucou2016/river-carbon-transport (`main` @ `03ce613` at start)  
-**Policy:** ChatGPT = external text advisor; no file uploads. Local verification before every edit. Frozen metrics never contradicted.
+**Public repo given to ChatGPT:** https://github.com/Coucou2016/river-carbon-transport (`main` @ `03ce613` at start; Round 7+ uses Markdown briefs under `docs/chatgpt/`)  
+**Policy:** ChatGPT = external text advisor; no file uploads — prefer GitHub Markdown URLs. Local verification before every edit. Frozen metrics never contradicted.  
+**Paper vs report:** Paper must not contain local paths / `.venv` / pipeline script filenames as process narrative; report may keep teaching-style process detail.
 
 | Round | Focus | Status |
 |------:|-------|--------|
@@ -13,6 +14,13 @@
 | 4 | Results + Discussion | Done |
 | 5 | EMS referee simulation | Done — MAJOR REVISION |
 | 6 | Title / keywords / cover letter / DOI checklist | Done |
+| 7 | Paper↔report audit + GitHub Markdown briefs | In progress (2026-08-17) |
+| 8 | EMS Abstract/Intro/Discussion prose rewrite | Planned |
+| 9 | Data integrity + Methods consistency (no script paths) | Planned |
+| 10 | Optional EMS referee pass on revised excerpts | Planned |
+
+**Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
+Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.
 
 ---
 
