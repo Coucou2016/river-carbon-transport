@@ -20,7 +20,7 @@ LOG = setup_logging("estimate_k")
 
 def raymond_k600(u_ms: float, slope: float) -> float:
     """
-    Raymond et al. (2012) Nature Geoscience empirical k600 (m/d).
+    Raymond et al. (2012) L&O: Fluids & Environments empirical k600 (m/d); DOI 10.1215/21573689-1597669.
 
     ln(k600) = 5.139 + 0.594*ln(u) + 0.403*ln(slope); u in m/s, slope in m/m.
     """

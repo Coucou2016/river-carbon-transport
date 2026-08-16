@@ -1,6 +1,6 @@
 # 河网 CO₂ 输运的多尺度过滤与亚网格闭合可辨识性
 
-**English title:** Multiscale filtering and identifiability of subgrid closures for river-network CO₂ transport: a physics-constrained machine-learning experiment on public East River data
+**English title:** Transport-coupled evaluation of river-network CO₂ closures: Evidence for practical equifinality under concentration-only observations
 
 **Authors:** 待补充  
 **Affiliation:** 待补充  
@@ -9,15 +9,15 @@
 
 ## Abstract
 
-本文将 LES 式空间过滤写成河网 CO₂ 输运的亚网格源汇 S_sgs，在公开 East River 数据（n=120）上做多 Δx 实验与嵌套交叉验证。
-主结果：Residual-AI **没有**优于 Baseline（MLP C RMSE 0.0573 vs 0.0284；RF 0.0745）。
+环境模型可能通过过程补偿得到相近浓度误差。本文构建河网 CO₂ 空间过滤与输运耦合评价框架（East River，n=120；reach-held-out）。
+主结果：Residual-AI **没有**优于 Baseline（MLP 0.0573 / RF 0.0745 vs Baseline 0.0284）。
 k 修正略降到 0.0244，并伴随 k_eff/k_emp≈3.4e-4 与 F_CO2 ~3.24→~0.03（共现诊断）。
 滤波 mean |S_sgs|：1.92→1.00（研究河段有样点单元=6）。稀疏 Π 式可解释，嵌套 CV C RMSE≈0.051 仍差于 Baseline。
-贡献是过滤定义、practical equifinality 与验证协议，不是精度提升。样本内 R²≈0.997 仅附录。
+贡献是可操作过滤定义、输运耦合协议与 practical equifinality 诊断，不是精度提升。样本内 R²≈0.997 仅附录。
 
 ## Keywords
 
-河网 CO₂ 输运；亚网格闭合；可辨识性；LES 过滤；嵌套交叉验证；物理约束机器学习；East River
+河网 CO₂ 输运；亚网格闭合；可辨识性；LES 过滤；reach-held-out 分组交叉验证；物理约束机器学习；East River
 
 ## IMRaD outline
 
@@ -34,7 +34,7 @@ k 修正略降到 0.0244，并伴随 k_eff/k_emp≈3.4e-4 与 F_CO2 ~3.24→~0.0
 - `les_filter_conceptual.png` — Fig. 1 LES 类比过滤概念：细 NHD 线段 → 滤波窗 Δx → 粗控制体上的 Ssgs。
 - `gis_reach_assignment_map.png` — Fig. 2a GIS 河网：研究河段 R001–R008 与 NHD 矢量线对应。
 - `gis_samples_on_network.png` — Fig. 2b 120 个战役样点叠加于 NHD 河网（R008 n=58 主导）。
-- `nested_cv_rmse_bar.png` — Fig. 3 嵌套交叉验证：Baseline / Residual-AI / k 修正的持出 Caq RMSE（主图）。
+- `nested_cv_rmse_bar.png` — Fig. 3 reach-held-out 分组交叉验证：Baseline / Residual-AI / k 修正的持出 Caq RMSE（主图）。
 - `nested_cv_scatter_holdout.png` — Fig. 4 留一河段持出：观测 vs 预测 Caq（Residual-AI MLP）。
 - `identifiability_k_vs_sgs.png` — Fig. 5 可辨识性：keff 与隐含 Ssgs，及 Residual-AI 持出源项对照。
 - `filter_scale_sgs.png` — Fig. 6 滤波尺度：平均 |Ssgs| 与方差随 Δx。

@@ -7,11 +7,20 @@ This file freezes architecture decisions and manuscript numbers so later edits d
 
 ---
 
-## Contribution framing (accepted)
+## Contribution framing (accepted; ChatGPT Round 1)
 
-**One-liner:** Scale-aware, transport-coupled evaluation of river-network CO₂ subgrid closures on public East River data: LES-analog filtering, nested leave-one-reach-out CV, and practical equifinality of \(S_\mathrm{sgs}\) versus \(k\) under concentration-only observations.
+**One-liner:** Transport-coupled, reach-held-out evaluation of river-network CO₂ closures on public East River data: filter-induced residual \(S_\mathrm{sgs}\), practical equifinality of \(S_\mathrm{sgs}\) versus \(k\) under concentration-only observations, and an operable multi-Δx filter definition (LES-analog = Methods coarse-graining language only).
 
 **Not the story:** “AI improved \(p\mathrm{CO}_2\) / \(C_\mathrm{aq}\) prediction.”
+
+## Evaluation boundaries disclosed after Round 1 audit
+
+| Issue | Local evidence | Manuscript action |
+|-------|----------------|-------------------|
+| `c_in` fallback to current-row observed \(C_\mathrm{aq}\) when upstream state missing | `src/03_baseline_transport.py`; related paths in `src/12`, `src/13` | Methods limitation: not perfect holdout isolation for every sample |
+| Filter ordering midpoint Y then X fallback | `src/13_filter_scale_sgs.py` | State as operator boundary; full directed-network filter deferred (would change frozen Δx metrics) |
+| “Nested CV” naming | Outer `LeaveOneGroupOut` + fold-specific imputation/scaling; no explicit inner HP nest found | Prefer “outer leave-one-reach-out + fold-specific scaling”; keep transport-coupled scoring |
+| Reach imbalance | R008 n=58; R001/R006/R007 n=1 | Report evidence weights; n=1 reaches schematic only |
 
 **Results lead order (accepted):**
 

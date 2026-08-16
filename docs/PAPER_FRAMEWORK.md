@@ -6,7 +6,10 @@
 
 **ChatGPT advisor (web search ON):**  
 1. Lit/journal: https://chatgpt.com/c/6a815d47-94ec-83ea-90fc-f12041638002  
-2. Methods/Results (2026-08-16): https://chatgpt.com/c/6a818974-cd6c-83ea-8241-812dc9fd2598
+2. Methods/Results + 5-round maturation (2026-08-16): https://chatgpt.com/c/6a818974-cd6c-83ea-8241-812dc9fd2598  
+3. Round log: `docs/REVIEW_ROUNDS.md` (ChatGPT **did** browse public GitHub `Coucou2016/river-carbon-transport` @ `03ce613`)
+
+**Public code:** https://github.com/Coucou2016/river-carbon-transport
 
 ---
 
@@ -18,7 +21,9 @@
 
 ## Template paper to imitate (structure)
 
-**Primary structural exemplar (ChatGPT):** Markovich, White & Knowling (2022), *Environ. Model. Softw.* 156, 105498 — DOI https://doi.org/10.1016/j.envsoft.2022.105498 (verify before submission). Imitate **argument architecture**: controlled model-error problem → calibration vs prediction → parameter compensation diagnosis → implications for model use.  
+**Primary structural exemplar (ChatGPT Round 1, DOI confirmed):** Markovich, White & Knowling (2022), *Environ. Model. Softw.* 156, 105498 — DOI https://doi.org/10.1016/j.envsoft.2022.105498. Imitate **argument architecture**: controlled model-error problem → calibration vs prediction → parameter compensation diagnosis → implications for model use.  
+**Evaluation philosophy (accepted Round 1):** Bennett et al. (2013), *Environ. Model. Softw.* — DOI https://doi.org/10.1016/j.envsoft.2012.09.011.  
+**Discrepancy-as-diagnosis Discussion borrow:** Vilas et al. (2023), *Environ. Model. Softw.* — DOI https://doi.org/10.1016/j.envsoft.2023.105668.  
 **Domain Methods depth borrow:** Saccardi & Winnick (2021, GBC) for river-network CO₂ process writing, but **replace** their “improved prediction” lead with nested-CV falsification + equifinality.  
 **Filter-scale borrow:** Yuval & O’Gorman (2020, Nat Commun) coarse-graining mindset.
 
@@ -29,11 +34,13 @@ Section order follows nature-writing **methods** playbook: Methods → Results �
 
 ---
 
-## Novelty statement (honest)
+## Novelty statement (honest; Round-1 revised hierarchy)
 
-> We operationalize an LES-analog spatial filter for river-network CO₂ mass balance, evaluate residual and \(k\)-correction closures with **transport-coupled nested leave-one-reach-out CV**, and show **practical equifinality** of \(S_\mathrm{sgs}\) and \(k\) under concentration-only observations: Residual-AI does **not** beat Baseline on held-out \(C_\mathrm{aq}\) (RMSE 0.0573 vs 0.0284), while a modest \(k\)-correction C-RMSE gain **coincided with** a collapse of modelled evasion flux (not claimed as a uniquely proven causal pathway).
+Contribution hierarchy (accepted): **evaluation protocol → filter-induced residual definition → empirical compensation diagnosis**. “LES-analog” is Methods language only (resolved/unresolved coarse-graining), not the novelty headline.
 
-**Not claimed:** AI improves accuracy; continental CH₄; CONUS training.
+> We evaluate residual and gas-transfer closures for river-network CO₂ mass balance using **reach-held-out, transport-coupled validation** and a spatially filtered residual \(S_\mathrm{sgs}\). On public East River data, Residual-AI does **not** beat Baseline on held-out \(C_\mathrm{aq}\) (RMSE 0.0573 vs 0.0284), while a modest \(k\)-correction C-RMSE gain **coincided with** collapse of the model flux diagnostic \(F_{\mathrm{CO}_2}\) — evidence of **practical equifinality / closure compensation** under concentration-only observations (not a formal structural non-identifiability proof).
+
+**Not claimed:** AI improves accuracy; continental CH₄; CONUS training; Navier–Stokes LES; unpublished Gao *Innovation* draft as a novelty boundary.
 
 ---
 
