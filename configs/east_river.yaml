@@ -1,0 +1,93 @@
+# East River CO2 transport + AI subgrid closure — Phase 1 MVP
+project:
+  name: east_river_co2
+  crs: EPSG:4326
+  study_area_bbox: [-107.05, 38.85, -106.95, 38.95]  # lon_min, lat_min, lon_max, lat_max
+
+paths:
+  data_raw: data_raw
+  data_proc: data_proc
+  results: results
+  figures: results/figures
+  tables: results/tables
+
+data_sources:
+  hydroshare_east_river:
+    resource_id: 9f907b46baa848e180c49339d605bf31
+    url: https://www.hydroshare.org/resource/9f907b46baa848e180c49339d605bf31/
+  hydroshare_dic_supplement:
+    resource_id: 2a2132999fb84214aad0596783812db2
+    url: https://www.hydroshare.org/resource/2a2132999fb84214aad0596783812db2/
+  nhdplus_hr:
+    url: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
+  wqp:
+    url: https://www.waterqualitydata.us/
+
+# REAL DATA ONLY — pipeline fails if HydroShare Excel is missing.
+data_policy:
+  real_data_only: true
+  allow_forward_fill: false
+  allow_synthetic_fallback: false
+  min_campaign_samples: 10
+
+network:
+  huc8: "14020001"
+  nhd_segments: 394  # first N rows per Dataset 3 R code
+  snap_tolerance_m: 50
+  min_reach_length_m: 100
+
+usgs:
+  east_river_gage: "09112500"
+  coal_creek_gage: "09111250"
+
+baseline:
+  species: CO2
+  dt_hours: 24
+  # Henry's law / CO2 solubility (simplified; temperature-dependent in code)
+  henry_k_h: 3.3e-2  # mol/(L·atm) at ~10°C reference
+  c_eq_pco2_uatm: 400.0
+  default_k600: 10.0  # m/d at Schmidt=600
+  schmidt_ref: 600
+
+physics:
+  g: 9.81
+  rho_water: 1000.0
+  nu_water: 1.0e-6  # m²/s
+  dic_molecular_diffusivity: 1.0e-9  # m²/s (order of magnitude)
+
+features:
+  dimensionless: [Fr, Re, Pe, Da, k_tau_h, h_over_W, DOC_over_DIC]
+  drivers: [Q, u, h, W, T, DOC, DO, pH, Alk, Slope, PAR, N, P]
+  landcover: [forest_frac, wetland_frac, meadow_frac]
+
+ai_models:
+  lasso:
+    alpha: 0.01
+    max_iter: 5000
+  elasticnet:
+    alpha: 0.01
+    l1_ratio: 0.5
+  random_forest:
+    n_estimators: 200
+    max_depth: 12
+    random_state: 42
+  xgboost:
+    n_estimators: 300
+    max_depth: 6
+    learning_rate: 0.05
+    random_state: 42
+  mlp:
+    hidden_layers: [64, 32, 16]
+    max_iter: 500
+    learning_rate_init: 0.001
+    random_state: 42
+
+validation:
+  test_fraction: 0.25
+  cross_reach_holdout: [R006, R008]
+  seasons:
+    snowmelt: [3, 4, 5]
+    baseflow: [6, 7, 8, 9]
+    autumn: [10, 11]
+    winter: [12, 1, 2]
+  metrics: [rmse, bias, mae, r2, flux_total]

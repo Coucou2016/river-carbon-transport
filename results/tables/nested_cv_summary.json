@@ -1,0 +1,31 @@
+{
+  "n_campaign": 120,
+  "features": [
+    "Q_m3s",
+    "u_ms",
+    "h_m",
+    "W_m",
+    "T_C",
+    "DOC_mgL",
+    "DO_mgL",
+    "pH",
+    "Slope",
+    "Fr",
+    "Re",
+    "Pe",
+    "Da",
+    "k_tau_h",
+    "h_over_W",
+    "DOC_over_DIC"
+  ],
+  "loo_reach": {
+    "baseline_rmse_c": 0.028364527833095243,
+    "mlp_rmse_c": 0.05731673069957816,
+    "rf_rmse_c": 0.07449907132137573,
+    "kcorr_rmse_c": 0.024437261490407473
+  },
+  "mlp_beats_baseline_loo_reach": false,
+  "kcorr_beats_baseline_loo_reach": true,
+  "kcorr_flux_collapsed": true,
+  "note": "Residual-AI does not beat baseline on held-out C_aq. k-correction can lower C RMSE by shrinking k (evasion), which collapses F_CO2; that is not a successful flux closure."
+}

@@ -1,0 +1,2 @@
+n,n_reaches,rmse_c,mae_c,bias_c,r2_c,rmse_f,mae_f,bias_f,flux_total_mol_m2d,flux_obs_proxy_total,scheme,model,cv_protocol,subgroup,subgroup_label,evidence_weight,notes
+120,8,0.050602544923238804,0.03610378265564254,0.025770285078797476,-3.024460615002602,2.507902029850805,1.7413103104553718,1.0348828133083308,244.18335881037046,119.99742121337077,sparse_pi,lasso_pi,loo_reach,all_120,All 120 samples,all,dimensionless LASSO S_sgs then physics; may be weak — not a claim of accuracy gain

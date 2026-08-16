@@ -1,0 +1,93 @@
+[
+  {
+    "model": "baseline",
+    "rmse": 0.028364527833095267,
+    "mae": 0.013226397914714713,
+    "bias": -0.013226397914714713,
+    "r2": -0.2644861604005866,
+    "flux_total_mol_m2d": 3.2435123630673965,
+    "n": 120,
+    "n_reaches": 8,
+    "date_min": "2019-08-02",
+    "date_max": "2019-08-11",
+    "reach_list": "R001,R002,R003,R004,R005,R006,R007,R008"
+  },
+  {
+    "model": "residual_ai_in_sample",
+    "rmse": 0.0012700067245560108,
+    "mae": 0.0005628736787177749,
+    "bias": 0.0005270508373484798,
+    "r2": 0.9974650172734545,
+    "flux_total_mol_m2d": 121.50005877201048,
+    "n": 120,
+    "n_reaches": 8,
+    "date_min": "2019-08-02",
+    "date_max": "2019-08-11",
+    "reach_list": "R001,R002,R003,R004,R005,R006,R007,R008"
+  },
+  {
+    "model": "lasso_loo_reach_cv",
+    "rmse": 42.11798056662151,
+    "mae": NaN,
+    "bias": 29.389591543933854,
+    "r2": -790.6237056416627,
+    "flux_total_mol_m2d": NaN,
+    "n": 120,
+    "n_reaches": 8,
+    "date_min": "2019-08-02",
+    "date_max": "2019-08-11",
+    "reach_list": "LOO-reach CV (S_sgs target, not C_aq)"
+  },
+  {
+    "model": "elasticnet_loo_reach_cv",
+    "rmse": 21.108815741948277,
+    "mae": NaN,
+    "bias": 14.635555219558997,
+    "r2": -197.84352300577072,
+    "flux_total_mol_m2d": NaN,
+    "n": 120,
+    "n_reaches": 8,
+    "date_min": "2019-08-02",
+    "date_max": "2019-08-11",
+    "reach_list": "LOO-reach CV (S_sgs target, not C_aq)"
+  },
+  {
+    "model": "random_forest_loo_reach_cv",
+    "rmse": 2.1368391303993755,
+    "mae": NaN,
+    "bias": 0.16251863301070907,
+    "r2": -1.0376395764931234,
+    "flux_total_mol_m2d": NaN,
+    "n": 120,
+    "n_reaches": 8,
+    "date_min": "2019-08-02",
+    "date_max": "2019-08-11",
+    "reach_list": "LOO-reach CV (S_sgs target, not C_aq)"
+  },
+  {
+    "model": "xgboost_loo_reach_cv",
+    "rmse": 2.054484192177102,
+    "mae": NaN,
+    "bias": 0.19283095446439705,
+    "r2": -0.8836027647711528,
+    "flux_total_mol_m2d": NaN,
+    "n": 120,
+    "n_reaches": 8,
+    "date_min": "2019-08-02",
+    "date_max": "2019-08-11",
+    "reach_list": "LOO-reach CV (S_sgs target, not C_aq)"
+  },
+  {
+    "model": "mlp_loo_reach_cv",
+    "rmse": 1.453039715807607,
+    "mae": NaN,
+    "bias": -0.11999801833575129,
+    "r2": 0.05780958634018496,
+    "flux_total_mol_m2d": NaN,
+    "n": 120,
+    "n_reaches": 8,
+    "date_min": "2019-08-02",
+    "date_max": "2019-08-11",
+    "reach_list": "LOO-reach CV (S_sgs target, not C_aq)"
+  }
+]

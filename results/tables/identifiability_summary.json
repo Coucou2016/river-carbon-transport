@@ -1,0 +1,21 @@
+{
+  "n": 120,
+  "protocol": "loo_reach nested CV (held-out then physics)",
+  "k_emp_median": 98.09551422069322,
+  "k_eff_median": 0.0329073789859219,
+  "k_ratio_median": 0.00033546262790251137,
+  "S_implied_mean": 0.9996430546925749,
+  "S_ai_mean": 0.5580891207973612,
+  "spearman_S_ai_vs_S_implied": -0.5664004012954506,
+  "rmse_c": {
+    "baseline": 0.028364527833095267,
+    "residual_ai": 0.05731673069957814,
+    "k_correction": 0.024437261490407473
+  },
+  "flux_total": {
+    "baseline": 3.2435123630673965,
+    "residual_ai": 69.50711364844582,
+    "k_correction": 0.03126617766746167
+  },
+  "finding": "k-correction lowers held-out C RMSE only by shrinking k_eff (median ratio 0.0003355), which collapses F_CO2. Residual-AI keeps k_emp but does not beat Baseline on C_aq. S_sgs and k are not jointly identifiable from concentration alone."
+}

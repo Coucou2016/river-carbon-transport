@@ -1,0 +1,5 @@
+scale_id,dx_label,dx_m,n_cells_total,n_cells_with_samples,n_samples,mean_abs_S_sgs,var_S_sgs,mean_snap_dist_m,lattice_source,interpretation
+native,原生 NHD 线段,838.3,536,39,120,1.916,22.405,10.5,nhdplus_hr_huc14020001_flowlines.gpkg,Empirical East River corridor scale dependence; not a universal SGS law. |S_sgs| and Var(S) decrease with Δx.
+merge_2x,约 2× 合并,1183.3,270,30,120,1.12,3.467,23.8,nhdplus_hr_huc14020001_flowlines.gpkg,Empirical East River corridor scale dependence; not a universal SGS law. |S_sgs| and Var(S) decrease with Δx.
+merge_4x,约 4× 合并,1949.0,137,24,120,1.05,2.894,70.2,nhdplus_hr_huc14020001_flowlines.gpkg,Empirical East River corridor scale dependence; not a universal SGS law. |S_sgs| and Var(S) decrease with Δx.
+study_reach,研究河段（8 段）,26085.6,7,6,120,1.0,2.197,871.7,nhdplus_hr_huc14020001_flowlines.gpkg,Empirical East River corridor scale dependence; not a universal SGS law. |S_sgs| and Var(S) decrease with Δx.

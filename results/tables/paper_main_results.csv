@@ -1,0 +1,6 @@
+table_role,scheme,model,cv_protocol,n,rmse_c,mae_c,bias_c,r2_c,rmse_f,flux_total_mol_m2d,beats_baseline_c,notes,k_eff_median,k_ratio_median
+manuscript_main,baseline,none,loo_reach,120,0.0284,0.0132,-0.0132,-0.264,1.733,3.244,,S_sgs=0 Raymond k baseline.,98.096,1.0
+manuscript_main,k_correction,xgboost,loo_reach,120,0.0244,0.0046,-0.0046,0.061,1.783,0.031,True,Slightly lower C RMSE via shrinking k_eff; F_CO2 collapses. Practical equifinality under concentration-only obs.,0.0329,0.000335
+manuscript_main,residual_ai,mlp,loo_reach,120,0.0573,0.0326,0.0177,-4.163,1.562,69.507,False,Primary paper metric: held-out C after closure→physics. Residual-AI does not beat Baseline.,98.096,1.0
+manuscript_main,residual_ai,random_forest,loo_reach,120,0.0745,0.0301,0.018,-7.723,2.103,143.331,False,Primary paper metric: held-out C after closure→physics. Residual-AI does not beat Baseline.,98.096,1.0
+manuscript_supporting,sparse_pi,lasso_pi,loo_reach,120,0.0506,0.0361,0.0258,-3.024,2.508,244.183,False,Interpretable form only; not an accuracy claim.,,

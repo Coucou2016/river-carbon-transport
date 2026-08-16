@@ -1,0 +1,27 @@
+{
+  "frozen_loo_reach_rmse_c": {
+    "baseline": 0.0284,
+    "residual_ai_mlp": 0.0573,
+    "residual_ai_rf": 0.0745,
+    "k_correction_xgboost": 0.0244,
+    "sparse_pi_lasso": 0.0506
+  },
+  "frozen_flux_total_mol_m2d": {
+    "baseline": 3.244,
+    "residual_ai_mlp": 69.507,
+    "k_correction": 0.031
+  },
+  "k_ratio_median_k_correction": 0.000335,
+  "do_not_claim": [
+    "Residual-AI beats Baseline on held-out C_aq",
+    "sparse Pi closure improves prediction",
+    "in-sample R2=0.997 as skill",
+    "k-correction is physically preferred solely because C RMSE is lower",
+    "baseline or corrected F_CO2 independently validated by chamber/eddy flux",
+    "formal structural non-identifiability proven",
+    "universal SGS scaling law",
+    "CONUS generalization",
+    "CH4 / StreamPULSE / WQP enrichment / SINDy results"
+  ],
+  "preferred_claim": "Practical equifinality of S_sgs and k under concentration-only East River observations; nested CV shows Residual-AI does not improve held-out C_aq."
+}

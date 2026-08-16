@@ -1,0 +1,70 @@
+﻿# Virtual environments
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg
+dist/
+build/
+
+# Raw / bulky data (do not publish)
+data_raw/
+data_proc/
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.rar
+*.gpkg
+*.gdb/
+*.tif
+*.tiff
+*.nc
+*.h5
+*.hdf5
+
+# Large generated PDF (regenerate via scripts)
+report.pdf
+
+# Figure PNGs duplicated inside paper.html / report.html
+results/figures/
+
+# Credentials / secrets
+*.pem
+*.key
+credentials.json
+secrets.json
+.secrets/
+**/api_keys*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Pipeline logs (noise)
+results/*_log.txt
+results/pipeline_*.txt
+results/gen_*.txt
+results/tables/pdf_export_log.txt
+
+# Local agent / Cursor noise
+.cursor/
+agent-transcripts/
