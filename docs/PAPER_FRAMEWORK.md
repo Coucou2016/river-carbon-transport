@@ -2,7 +2,7 @@
 
 **Axes (nature-writing):** `task=manuscript`, `paper_type=methods`, `language=en` (with Chinese teaching report twin), `journal=generic` → target **Environmental Modelling & Software** (EMS). Not flagship *Nature*.
 
-**Skill used:** `C:\Users\Administrator\.codex\skills\nature-writing\SKILL.md` (+ methods playbook). No pip install of “nature-skills”; Cursor/Codex skill set already present.
+**Skill used:** nature-writing skill (methods playbook). No pip install of “nature-skills”; Cursor/Codex skill set already present.
 
 **ChatGPT advisor (web search ON):**  
 1. Lit/journal: https://chatgpt.com/c/6a815d47-94ec-83ea-90fc-f12041638002  

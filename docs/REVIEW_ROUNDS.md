@@ -14,13 +14,53 @@
 | 4 | Results + Discussion | Done |
 | 5 | EMS referee simulation | Done — MAJOR REVISION |
 | 6 | Title / keywords / cover letter / DOI checklist | Done |
-| 7 | Paper↔report audit + GitHub Markdown briefs | In progress (2026-08-17) |
-| 8 | EMS Abstract/Intro/Discussion prose rewrite | Planned |
-| 9 | Data integrity + Methods consistency (no script paths) | Planned |
-| 10 | Optional EMS referee pass on revised excerpts | Planned |
+| 7 | Paper↔report audit + GitHub Markdown briefs | Done (2026-08-17) |
+| 8 | EMS Abstract/Intro/Discussion prose rewrite | Done |
+| 9 | Data integrity + Methods consistency (no script paths) | Done |
+| 10 | Optional EMS referee pass on revised excerpts | Deferred (time); Round 5 + R7–9 cover referee risks |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.
+
+---
+
+## Round 7 — Paper↔report + integrity (GitHub Markdown)
+
+**Sent:** Pointed ChatGPT to `docs/chatgpt/*` + `paper.md` at commit `72b37f3` (no uploads). Questions 1–4.
+
+**ChatGPT browsed GitHub?** **YES** — tree + all five briefs + `paper.md` + `PAPER_FRAMEWORK.md` + `REVIEW_ROUNDS.md` + commit `72b37f3` (multiple GitHub chips).
+
+**ACCEPTED:** Strip all `src/*.py` / `scripts/*.py` process narrative from paper; move teaching five-part figure notes to report; synchronize title away from “physics-constrained ML”; prefer leave-one-reach-out over “nested CV”; tighten flux-diagnostic Highlights; keep novelty order protocol→filter→equifinality; WQP/StreamPULSE as resolved negatives not 待补充.
+
+**REJECTED / deferred:** Topology rewrite; inventing width-sensitivity / fold RMSE; promoting R²; claiming process fidelity proved/disproved by F diagnostic.
+
+**Local fixes:** `scripts/generate_paper.py` (no teach blocks; sanitize table leads; remove script citations; CN title aligned); `docs/PAPER_FRAMEWORK.md` (removed local skill path); `docs/chatgpt/00_TASK_BRIEF.md` (nested-CV wording).
+
+---
+
+## Round 8 — Abstract / Intro / Discussion prose
+
+**Sent:** Questions 5–7; web search ON for Markovich/Bennett/Vilas.
+
+**ChatGPT browsed?** YES (briefs + ScienceDirect exemplars).
+
+**ACCEPTED & MERGED:** Full EN Abstract (~200 words); Chinese twin as non-submission companion; 5-paragraph Intro; Discussion 4.1–4.6; 3 Highlights. LES demoted; physics-constrained ML removed.
+
+**REJECTED:** Any claim Residual-AI improves accuracy; F as observed flux; structural non-identifiability.
+
+---
+
+## Round 9 — Data integrity + Methods/Results consistency
+
+**Sent:** Questions 8–10.
+
+**ChatGPT browsed?** YES (`03` + `04` raw). Noted public `paper.md` not yet updated at ask time.
+
+**ACCEPTED:** Methods wording for grouped CV / c_in / logical reaches / Y→X / width proxy / F diagnostic; Results lead H1→H2→H3→compensation→filter→sparse Π; WQP/StreamPULSE = resolved negative availability; Vilas reference title corrected to *TALKS…* (DOI 105668).
+
+**DEFER:** Width-sensitivity table; fold RMSE; full C_eq appendix; Gao DOI.
+
+**Local fixes:** Methods 2.5–2.6; Results lead; Data availability phrasing; Bennett+Vilas refs added; regenerate `paper.html`/`paper.md`.
 
 ---
 

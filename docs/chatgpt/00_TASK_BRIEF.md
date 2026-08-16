@@ -31,7 +31,7 @@
 
 ## Immutable scientific facts (never invent / never invert)
 
-Nested leave-one-reach transport-coupled CV, **n=120** real HydroShare:
+Leave-one-reach-out grouped transport-coupled evaluation (**not** “nested CV” unless an inner hyperparameter nest is declared), **n=120** real HydroShare:
 
 | Scheme | Held-out C_aq RMSE | Notes |
 |--------|-------------------|--------|

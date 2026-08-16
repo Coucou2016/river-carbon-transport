@@ -1,31 +1,44 @@
-# 河网 CO₂ 输运的多尺度过滤与亚网格闭合可辨识性
+# Transport-coupled evaluation of river-network CO₂ closures
 
 **English title:** Transport-coupled evaluation of river-network CO₂ closures: Evidence for practical equifinality under concentration-only observations
 
+**Chinese title:** 河网 CO₂ 闭合的输运耦合评价：浓度单变量观测下的 practical equifinality 证据
+
 **Authors:** 待补充  
 **Affiliation:** 待补充  
-**Date:** 2026-08-16  
+**Date:** 2026-08-17  
 **Figures in paper.html:** 13
 
-## Abstract
+## Abstract (English)
 
-环境模型可能通过过程补偿得到相近浓度误差。本文构建河网 CO₂ 空间过滤与输运耦合评价框架（East River，n=120；reach-held-out）。
-主结果：Residual-AI **没有**优于 Baseline（MLP 0.0573 / RF 0.0745 vs Baseline 0.0284）。
-k 修正略降到 0.0244，并伴随 k_eff/k_emp≈3.4e-4 与 F_CO2 ~3.24→~0.03（共现诊断）。
-滤波 mean |S_sgs|：1.92→1.00（研究河段有样点单元=6）。稀疏 Π 式可解释，嵌套 CV C RMSE≈0.051 仍差于 Baseline。
-贡献是可操作过滤定义、输运耦合协议与 practical equifinality 诊断，不是精度提升。样本内 R²≈0.997 仅附录。
+Environmental-model evaluation can favor a closure that reproduces concentration while distorting the underlying process partition.
+We develop a transport-coupled diagnostic framework for river-network CO₂ using public East River campaign data (HydroShare; n=120; 8 logical reaches).
+Leave-one-reach-out held-out C_aq RMSE: Baseline **0.0284**; Residual-AI MLP **0.0573**; RF **0.0745** — residual learners do **not** beat Baseline.
+k-correction reaches **0.0244** but coincides with k_eff/k_emp≈3.4e-4 and model flux diagnostic F_CO2 ~3.24→~0.03.
+Filter mean |S_sgs|: 1.92→1.00 (sampled cells=6). Sparse Π C RMSE≈0.051 still worse than Baseline.
+In-sample R²≈0.997 is appendix-only. Contribution = filter + protocol + practical equifinality evidence, not AI accuracy gains.
+
+## Highlights
+
+1. Reach-held-out Residual-AI does not outperform Baseline (0.0573/0.0745 vs 0.0284).
+2. Lower C RMSE from k-correction coincides with model-flux collapse (~3.24→~0.03).
+3. Spatial filtering exposes scale dependence and practical S_sgs–k equifinality.
 
 ## Keywords
 
-河网 CO₂ 输运；亚网格闭合；可辨识性；LES 过滤；reach-held-out 分组交叉验证；物理约束机器学习；East River
+River carbon cycling; environmental model evaluation; transport-coupled validation; spatial coarse-graining; subgrid residual; gas-transfer velocity; practical equifinality; grouped cross-validation
+
+## Paper vs report
+
+This manuscript uses academic EMS language only. Absolute local paths, virtual-environment setup notes, and pipeline script filenames as process narrative belong in the research report, not here.
 
 ## IMRaD outline
 
-1. Introduction — 科学问题与负结果框架
-2. Methods — 数据、过滤、三种闭合、嵌套 CV、可辨识性、稀疏 Π
-3. Results — 先负精度，再滤波 / 稀疏式 / k–S 权衡（见表与图）
-4. Discussion — 浓度不足以评价闭合；需要独立通量
-5. Conclusions — 三条硬结论
+1. Introduction — evaluation gap; concentration vs process allocation; East River setting
+2. Methods — data; quasi-steady transport; filter-induced S_sgs; three closures; leave-one-reach-out CV; equifinality diagnostic; sparse Π
+3. Results — negative Residual-AI; concentration–flux disagreement; filter scale; sparse Π
+4. Discussion — failed generalization; practical equifinality; limitations
+5. Conclusions — three hard points
 6. Data availability
 7. References
 
@@ -45,11 +58,11 @@ k 修正略降到 0.0244，并伴随 k_eff/k_emp≈3.4e-4 与 F_CO2 ~3.24→~0.0
 - `filter_scale_sgs_box.png` — Fig. S4 各滤波尺度上 120 样点 |Ssgs| 分布。
 - `obs_vs_model_scatter_large.png` — Fig. A1 样本内散点（附录；R²≈0.997 为过拟合肖像，非主结论）。
 
-## Tables (see paper.html for full HTML tables)
+## Tables (see paper.html)
 
-- Table M / Table 4: nested CV main metrics (`paper_main_results.csv`, `nested_cv_metrics.csv`)
-- Table 5: subgroup metrics (`subgroup_metrics.csv`)
-- Table 6: filter scale (`paper_filter_scale.csv`)
+- Table M / Table 4: leave-one-reach-out main metrics
+- Table 5: subgroup metrics
+- Table 6: filter scale
 - Tables 7–8: identifiability + sparse Π
 
 ## DO NOT CLAIM
