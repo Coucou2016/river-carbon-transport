@@ -18,7 +18,7 @@
 | 8 | EMS Abstract/Intro/Discussion prose rewrite | Done |
 | 9 | Data integrity + Methods consistency (no script paths) | Done |
 | 10 | Repo-level style review (AI-tell + exemplar comparison) | Done (2026-08-18) |
-| 11 | Abstract + Introduction rewrite | Pending |
+| 11 | Abstract + Introduction rewrite | Done (2026-08-18) |
 | 12 | Methods clarity + notation/units | Pending |
 | 13 | Results/Discussion prose + claims audit | Pending |
 | 14 | Full referee pass + consistency sweep | Pending |
@@ -26,7 +26,7 @@
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.  
-**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`).
+**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`); `08_ROUND11_ABS_INTRO.md` (Round 11).
 
 ---
 
@@ -54,6 +54,28 @@ Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`,
 **Integrity spot-check result:** no borrowed-data sentences found; provenance citations retained (Saccardi & Winnick tributary values, HydroShare/NHD inventories, USGS gage, Raymond k600 attribution). Softened the one causal claim about sparse tributary data "driving" the Residual-AI degradation to an association.
 
 **Verification:** regenerate PASS; frozen numbers all present (0.0284×11, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×3, 3.35×3, 3.24×7, 0.031×5, 1.916×2, 1.000×8, sparse coefficients ×2 each, 0.997×3); base64 figures = 13; zero http in img/link/script; em-dash count = 0; PySINDy mentions = 0; no local paths.
+
+---
+
+## Round 11 — Abstract + Introduction rewrite (Fraehr rhythm)
+
+**Sent:** Brief `08_ROUND11_ABS_INTRO.md` (current Abstract + Introduction text) plus Q11.1–Q11.3: full Abstract rewrite (~210–240 words, Fraehr rhythm problem → prior work → what this study does → frozen-number results → single implication), full 5-paragraph Introduction rewrite (650–800 words, ending with the testable question instead of a contribution list), and a formulaic-sentence audit table.
+
+**ChatGPT browsed?** YES — re-browsed the Round-11 brief and web-searched style benchmarks (Fraehr WRR, AGU, ScienceDirect, Nature, ASLO, Purdue OWL). Confirmed reading via GitHub citation chips.
+
+**ACCEPTED & MERGED into `scripts/generate_paper.py` (Abstract + both ABSTRACT/ABSTRACT_HTML strings + 5 Intro CONTENT paragraphs):**
+- Abstract (225 words): prior-work gap inserted before implementation; negative Residual-AI result stated directly ("performed worse than the Baseline"); sparse-RMSE 0.0506 added; ends with one inference sentence ("These results indicate practical equifinality ... so lower concentration error alone is insufficient ...") instead of the contribution-list sentence. All frozen numbers retained exactly.
+- Introduction (≈768 words, 5 paragraphs): (1) river-carbon context ending on the compensation risk; (2) Saccardi–Winnick + Raymond prior work with the explicit point that k-parameterization does not remove uncertainty in other balance terms; (3) Bennett/Vilas/Markovich posed as an evaluation problem with the test stated directly; (4) learned subgrid closures (Yuval, Gao in preparation) with a single strategic "not whether … but whether" contrast; (5) what the study does, all four boundaries stated as concrete sentences, ending with the testable question. All citations retained.
+- ChatGPT's formulaic-sentence audit table (10 replacements) recorded verbatim above for traceability.
+
+**Local verification of ChatGPT's factual additions before merging:**
+- "solver uses observed C_aq as a fallback when an upstream state is unavailable" → verified in `src/03_baseline_transport.py` (`c_in` fallback branch).
+- "coordinate-based fallback rather than a complete directed network topology" → consistent with existing Methods 2.3 disclosure (midpoint Y-then-X ordering fallback).
+- Citations Hotchkiss/Gómez-Gener/Battin/Raymond/Saccardi/Bennett/Vilas/Markovich/Yuval/Gao all already in REFERENCES.
+
+**REJECTED:** none material. (ChatGPT's proposed notation "(S_{sgs})" LaTeX-style brackets were adapted to the generator's plain `S_sgs` / HTML `S<sub>sgs</sub>` convention; "Residual-AI" terminology kept because it is the paper's established configuration name.)
+
+**Verification:** regenerate PASS (HTML 4.71 MB, MD 41.7 KB); frozen numbers all present (0.0284×11, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×3, 3.24×7, 0.031×5, 1.92×1, 1.00×10, 838×4); base64 figures = 13 in HTML (MD keeps file references by design); zero external http in md img/links and html img/link/script; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (table/appendix formatting, none in new prose); mean sentence length ≈ 23.3 words.
 
 ---
 
