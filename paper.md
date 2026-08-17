@@ -46,7 +46,7 @@ The study uses public observations from the upper East River watershed near Almo
 
 The river-network representation combines three public sources. The HydroShare supplement of Saccardi and Winnick (2021) provides 393 NHD centerline segments for the study corridor. An extract of the NHDPlus HR product for HUC 14020001 contributes 8212 flowlines used for corridor-level filtering. Reach-to-line matching identified 85 segments through GNIS name matching and assigned the remainder by proximity to campaign coordinates; the median sample-to-centerline snap distance is 8.5 m. Discharge for the mainstem reach comes from USGS gage 09112500 (East River at Almont) on the sample dates. Tributary discharges are the published synoptic values from the campaign supplement, with no gage-ratio scaling applied.
 
-Channel width is not measured along the corridor. Computed widths come from a coordinate-based widening proxy, with clipping, for multi-sample reaches, and from a fallback width for single-sample reaches; the width enters water depth, flow velocity, k_600, and the water-surface area A_s = L·W. Sensitivity of the results to this width proxy remains to be tabulated. Biogeochemical covariates are likewise incomplete: DIC and DOC are available for 41 of the 120 samples, and alkalinity, nitrogen, phosphorus, and photosynthetically active radiation were not available for this campaign. A same-day merge against the Water Quality Portal returned no matching samples (0 of 120), and the StreamPULSE database contains no East River sites. These gaps constrain the covariate set available to the closures.
+Channel width is not measured along the corridor. For reaches containing at least two samples, the width proxy is the longitudinal sample-coordinate span converted to metres and divided by the number of samples, then clipped to 2–15 m; single-sample reaches are assigned W = 5 m. Water depth is estimated from the wide-channel Manning relation h = [Qn/(W S^0.5)]^0.6 with roughness n = 0.035, and bulk velocity is u = Q/(Wh). Width, depth, and velocity are therefore model-derived hydraulic inputs rather than measured cross-section properties, and the width enters water depth, flow velocity, k_600, and the water-surface area A_s = L·W. Sensitivity of the results to this width proxy remains to be tabulated. Biogeochemical covariates are likewise incomplete: DIC and DOC are available for 41 of the 120 samples, and alkalinity, nitrogen, phosphorus, and photosynthetically active radiation were not available for this campaign. A same-day merge against the Water Quality Portal returned no matching samples (0 of 120), and the StreamPULSE database contains no East River sites. These gaps constrain the covariate set available to the closures.
 
 *(Tables 1–9 are rendered below.)*
 
@@ -61,9 +61,9 @@ Each sample is associated with a control volume defined by its reach length L an
 
 > Eq. (1):  Q(C_in - C) + (A_s/tau_d)[S_sgs - k(C - C_eq)] = 0
 
-where Q is discharge (m3 s-¹), C_in and C are the upstream and reach concentrations (mol m-3), k is the gas-transfer velocity (m d-¹), S_sgs is the areal source-sink term (mol m-2 d-¹), C_eq is the equilibrium concentration with the atmosphere, A_s = L·W is the water-surface planform area (m2), and tau_d = 86400 s d-¹ converts the daily areal flux into mol s-¹. The planform area A_s is not the hydraulic cross-section area; if a bulk velocity is required, U = Q/A_c with A_c the cross-section area. Writing the balance explicitly on a daily areal basis avoids mixing time bases. Dividing Eq. (1) by A_s/tau_d gives the equivalent form
+where Q is discharge (m3 s-¹), C_in and C are the upstream and reach concentrations (mol m-3), k is the gas-transfer velocity (m d-¹), S_sgs is the areal source-sink term (mol m-2 d-¹), C_eq is the equilibrium concentration with the atmosphere, A_s = L·W is the water-surface planform area (m2), and tau_d = 86400 s d-¹ converts the daily areal flux into mol s-¹. The planform area A_s is not the hydraulic cross-section area; the bulk velocity used below is u = Q/A_c with A_c the cross-section area. The same symbols serve two roles depending on direction: in diagnostic calculations C is the observed concentration used to infer a residual, whereas in forward transport calculations C is the concentration solved from the balance; likewise the residual diagnosed from observations provides the training target, while a closure supplies its own predicted S_sgs. Writing the balance explicitly on a daily areal basis avoids mixing time bases. Dividing Eq. (1) by A_s/tau_d gives the equivalent form
 
-> Eq. (4):  q_A(C_in - C) + S_sgs - k(C - C_eq) = 0
+> Eq. (2):  q_A(C_in - C) + S_sgs - k(C - C_eq) = 0
 
 in which q_A = tau_d·Q/A_s (m d-¹) is a daily area-normalized discharge and every term has units mol m-2 d-¹.
 
@@ -71,7 +71,7 @@ All closures are inserted into this same balance: a closure configuration is def
 
 Gas exchange is summarized by the model flux density
 
-> Eq. (2):  F_CO2 = k(C - C_eq)
+> Eq. (3):  F_CO2 = k(C - C_eq)
 
 The reported flux totals are sample sums of F_CO2. They compare how each closure allocates the model balance; they are neither independently observed evasion fluxes nor spatially integrated watershed fluxes.
 
@@ -79,7 +79,7 @@ The empirical transfer velocity follows Raymond et al. (2012). The velocity norm
 
 > ln k600 = 5.139 + 0.594 ln u + 0.403 ln slope;  k_emp = k600 (Sc/600)^-0.5
 
-Symbolically, k_600 and k_emp are distinct quantities. The equilibrium concentration C_eq is taken from the preprocessed campaign table, following Henry’s law with atmospheric pCO2 and water temperature; the full derivation will be given in a supporting appendix.
+Symbolically, k_600 and k_emp are distinct quantities. The empirical relation is evaluated with u in m s-¹ and slope in m m-¹, yielding k_600 in m d-¹; the CO2 Schmidt number is dimensionless and is evaluated at the sample water temperature. The equilibrium concentration C_eq is taken from the preprocessed campaign table, computed from Henry’s law with atmospheric pCO2 and a constant Henry coefficient; the full derivation will be given in a supporting appendix.
 
 Cross-section visualizations used elsewhere in this work are idealized trapezoids, and the vertical velocity profile is a schematic parabola rather than an ADCP measurement. These representations are display products and are not used as measurements in the metrics below.
 
@@ -88,11 +88,13 @@ Cross-section visualizations used elsewhere in this work are idealized trapezoid
 
 Reach-scale transport formulations average over heterogeneity within each reach, and the unresolved contributions appear formally as a residual source-sink term. Studying that term requires an operable definition of the filter width Deltax rather than a qualitative notion of subgrid structure.
 
-We perform reach-local spatial coarse-graining within each logical reach. Native NHDPlus segments are merged along the network chainage into filter cells, and Deltax is defined as the mean length of the filter cells, with sampled cells reported separately. Where a fully directed network ordering is not available, the implementation falls back to a midpoint Y-then-X coordinate ordering. This fallback is disclosed as an operator boundary; it does not change the definition of the diagnosed residual.
+We perform reach-local spatial coarse-graining within each logical reach. Native segments are ordered by chainage along each reach and grouped into filter cells as individual segments, consecutive pairs, consecutive groups of four, or one whole-reach cell, giving four discrete filter operators. Where a fully directed chainage ordering is not available, segments are first ordered by midpoint Y coordinate and then X coordinate before cumulative segment length is assigned; this fallback is disclosed as an operator boundary and does not change the definition of the diagnosed residual. Each campaign observation is snapped to its nearest cell at each scale. The reported Deltax is the arithmetic mean of the cell lengths associated with the sample records at that scale, so cells containing multiple samples receive corresponding weight; this gives Deltax ≈ 838 m for the native operator. At the coarsest study-reach operator, all segments assigned to a represented reach are merged into one cell, producing seven cells in the spatial lattice, six of which contain campaign samples.
+
+For each date and filter scale, C_in is taken from the nearest sampled cell upstream within the same represented reach; when no upstream sampled cell is available, the current observation is used as the fallback C_in.
 
 At the operator level the construction parallels the coarse-graining used in large-eddy simulation and in learned subgrid parameterization studies (Yuval & O’Gorman, 2020); the analogy is limited to spatial filtering, and S_sgs denotes the residual of the filtered river CO2 balance at the chosen scale. Once resolved transport and gas exchange are recomputed on the filtered balance, the residual implied by the observations is
 
-> Eq. (5):  S_sgs = k(C - C_eq) - q_A(C_in - C)
+> Eq. (4):  S_sgs = k(C - C_eq) - q_A(C_in - C)
 
 S_sgs is a filter-induced closure residual. It can absorb measurement error, errors from the simplified transport representation, and genuinely unresolved processes. It is not a direct measurement of a single unresolved biogeochemical flux. Its magnitude, structure, and learnability are evaluated below as the aggregation scale changes.
 
@@ -105,35 +107,37 @@ Three closure configurations are compared. They differ only in how S_sgs and k a
 
 The Baseline retains the transport and hydraulic formulation of the other configurations while setting S_sgs = 0 and using the Raymond-type empirical velocity k_emp. It therefore serves as the zero-residual reference against which closure form and evaluation protocol are compared.
 
-The Residual-AI configuration learns S_sgs from hydraulic and water-quality covariates. Two learners are trained with a fixed seed (42): a multilayer perceptron and a random forest. The inputs include discharge, velocity, depth, width, slope, temperature, and the available carbon chemistry, as implemented in the open-source pipeline.
+The Residual-AI configuration learns S_sgs from hydraulic and water-quality covariates. Two learners are trained with a fixed seed (42): a multilayer perceptron and a random forest. The candidate predictor pool comprises discharge, velocity, depth, width, slope, temperature, the available carbon chemistry (dissolved organic carbon for 41 of the 120 samples), and the derived dimensionless quantities; fields that are entirely absent from the campaign table are excluded, and missing retained predictors are imputed with medians calculated from the training reaches of each fold. The multilayer perceptron uses hidden layers of 64, 32, and 16 units with learning rate 0.001, early stopping, and fold-specific predictor standardization, and its predicted residual is constrained to be non-negative. The random forest uses 200 trees with maximum depth 12 and no predictor standardization.
 
-The k-correction configuration leaves S_sgs at zero and multiplies the empirical velocity by a learned factor, k_eff = k_emp·exp(g_θ(X)), where g_θ is a dimensionless correction predicted by a gradient-boosting model (XGBoost). The median ratio k_eff/k_emp under grouped evaluation is reported as a diagnostic of how the correction achieves its fit.
+The k-correction configuration leaves S_sgs at zero and multiplies the empirical velocity by a learned factor, k_eff = k_emp·exp(g_θ(X)), where g_θ is a dimensionless correction predicted by a gradient-boosting model (XGBoost; 300 trees, maximum depth 6, learning rate 0.05, seed 42). The training target is constructed by first solving the balance for the transfer velocity k_need required to reproduce the observed concentration with S_sgs = 0, then setting g = ln(k_need/k_emp); the predicted correction is applied as k_eff = k_empexp(g_θ) before the transport balance is re-solved. Because k_need is constructed from the observations before the fold loop, a training-row target can draw on an observed upstream concentration from the reach that is subsequently held out; the k-correction is therefore not fully fold-isolated at the level of target construction, a broader information path than the C_in fallback disclosed in Section 2.5. The median ratio k_eff/k_emp under grouped evaluation is reported as a diagnostic of how the correction achieves its fit.
+
+The training target for the residual learners is the diagnosed residual constructed from the observations and the baseline model output: an evasion term evaluated at the observed concentration is combined with a depth-normalized concentration deficit. In the public implementation these two terms carry different units, so the target as computed does not coincide exactly with Eq. (4); reconciling the diagnostic residual and the training target is recorded in the reproducibility audit as a known implementation limitation.
 
 
 ### 2.5 Leave-one-reach-out transport-coupled evaluation
 
-Closure generalization is evaluated with leave-one-reach-out grouped cross-validation across the eight logical reaches. Each reach is held out once. Missing-value imputation and feature scaling are fitted on the training reaches only and then applied to the held-out reach. The closure is predicted for the held-out samples, reinserted into the quasi-steady balance, and only then scored against observed C_aq. No inner hyperparameter-selection loop is used, so we refer to the procedure as grouped cross-validation rather than nested cross-validation.
+Closure generalization is evaluated by leaving one logical reach out at a time across the eight logical reaches. Each reach is held out once. For each fold, missing predictors are imputed with medians from the training reaches; predictor standardization is fitted on the training data only for the models that use it, specifically the multilayer perceptron and the LASSO. The closure is fitted on the training-reach targets and then used to generate closure values for the full network state required by the transport calculation; the complete quasi-steady network is re-solved with those closure values, and only then are the predictions belonging to the held-out reach retained and scored against observed C_aq. No inner hyperparameter-selection loop is used, so we refer to the procedure as grouped cross-validation rather than nested cross-validation.
 
 When an upstream concentration state is unavailable, the solver uses the observed C_aq at the current sample as the fallback boundary value c_in; the experiment therefore evaluates closure generalization under partially observed boundary conditioning rather than fully target-blind forecasting. Sampling is also strongly imbalanced among reaches: R008 contributes 58 of the 120 samples, while three reaches contribute one each, so pooled errors are read together with reach-level evidence weights (Table 5). A date-grouped variant is reported as a time-sensitivity analysis and is not nested inside the reach split.
 
 
 ### 2.6 Metrics and flux diagnostic
 
-The primary metric is the held-out C_aq RMSE in mol m-3. The secondary diagnostic is the sample-summed model flux ΣF_CO2 in mol m-2 d-¹, computed from Eq. (2) with the transport-predicted concentration and the transfer velocity of each configuration: k_emp for the Baseline and Residual-AI, and k_eff for the k-correction. An observation-based proxy flux uses k_emp with observed concentrations. Differences in ΣF_CO2 across closures indicate how each configuration allocates the balance between sources and gas exchange.
+The primary metric is the held-out C_aq RMSE in mol m-3. The secondary diagnostic is the sample-summed model flux ΣF_CO2 in mol m-2 d-¹, computed from Eq. (3) with the transport-predicted concentration and the transfer velocity of each configuration: k_emp for the Baseline and Residual-AI, and k_eff for the k-correction. An observation-based proxy flux uses k_emp with observed concentrations. Differences in ΣF_CO2 across closures indicate how each configuration allocates the balance between sources and gas exchange.
 
 
 ### 2.7 Practical equifinality diagnostic
 
 To characterize compensation between source terms and gas exchange, we define the implied source adjustment
 
-> Eq. (6):  S_implied = (k_emp - k_eff)(C - C_eq)
+> Eq. (5):  S_implied = (k_emp - k_eff)(C - C_eq)
 
-At fixed concentration and resolved transport state, S_implied is the source-sink adjustment that makes a model retaining k_emp locally equivalent to a model that uses k_eff and no additional source term. A large S_implied together with a small change in concentration error indicates that the observations provide limited discrimination between the two allocations; we refer to this compensating closure behaviour as practical equifinality. The diagnostic is algebraic and empirical rather than a formal structural-identifiability analysis.
+At fixed concentration and resolved transport state, S_implied is the source-sink adjustment that makes a model retaining k_emp locally equivalent to a model that uses k_eff and no additional source term. In Eq. (5), C is the observed aqueous concentration at the sample, so the two process allocations are compared at a common observed concentration rather than at their respective forward-model concentrations. A large S_implied together with a small change in concentration error indicates that the observations provide limited discrimination between the two allocations; we refer to this compensating closure behaviour as practical equifinality. The diagnostic is algebraic and empirical rather than a formal structural-identifiability analysis.
 
 
 ### 2.8 Sparse dimensionless closure
 
-A final experiment asks whether the residual admits a compact dimensionless representation. Candidate Pi-group features are assembled from the hydraulic state: Froude number Fr, slope, relative depth h/W, and the logarithms of the Reynolds and Damköhler numbers. A standardized LASSO selects terms within each cross-validation fold, following the spirit of sparse discovery methods (Xie et al., 2022), implemented with a scikit-learn LASSO. The resulting form is reported in standardized (z-score) space and reinserted into the transport calculation under the same leave-one-reach-out protocol as the other closures. Compactness is tested against predictive utility; the two are not assumed to coincide.
+A final experiment asks whether the residual admits a compact dimensionless representation. The dimensionless response is defined as S* = S_sgs/(k_empC_eq), with Froude number Fr, slope, relative depth h/W, and the base-10 logarithms of the Reynolds and Damköhler numbers as candidate Pi-group features, following the spirit of sparse discovery methods (Xie et al., 2022), implemented with a scikit-learn LASSO. Within each leave-one-reach-out fold, missing predictors are imputed from the training reaches, the predictors are standardized using training-fold statistics, and a LASSO with fixed penalty α = 0.05 is fitted on the dimensional residual; the predicted S_sgs is reinserted into the transport calculation and scored only on the held-out reach. For descriptive reporting, the same LASSO specification is fitted once to the full dataset against the dimensionless response S*; the sparse relation reported below comes from that full-data refit and is therefore a descriptive coefficient summary rather than a coefficient vector applied unchanged across the holdout folds. The Damköhler number is constructed as kτ/h with τ = L/u; as implemented, τ in seconds is multiplied by k in m d-¹, so this candidate feature is not strictly dimensionless. Selection drops the term, and the retained predictors (Fr, slope, h/W) are unaffected. Compactness is tested against predictive utility; the two are not assumed to coincide.
 
 
 ## 3. Results
@@ -181,11 +185,11 @@ The magnitude of the diagnosed residual varies systematically with the filter wi
 
 ### 3.5 A sparse dimensionless closure is compact but not predictive
 
-The standardized LASSO retains three of the five candidate Pi terms (Table 8; Figure 7). In standardized space the closure is
+The full-data LASSO refit on the dimensionless response retains three of the five candidate Pi terms (Table 8; Figure 7). With subscript z denoting predictors standardized to zero mean and unit variance, the closure is
 
-> S*_z ~= 1.059 + 1.536*Fr - 1.669*Slope - 2.179*h/W
+> S* ~= 1.059 + 1.536*Fr_z - 1.669*Slope_z - 2.179*(h/W)_z
 
-with Froude number the positive contributor and slope and relative depth the negative contributors. Under the same leave-one-reach-out transport-coupled protocol, the sparse closure gives a held-out C_aq RMSE of 0.0506 mol m-3, above the Baseline value of 0.0284 (Table 9). The leave-one-reach R2 for S* itself is -2.74. The sparse form is therefore useful as a compact diagnostic description of the residual but does not recover predictive skill on held-out reaches.
+with Froude number the positive contributor and slope and relative depth the negative contributors. Because this relation is a descriptive full-data summary (Section 2.8), it is not itself scored as a held-out law; the leave-one-reach R2 on the standardized-response reconstruction is -2.74. Under the same leave-one-reach-out transport-coupled protocol, in which the scaler and LASSO are refitted within each fold, the sparse closure gives a held-out C_aq RMSE of 0.0506 mol m-3, above the Baseline value of 0.0284 (Table 9). The sparse form is therefore useful as a compact diagnostic description of the residual but does not recover predictive skill on held-out reaches.
 
 ![Figure 7. Standardized LASSO coefficients of the sparse dimensionless (Pi-group) closure.](results/figures/dimensionless_coefficients.png)
 
@@ -209,7 +213,7 @@ The residual closures reproduce the observations well in-sample but degrade held
 
 The k-correction achieves the lowest concentration error of any configuration, and it does so by reducing the effective transfer velocity by roughly three orders of magnitude. Because both source terms and gas exchange act on the same balance, a near-zero k can be offset by the existing gradient (C - C_eq) and still reproduce concentrations. The collapse of ΣF_CO2 from 3.24 to 0.031 shows what this fit implies for the process budget. Without independent evasion measurements, the data cannot adjudicate between the Baseline and corrected allocations; the lower RMSE is evidence of improved concentration fit, not independent evidence of improved process fidelity.
 
-Here, practical equifinality refers to the compensation between S_sgs and k represented by Eq. (6). The Baseline/k-correction contrast shows that this compensation direction is consequential in the present experiment: similar concentration errors coexist with markedly different transfer velocities and flux diagnostics. The argument is restricted in scope: it is not a formal structural-identifiability analysis, and it does not establish statistical equivalence between the competing predictions. The degraded RMSE of the MLP, random forest, and sparse closures is likewise not equifinality evidence; it shows that closure choice matters and that flexible residual learning did not generalize here. Within those boundaries, concentration-dominated evaluation does not uniquely constrain how discrepancy is allocated between S_sgs and k in this configuration.
+Here, practical equifinality refers to the compensation between S_sgs and k represented by Eq. (5). The Baseline/k-correction contrast shows that this compensation direction is consequential in the present experiment: similar concentration errors coexist with markedly different transfer velocities and flux diagnostics. The argument is restricted in scope: it is not a formal structural-identifiability analysis, and it does not establish statistical equivalence between the competing predictions. The degraded RMSE of the MLP, random forest, and sparse closures is likewise not equifinality evidence; it shows that closure choice matters and that flexible residual learning did not generalize here. Within those boundaries, concentration-dominated evaluation does not uniquely constrain how discrepancy is allocated between S_sgs and k in this configuration.
 
 
 ### 4.3 What filtering and sparse representation reveal about the residual

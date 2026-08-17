@@ -94,22 +94,22 @@ KEYWORDS = (
 # Equations (frozen; identical to previous manuscript versions)
 # ---------------------------------------------------------------------------
 
-# number -> (html, plain)
+# number -> (html, plain); numbered sequentially in order of appearance
 EQUATIONS: dict[int, tuple[str, str]] = {
     1: (
         "Q(C<sub>in</sub> \u2212 C) + (A<sub>s</sub>/\u03c4<sub>d</sub>)[S<sub>sgs</sub> \u2212 k(C \u2212 C<sub>eq</sub>)] = 0",
         "Q(C_in - C) + (A_s/tau_d)[S_sgs - k(C - C_eq)] = 0",
     ),
-    4: (
+    2: (
         "q<sub>A</sub>(C<sub>in</sub> \u2212 C) + S<sub>sgs</sub> \u2212 k(C \u2212 C<sub>eq</sub>) = 0",
         "q_A(C_in - C) + S_sgs - k(C - C_eq) = 0",
     ),
-    2: ("F<sub>CO\u2082</sub> = k(C \u2212 C<sub>eq</sub>)", "F_CO2 = k(C - C_eq)"),
-    5: (
+    3: ("F<sub>CO\u2082</sub> = k(C \u2212 C<sub>eq</sub>)", "F_CO2 = k(C - C_eq)"),
+    4: (
         "S<sub>sgs</sub> = k(C \u2212 C<sub>eq</sub>) \u2212 q<sub>A</sub>(C<sub>in</sub> \u2212 C)",
         "S_sgs = k(C - C_eq) - q_A(C_in - C)",
     ),
-    6: (
+    5: (
         "S<sub>implied</sub> = (k<sub>emp</sub> \u2212 k<sub>eff</sub>)(C \u2212 C<sub>eq</sub>)",
         "S_implied = (k_emp - k_eff)(C - C_eq)",
     ),
@@ -122,8 +122,8 @@ K600_EQ = (
 )
 
 SPARSE_EQ = (
-    "S*<sub>z</sub> \u2248 1.059 + 1.536\u00b7Fr \u2212 1.669\u00b7Slope \u2212 2.179\u00b7h/W",
-    "S*_z ~= 1.059 + 1.536*Fr - 1.669*Slope - 2.179*h/W",
+    "S* \u2248 1.059 + 1.536\u00b7Fr<sub>z</sub> \u2212 1.669\u00b7Slope<sub>z</sub> \u2212 2.179\u00b7(h/W)<sub>z</sub>",
+    "S* ~= 1.059 + 1.536*Fr_z - 1.669*Slope_z - 2.179*(h/W)_z",
 )
 
 # ---------------------------------------------------------------------------
@@ -303,15 +303,20 @@ CONTENT: list[tuple] = [
      "River at Almont) on the sample dates. Tributary discharges are the published synoptic values from "
      "the campaign supplement, with no gage-ratio scaling applied."),
     ("p",
-     "Channel width is not measured along the corridor. Computed widths come from a coordinate-based "
-     "widening proxy, with clipping, for multi-sample reaches, and from a fallback width for "
-     "single-sample reaches; the width enters water depth, flow velocity, k<sub>600</sub>, and the "
-     "water-surface area A<sub>s</sub> = L\u00b7W. Sensitivity of the results to this width proxy "
-     "remains to be tabulated. Biogeochemical covariates are likewise incomplete: DIC and DOC are "
-     "available for 41 of the 120 samples, and alkalinity, nitrogen, phosphorus, and photosynthetically "
-     "active radiation were not available for this campaign. A same-day merge against the Water Quality "
-     "Portal returned no matching samples (0 of 120), and the StreamPULSE database contains no East "
-     "River sites. These gaps constrain the covariate set available to the closures."),
+     "Channel width is not measured along the corridor. For reaches containing at least two samples, "
+     "the width proxy is the longitudinal sample-coordinate span converted to metres and divided by "
+     "the number of samples, then clipped to 2\u201315 m; single-sample reaches are assigned "
+     "W = 5 m. Water depth is estimated from the wide-channel Manning relation "
+     "h = [Qn/(W S<sup>0.5</sup>)]<sup>0.6</sup> with roughness n = 0.035, and bulk velocity is "
+     "u = Q/(Wh). Width, depth, and velocity are therefore model-derived hydraulic inputs rather than "
+     "measured cross-section properties, and the width enters water depth, flow velocity, "
+     "k<sub>600</sub>, and the water-surface area A<sub>s</sub> = L\u00b7W. Sensitivity of the "
+     "results to this width proxy remains to be tabulated. Biogeochemical covariates are likewise "
+     "incomplete: DIC and DOC are available for 41 of the 120 samples, and alkalinity, nitrogen, "
+     "phosphorus, and photosynthetically active radiation were not available for this campaign. A "
+     "same-day merge against the Water Quality Portal returned no matching samples (0 of 120), and "
+     "the StreamPULSE database contains no East River sites. These gaps constrain the covariate set "
+     "available to the closures."),
     ("raw", "REACH_TABLE"),
     ("fig", "gis_reach_assignment_map.png"),
     ("fig", "gis_samples_on_network.png"),
@@ -330,10 +335,14 @@ CONTENT: list[tuple] = [
      "C<sub>eq</sub> is the equilibrium concentration with the atmosphere, A<sub>s</sub> = L\u00b7W is "
      "the water-surface planform area (m\u00b2), and \u03c4<sub>d</sub> = 86400 s d\u207b\u00b9 converts "
      "the daily areal flux into mol s\u207b\u00b9. The planform area A<sub>s</sub> is not the hydraulic "
-     "cross-section area; if a bulk velocity is required, U = Q/A<sub>c</sub> with A<sub>c</sub> the "
-     "cross-section area. Writing the balance explicitly on a daily areal basis avoids mixing time "
-     "bases. Dividing Eq. (1) by A<sub>s</sub>/\u03c4<sub>d</sub> gives the equivalent form"),
-    ("eq", 4),
+     "cross-section area; the bulk velocity used below is u = Q/A<sub>c</sub> with A<sub>c</sub> the "
+     "cross-section area. The same symbols serve two roles depending on direction: in diagnostic "
+     "calculations C is the observed concentration used to infer a residual, whereas in forward "
+     "transport calculations C is the concentration solved from the balance; likewise the residual "
+     "diagnosed from observations provides the training target, while a closure supplies its own "
+     "predicted S<sub>sgs</sub>. Writing the balance explicitly on a daily areal basis avoids mixing "
+     "time bases. Dividing Eq. (1) by A<sub>s</sub>/\u03c4<sub>d</sub> gives the equivalent form"),
+    ("eq", 2),
     ("p",
      "in which q<sub>A</sub> = \u03c4<sub>d</sub>\u00b7Q/A<sub>s</sub> (m d\u207b\u00b9) is a daily "
      "area-normalized discharge and every term has units mol m\u207b\u00b2 d\u207b\u00b9."),
@@ -344,7 +353,7 @@ CONTENT: list[tuple] = [
      "allocation of model discrepancy rather than differences in transport numerics."),
     ("p",
      "Gas exchange is summarized by the model flux density"),
-    ("eq", 2),
+    ("eq", 3),
     ("p",
      "The reported flux totals are sample sums of F<sub>CO\u2082</sub>. They compare how each closure "
      "allocates the model balance; they are neither independently observed evasion fluxes nor spatially "
@@ -355,10 +364,13 @@ CONTENT: list[tuple] = [
      "and the CO\u2082-specific velocity is obtained by Schmidt-number scaling:"),
     ("eqline", K600_EQ),
     ("p",
-     "Symbolically, k<sub>600</sub> and k<sub>emp</sub> are distinct quantities. The equilibrium "
-     "concentration C<sub>eq</sub> is taken from the preprocessed campaign table, following Henry\u2019s "
-     "law with atmospheric pCO\u2082 and water temperature; the full derivation will be given in a "
-     "supporting appendix."),
+     "Symbolically, k<sub>600</sub> and k<sub>emp</sub> are distinct quantities. The empirical "
+     "relation is evaluated with u in m s\u207b\u00b9 and slope in m m\u207b\u00b9, yielding "
+     "k<sub>600</sub> in m d\u207b\u00b9; the CO\u2082 Schmidt number is dimensionless and is "
+     "evaluated at the sample water temperature. The equilibrium concentration C<sub>eq</sub> is taken "
+     "from the preprocessed campaign table, computed from Henry\u2019s law with atmospheric "
+     "pCO\u2082 and a constant Henry coefficient; the full derivation will be given in a supporting "
+     "appendix."),
     ("p",
      "Cross-section visualizations used elsewhere in this work are idealized trapezoids, and the "
      "vertical velocity profile is a schematic parabola rather than an ADCP measurement. These "
@@ -371,19 +383,29 @@ CONTENT: list[tuple] = [
      "requires an operable definition of the filter width \u0394x rather than a qualitative notion of "
      "subgrid structure."),
     ("p",
-     "We perform reach-local spatial coarse-graining within each logical reach. Native NHDPlus segments "
-     "are merged along the network chainage into filter cells, and \u0394x is defined as the mean length "
-     "of the filter cells, with sampled cells reported separately. Where a fully directed network "
-     "ordering is not available, the implementation falls back to a midpoint Y-then-X coordinate "
-     "ordering. This fallback is disclosed as an operator boundary; it does not change the definition of "
-     "the diagnosed residual."),
+     "We perform reach-local spatial coarse-graining within each logical reach. Native segments are "
+     "ordered by chainage along each reach and grouped into filter cells as individual segments, "
+     "consecutive pairs, consecutive groups of four, or one whole-reach cell, giving four discrete "
+     "filter operators. Where a fully directed chainage ordering is not available, segments are first "
+     "ordered by midpoint Y coordinate and then X coordinate before cumulative segment length is "
+     "assigned; this fallback is disclosed as an operator boundary and does not change the definition "
+     "of the diagnosed residual. Each campaign observation is snapped to its nearest cell at each "
+     "scale. The reported \u0394x is the arithmetic mean of the cell lengths associated with the "
+     "sample records at that scale, so cells containing multiple samples receive corresponding "
+     "weight; this gives \u0394x \u2248 838 m for the native operator. At the coarsest study-reach "
+     "operator, all segments assigned to a represented reach are merged into one cell, producing "
+     "seven cells in the spatial lattice, six of which contain campaign samples."),
+    ("p",
+     "For each date and filter scale, C<sub>in</sub> is taken from the nearest sampled cell upstream "
+     "within the same represented reach; when no upstream sampled cell is available, the current "
+     "observation is used as the fallback C<sub>in</sub>."),
     ("p",
      "At the operator level the construction parallels the coarse-graining used in large-eddy simulation "
      "and in learned subgrid parameterization studies (Yuval &amp; O\u2019Gorman, 2020); the analogy is "
      "limited to spatial filtering, and S<sub>sgs</sub> denotes the residual of the filtered river "
      "CO\u2082 balance at the chosen scale. Once resolved transport and gas exchange are recomputed on "
      "the filtered balance, the residual implied by the observations is"),
-    ("eq", 5),
+    ("eq", 4),
     ("p",
      "S<sub>sgs</sub> is a filter-induced closure residual. It can absorb measurement error, errors "
      "from the simplified transport representation, and genuinely unresolved processes. It is not a "
@@ -402,24 +424,50 @@ CONTENT: list[tuple] = [
      "are compared."),
     ("p",
      "The Residual-AI configuration learns S<sub>sgs</sub> from hydraulic and water-quality covariates. "
-     "Two learners are trained with a fixed seed (42): a multilayer perceptron and a random forest. The "
-     "inputs include discharge, velocity, depth, width, slope, temperature, and the available carbon "
-     "chemistry, as implemented in the open-source pipeline."),
+     "Two learners are trained with a fixed seed (42): a multilayer perceptron and a random forest. "
+     "The candidate predictor pool comprises discharge, velocity, depth, width, slope, temperature, "
+     "the available carbon chemistry (dissolved organic carbon for 41 of the 120 samples), and the "
+     "derived dimensionless quantities; fields that are entirely absent from the campaign table are "
+     "excluded, and missing retained predictors are imputed with medians calculated from the training "
+     "reaches of each fold. The multilayer perceptron uses hidden layers of 64, 32, and 16 units with "
+     "learning rate 0.001, early stopping, and fold-specific predictor standardization, and its "
+     "predicted residual is constrained to be non-negative. The random forest uses 200 trees with "
+     "maximum depth 12 and no predictor standardization."),
     ("p",
      "The k-correction configuration leaves S<sub>sgs</sub> at zero and multiplies the empirical "
      "velocity by a learned factor, k<sub>eff</sub> = k<sub>emp</sub>\u00b7exp(g<sub>\u03b8</sub>(X)), "
      "where g<sub>\u03b8</sub> is a dimensionless correction predicted by a gradient-boosting model "
-     "(XGBoost). The median ratio k<sub>eff</sub>/k<sub>emp</sub> under grouped evaluation is reported "
-     "as a diagnostic of how the correction achieves its fit."),
+     "(XGBoost; 300 trees, maximum depth 6, learning rate 0.05, seed 42). The training target is "
+     "constructed by first solving the balance for the transfer velocity k<sub>need</sub> required to "
+     "reproduce the observed concentration with S<sub>sgs</sub> = 0, then setting "
+     "g = ln(k<sub>need</sub>/k<sub>emp</sub>); the predicted correction is applied as "
+     "k<sub>eff</sub> = k<sub>emp</sub>exp(g<sub>\u03b8</sub>) before the transport balance is "
+     "re-solved. Because k<sub>need</sub> is constructed from the observations before the fold loop, "
+     "a training-row target can draw on an observed upstream concentration from the reach that is "
+     "subsequently held out; the k-correction is therefore not fully fold-isolated at the level of "
+     "target construction, a broader information path than the C<sub>in</sub> fallback disclosed in "
+     "Section 2.5. The median ratio k<sub>eff</sub>/k<sub>emp</sub> under grouped evaluation is "
+     "reported as a diagnostic of how the correction achieves its fit."),
+    ("p",
+     "The training target for the residual learners is the diagnosed residual constructed from the "
+     "observations and the baseline model output: an evasion term evaluated at the observed "
+     "concentration is combined with a depth-normalized concentration deficit. In the public "
+     "implementation these two terms carry different units, so the target as computed does not "
+     "coincide exactly with Eq. (4); reconciling the diagnostic residual and the training target is "
+     "recorded in the reproducibility audit as a known implementation limitation."),
 
     ("h3", "2.5 Leave-one-reach-out transport-coupled evaluation"),
     ("p",
-     "Closure generalization is evaluated with leave-one-reach-out grouped cross-validation across the "
-     "eight logical reaches. Each reach is held out once. Missing-value imputation and feature scaling "
-     "are fitted on the training reaches only and then applied to the held-out reach. The closure is "
-     "predicted for the held-out samples, reinserted into the quasi-steady balance, and only then scored "
-     "against observed C<sub>aq</sub>. No inner hyperparameter-selection loop is used, so we refer to "
-     "the procedure as grouped cross-validation rather than nested cross-validation."),
+     "Closure generalization is evaluated by leaving one logical reach out at a time across the eight "
+     "logical reaches. Each reach is held out once. For each fold, missing predictors are imputed "
+     "with medians from the training reaches; predictor standardization is fitted on the training "
+     "data only for the models that use it, specifically the multilayer perceptron and the LASSO. The "
+     "closure is fitted on the training-reach targets and then used to generate closure values for "
+     "the full network state required by the transport calculation; the complete quasi-steady network "
+     "is re-solved with those closure values, and only then are the predictions belonging to the "
+     "held-out reach retained and scored against observed C<sub>aq</sub>. No inner "
+     "hyperparameter-selection loop is used, so we refer to the procedure as grouped "
+     "cross-validation rather than nested cross-validation."),
     ("p",
      "When an upstream concentration state is unavailable, the solver uses the observed C<sub>aq</sub> "
      "at the current sample as the fallback boundary value c<sub>in</sub>; the experiment therefore "
@@ -433,7 +481,7 @@ CONTENT: list[tuple] = [
     ("p",
      "The primary metric is the held-out C<sub>aq</sub> RMSE in mol m\u207b\u00b3. The secondary "
      "diagnostic is the sample-summed model flux \u03a3F<sub>CO\u2082</sub> in mol m\u207b\u00b2 "
-     "d\u207b\u00b9, computed from Eq. (2) with the transport-predicted concentration and the transfer "
+     "d\u207b\u00b9, computed from Eq. (3) with the transport-predicted concentration and the transfer "
      "velocity of each configuration: k<sub>emp</sub> for the Baseline and Residual-AI, and "
      "k<sub>eff</sub> for the k-correction. An observation-based proxy flux uses k<sub>emp</sub> with "
      "observed concentrations. Differences in \u03a3F<sub>CO\u2082</sub> across closures indicate how "
@@ -443,26 +491,37 @@ CONTENT: list[tuple] = [
     ("p",
      "To characterize compensation between source terms and gas exchange, we define the implied source "
      "adjustment"),
-    ("eq", 6),
+    ("eq", 5),
     ("p",
      "At fixed concentration and resolved transport state, S<sub>implied</sub> is the source-sink "
      "adjustment that makes a model retaining k<sub>emp</sub> locally equivalent to a model that uses "
-     "k<sub>eff</sub> and no additional source term. A large S<sub>implied</sub> together with a small "
-     "change in concentration error indicates that the observations provide limited discrimination "
-     "between the two allocations; we refer to this compensating closure behaviour as practical "
-     "equifinality. The diagnostic is algebraic and empirical rather than a formal structural-"
-     "identifiability analysis."),
+     "k<sub>eff</sub> and no additional source term. In Eq. (5), C is the observed aqueous "
+     "concentration at the sample, so the two process allocations are compared at a common observed "
+     "concentration rather than at their respective forward-model concentrations. A large "
+     "S<sub>implied</sub> together with a small change in concentration error indicates that the "
+     "observations provide limited discrimination between the two allocations; we refer to this "
+     "compensating closure behaviour as practical equifinality. The diagnostic is algebraic and "
+     "empirical rather than a formal structural-identifiability analysis."),
 
     ("h3", "2.8 Sparse dimensionless closure"),
     ("p",
-     "A final experiment asks whether the residual admits a compact dimensionless representation. "
-     "Candidate \u03a0-group features are assembled from the hydraulic state: Froude number Fr, slope, "
-     "relative depth h/W, and the logarithms of the Reynolds and Damk\u00f6hler numbers. A standardized "
-     "LASSO selects terms within each cross-validation fold, following the spirit of sparse discovery "
-     "methods (Xie et al., 2022), implemented with a scikit-learn LASSO. The resulting form is reported "
-     "in standardized (z-score) space and reinserted into the transport calculation under the same "
-     "leave-one-reach-out protocol as the other closures. Compactness is tested against predictive "
-     "utility; the two are not assumed to coincide."),
+     "A final experiment asks whether the residual admits a compact dimensionless representation. The "
+     "dimensionless response is defined as S* = S<sub>sgs</sub>/(k<sub>emp</sub>C<sub>eq</sub>), with "
+     "Froude number Fr, slope, relative depth h/W, and the base-10 logarithms of the Reynolds and "
+     "Damk\u00f6hler numbers as candidate \u03a0-group features, following the spirit of sparse "
+     "discovery methods (Xie et al., 2022), implemented with a scikit-learn LASSO. Within each "
+     "leave-one-reach-out fold, missing predictors are imputed from the training reaches, the "
+     "predictors are standardized using training-fold statistics, and a LASSO with fixed penalty "
+     "\u03b1 = 0.05 is fitted on the dimensional residual; the predicted S<sub>sgs</sub> is "
+     "reinserted into the transport calculation and scored only on the held-out reach. For "
+     "descriptive reporting, the same LASSO specification is fitted once to the full dataset against "
+     "the dimensionless response S*; the sparse relation reported below comes from that full-data "
+     "refit and is therefore a descriptive coefficient summary rather than a coefficient vector "
+     "applied unchanged across the holdout folds. The Damk\u00f6hler number is constructed as "
+     "k\u03c4/h with \u03c4 = L/u; as implemented, \u03c4 in seconds is multiplied by k in "
+     "m d\u207b\u00b9, so this candidate feature is not strictly dimensionless. Selection drops the "
+     "term, and the retained predictors (Fr, slope, h/W) are unaffected. Compactness is tested "
+     "against predictive utility; the two are not assumed to coincide."),
 
     ("h2", "3. Results"),
 
@@ -537,16 +596,19 @@ CONTENT: list[tuple] = [
 
     ("h3", "3.5 A sparse dimensionless closure is compact but not predictive"),
     ("p",
-     "The standardized LASSO retains three of the five candidate \u03a0 terms (Table 8; Figure 7). In "
-     "standardized space the closure is"),
+     "The full-data LASSO refit on the dimensionless response retains three of the five candidate "
+     "\u03a0 terms (Table 8; Figure 7). With subscript z denoting predictors standardized to "
+     "zero mean and unit variance, the closure is"),
     ("eqline", SPARSE_EQ),
     ("p",
      "with Froude number the positive contributor and slope and relative depth the negative "
-     "contributors. Under the same leave-one-reach-out transport-coupled protocol, the sparse closure "
-     "gives a held-out C<sub>aq</sub> RMSE of 0.0506 mol m\u207b\u00b3, above the Baseline value of "
-     "0.0284 (Table 9). The leave-one-reach R\u00b2 for S* itself is \u22122.74. The sparse form is "
-     "therefore useful as a compact diagnostic description of the residual but does not recover "
-     "predictive skill on held-out reaches."),
+     "contributors. Because this relation is a descriptive full-data summary (Section 2.8), it is not "
+     "itself scored as a held-out law; the leave-one-reach R\u00b2 on the standardized-response "
+     "reconstruction is \u22122.74. Under the same leave-one-reach-out transport-coupled protocol, in "
+     "which the scaler and LASSO are refitted within each fold, the sparse closure gives a held-out "
+     "C<sub>aq</sub> RMSE of 0.0506 mol m\u207b\u00b3, above the Baseline value of 0.0284 (Table 9). "
+     "The sparse form is therefore useful as a compact diagnostic description of the residual but "
+     "does not recover predictive skill on held-out reaches."),
     ("fig", "dimensionless_coefficients.png"),
 
     ("h3", "3.6 In-sample fit (appendix)"),
@@ -586,7 +648,7 @@ CONTENT: list[tuple] = [
      "evidence of improved process fidelity."),
     ("p",
      "Here, practical equifinality refers to the compensation between S<sub>sgs</sub> and k represented "
-     "by Eq. (6). The Baseline/k-correction contrast shows that this compensation direction is "
+     "by Eq. (5). The Baseline/k-correction contrast shows that this compensation direction is "
      "consequential in the present experiment: similar concentration errors coexist with markedly "
      "different transfer velocities and flux diagnostics. The argument is restricted in scope: it is not "
      "a formal structural-identifiability analysis, and it does not establish statistical equivalence "

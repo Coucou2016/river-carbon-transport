@@ -19,14 +19,14 @@
 | 9 | Data integrity + Methods consistency (no script paths) | Done |
 | 10 | Repo-level style review (AI-tell + exemplar comparison) | Done (2026-08-18) |
 | 11 | Abstract + Introduction rewrite | Done (2026-08-18) |
-| 12 | Methods clarity + notation/units | Pending |
+| 12 | Methods clarity + notation/units | Done (2026-08-18) |
 | 13 | Results/Discussion prose + claims audit | Pending |
 | 14 | Full referee pass + consistency sweep | Pending |
 | 15 | Re-review of final text (if needed) | Pending |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.  
-**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`); `08_ROUND11_ABS_INTRO.md` (Round 11).
+**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`); `08_ROUND11_ABS_INTRO.md` (Round 11); `09_ROUND12_METHODS.md` (commit `88e4f8f`); `10_ROUND13_RESULTS_DISCUSSION.md` (commit `cfd7441`).
 
 ---
 
@@ -76,6 +76,38 @@ Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`,
 **REJECTED:** none material. (ChatGPT's proposed notation "(S_{sgs})" LaTeX-style brackets were adapted to the generator's plain `S_sgs` / HTML `S<sub>sgs</sub>` convention; "Residual-AI" terminology kept because it is the paper's established configuration name.)
 
 **Verification:** regenerate PASS (HTML 4.71 MB, MD 41.7 KB); frozen numbers all present (0.0284×11, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×3, 3.24×7, 0.031×5, 1.92×1, 1.00×10, 838×4); base64 figures = 13 in HTML (MD keeps file references by design); zero external http in md img/links and html img/link/script; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (table/appendix formatting, none in new prose); mean sentence length ≈ 23.3 words.
+
+---
+
+## Round 12 — Methods clarity + notation/units (code-verified merge)
+
+**Sent:** Brief `09_ROUND12_METHODS.md` (Methods 2.1–2.8 verbatim + plain-text equations) with Q12.1–Q12.4: under-explanation audit, Eq. (1)/(4)/(2)/(5)/(6)+k600 unit check, paragraph-level clarity actions, and five likely reviewer questions. One scope note was sent first because the shared dialog had been polluted by an unrelated WRR review message from a separate task.
+
+**ChatGPT browsed?** YES — browsed the public repo at commit `f99e66d` (GitHub citation chips) including `src/02_build_network.py`, `src/05_compute_residual_sgs.py`, `src/12_nested_cv_transport.py`, `src/13_filter_scale_sgs.py`, `src/15_dimensionless_sparse.py`, `src/utils.py`, and the config. Web search not needed this round.
+
+**Two P0 implementation findings (code-verified, see integrity audit):**
+1. The Residual-AI / sparse-Π training target in `src/05_compute_residual_sgs.py` adds an areal-flux term (mol m⁻² d⁻¹) to a concentration-difference term (mol m⁻³), so the computed target is not exactly Eq. (4) as written. The frozen results were generated with this target; fixing the target would change frozen numbers, which is out of scope. Prose now discloses the mismatch (Methods 2.4) and the integrity audit records it as a known limitation.
+2. `Da` and `k·τ/h` in `src/05_compute_residual_sgs.py` multiply τ in seconds by k in m d⁻¹, so these two candidates are not strictly dimensionless. LASSO selection dropped both terms anyway; the retained law uses only Fr, slope, and h/W. Disclosed in Methods 2.8.
+
+**ACCEPTED (merged into `scripts/generate_paper.py`, every claim first verified against `src/`):**
+- 2.1: width proxy made quantitative (coordinate span / sample count, clipped 2–15 m; W = 5 m for single-sample reaches); Manning depth h = [Qn/(W·S^0.5)]^0.6, n = 0.035; u = Q/(Wh); flagged model-derived. Verified against `src/east_river_real_data.py` (manning_depth, clip bounds, lon-span width).
+- 2.2: removed the capital-U/lowercase-u collision (bulk velocity u = Q/A_c); stated observed-vs-solved roles of C and diagnosed-vs-predicted roles of S_sgs; added Schmidt-number statement; corrected the C_eq sentence to "Henry's law with atmospheric pCO₂ and a constant Henry coefficient" (verified: `src/utils.py` co2_eq_concentration ignores temp_c).
+- 2.3: filter operators stated explicitly (native, pairs, groups of four, whole reach); Y-then-X fallback ordering; Δx defined as the sample-weighted mean of attached cell lengths (Δx ≈ 838 m at native; 7 cells, 6 with samples at study-reach scale); added the per-date upstream C_in rule with fallback. Verified against `src/13_filter_scale_sgs.py` and `results/tables/filter_scale_metrics.csv`.
+- 2.4: full predictor pool enumerated (hydraulics + T + DOC/DO/pH + dimensionless; wholly absent fields excluded; fold-median imputation); MLP 64/32/16, lr 0.001, early stopping, fold standardization, non-negative output; RF 200 trees / depth 12, unscaled; XGB 300/6/0.05 seed 42. Verified against `configs/east_river.yaml`, `src/ml_models.py`, `src/12_nested_cv_transport.py` (feature_columns, make_*).
+- 2.4: k-correction target mechanics added (invert balance at observed C with S_sgs = 0 for k_need; g = ln(k_need/k_emp); k_eff = k_emp·exp(g)); plus the honest caveat that k_need is built from observations before the fold loop (verified: `invert_k_needed` runs before the fold loop and uses observed upstream concentrations).
+- 2.4: training-target disclosure paragraph (see P0-1 above).
+- 2.5: replaced generic "feature scaling" with the accurate fold mechanics: fold-median imputation; standardization only for MLP and LASSO; closure predicted for the full network, whole network re-solved, then held-out rows scored (verified in `grouped_holdout_predictions`).
+- 2.7: Eq. (5) uses observed C_aq (verified: `src/14_identifiability_ksgs.py` builds S_implied from C_aq_obs).
+- 2.8: rewritten with verified sparse mechanics: S* = S_sgs/(k_emp·C_eq); five candidates Fr, slope, h/W, log₁₀Re, log₁₀Da; per-fold scaler+LASSO refit (α = 0.05) for transport evaluation; frozen coefficients are a descriptive full-data refit, not a median fold law; Da-construction caveat (see P0-2 above). Verified in `src/15_dimensionless_sparse.py` (fit_sparse alpha=0.05, full-data refit for display).
+- Notation: SPARSE_EQ rewritten to S* ≈ 1.059 + 1.536·Fr_z − 1.669·Slope_z − 2.179·(h/W)_z (subscript z = standardized predictors only, because the response is not z-scored in code); 3.5 prose aligned with the descriptive-refit interpretation.
+- Equations renumbered sequentially in order of appearance: (1) mass balance, (2) area-normalized form, (3) F_CO₂, (4) residual diagnosis, (5) S_implied; all cross-references updated.
+
+**REJECTED / deferred:**
+- REJECTED: ChatGPT's proposal to rename the displayed law "median law" — verified the frozen coefficients come from a single full-data refit, not a median over folds; prose now says so instead.
+- REJECTED: fixing the P0 code units now — would change frozen results (0.0573/0.0745/0.0506 and the sparse law), which is out of scope; disclosed in prose + audit instead.
+- DEFERRED: the C_eq temperature-dependence appendix and a supplementary parameter table (kept as 待补充).
+
+**Verification:** regenerate PASS (HTML 4.71 MB, MD 46.7 KB); frozen numbers all present (0.0284×11, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×3, 3.24×7, 0.031×5, 1.916×2, 1.00×10, 838×5); base64 figures = 13 in HTML (MD keeps file references by design); zero external img/link/script http; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (tables only, none in prose); mean sentence length ≈ 24.7 words.
 
 ---
 
