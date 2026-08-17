@@ -17,7 +17,7 @@
 | 7 | Paper↔report audit + GitHub Markdown briefs | Done (2026-08-17) |
 | 8 | EMS Abstract/Intro/Discussion prose rewrite | Done |
 | 9 | Data integrity + Methods consistency (no script paths) | Done |
-| 10 | Repo-level style review (AI-tell + exemplar comparison) | In progress (2026-08-18) |
+| 10 | Repo-level style review (AI-tell + exemplar comparison) | Done (2026-08-18) |
 | 11 | Abstract + Introduction rewrite | Pending |
 | 12 | Methods clarity + notation/units | Pending |
 | 13 | Results/Discussion prose + claims audit | Pending |
@@ -25,7 +25,35 @@
 | 15 | Re-review of final text (if needed) | Pending |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
-Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.
+Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.  
+**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`).
+
+---
+
+## Round 10 — Repo-level style review (AI-tell audit + exemplar comparison)
+
+**Sent:** Briefs 06/07 + `paper.md` URLs at commits `d867d84`/`33a6d40`; Q10.1–Q10.5 (section verdicts, top-10 AI tells, Fraehr/Markovich length comparison, Phrasebank/humanizer checklist application, borrowed-data integrity spot-check).
+
+**ChatGPT browsed GitHub?** YES — confirmed reading the commit-pinned manuscript, both Round-10 briefs, and `docs/RESEARCH_INTEGRITY_AUDIT.md`. Web search used (Fraehr WRR exemplar, Markovich EMS exemplar, Purdue OWL, Manchester Academic Phrasebank, AI-tell literature).
+
+**Verdict:** rewrite worked; manuscript is "submission-near but not final"; remaining issues are concentrated editorial scaffolding, not pervasive AI-ness.
+
+**ACCEPTED (merged into `scripts/generate_paper.py`):**
+- Removed PySINDy engineering-history residue (Methods 2.8 + Table 8 caption): state only that standardized LASSO was used.
+- Deleted meta-narration: "The role of Eq. (1) in the design...", "The results follow an evidence ladder..." roadmap, "Two data boundaries...", "Two boundaries of the protocol..." checklist cadence; replaced with direct statements.
+- Collapsed defensive boundary policing in 2.3 (single boundary sentence for the LES analogy) and 2.7 (one qualifier instead of rebuttal-style "not a formal proof").
+- Replaced self-referential contribution triad ("The contribution is methodological...") in Abstract and Intro with direct statements of what the study establishes/tests.
+- Merged Discussion 4.2+4.3 → "4.2 Process allocation and practical equifinality"; merged 4.4+4.5 → "4.3 What filtering and sparse representation reveal about the residual"; kept 4.1 and 4.6 (now 4.4). Six subsections → four.
+- Rewrote Conclusions from three-item research-summary cadence into two compact synthesis paragraphs.
+- Phrasebank-calibrated hedging: "does not distinguish" → "provides limited discrimination between"; "switches gas exchange almost off" → "gas exchange is reduced to nearly zero"; "is therefore driven by" → "is concentrated in"; "does not prove" patterns softened; KP3 now says "model-derived CO₂ flux diagnostic".
+- PLS causal phrasing "only by reducing" → "while the modeled CO₂ release was reduced".
+- Trimmed Abstract (~277 → ~250 words); moved WQP/StreamPULSE negatives out of Data availability (already in Methods 2.1 and Discussion limits).
+
+**REJECTED:** none material. (Did not restructure Results 3.2/3.3 into one section: keeping them separate preserves the figure anchors; ChatGPT marked that split "defensible". Did not move the WQP/StreamPULSE statements out of Methods 2.1, because they document covariate constraints for the closures.)
+
+**Integrity spot-check result:** no borrowed-data sentences found; provenance citations retained (Saccardi & Winnick tributary values, HydroShare/NHD inventories, USGS gage, Raymond k600 attribution). Softened the one causal claim about sparse tributary data "driving" the Residual-AI degradation to an association.
+
+**Verification:** regenerate PASS; frozen numbers all present (0.0284×11, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×3, 3.35×3, 3.24×7, 0.031×5, 1.916×2, 1.000×8, sparse coefficients ×2 each, 0.997×3); base64 figures = 13; zero http in img/link/script; em-dash count = 0; PySINDy mentions = 0; no local paths.
 
 ---
 

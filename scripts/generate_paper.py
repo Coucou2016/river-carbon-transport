@@ -46,7 +46,7 @@ ZH_TITLE = "河网 CO\u2082 闭合的输运耦合评价：浓度单变量观测�
 KEY_POINTS = [
     "A spatial filter turns the reach-scale CO\u2082 balance into a diagnosable subgrid residual term.",
     "Learned residual closures do not beat a zero-residual baseline on held-out reaches.",
-    "Lower concentration error coincides with collapse of the model CO\u2082 flux diagnostic.",
+    "Lower concentration error coincides with collapse of the model-derived CO\u2082 flux diagnostic.",
 ]
 
 PLAIN_LANGUAGE_SUMMARY = (
@@ -57,31 +57,31 @@ PLAIN_LANGUAGE_SUMMARY = (
     "Using 120 public water samples from the East River in Colorado, we compared a baseline transport "
     "model with variants that add a machine-learned source term or a corrected gas-exchange rate. The "
     "machine-learned term did not improve predictions for river reaches that were held out of training. "
-    "The corrected gas-exchange rate fitted the concentrations slightly better, but only by reducing the "
-    "modeled CO\u2082 release to nearly zero. Concentration data alone therefore cannot determine where "
+    "The corrected gas-exchange rate fitted the concentrations slightly better, while the modeled "
+    "CO\u2082 release was reduced to nearly zero. Concentration data alone therefore cannot determine where "
     "model error should be assigned. Evaluations of river-carbon models should combine concentration "
     "skill with process-level diagnostics."
 )
 
 ABSTRACT = (
     "Evaluating environmental models against a single observed state can conceal compensating errors "
-    "among process terms. River-network CO\u2082 models are exposed to this problem because unresolved "
+    "among process terms; river-network CO\u2082 models are exposed to this problem because unresolved "
     "source-sink processes and gas exchange act on the same concentration balance. We develop a "
     "transport-coupled diagnostic framework and apply it to 120 public campaign samples from the East "
     "River, Colorado, organized into eight logical reaches. Spatial coarse-graining of the reach-scale "
-    "mass balance defines a subgrid residual term S_sgs, which is then closed in three ways: a "
-    "zero-residual Baseline, machine-learned residual closures, and a multiplicative correction to the "
-    "empirical gas-transfer velocity. Each closure is trained with one reach held out and reinserted "
-    "into the quasi-steady balance before held-out concentrations are scored. The residual closures do "
-    "not improve held-out prediction: C_aq RMSE is 0.0573 mol/m^3 for a multilayer perceptron and 0.0745 "
-    "for a random forest, compared with 0.0284 for the Baseline. The k-correction reduces RMSE to "
-    "0.0244, but the gain coincides with a median effective velocity 3.35e-4 times the empirical value "
-    "and with a collapse of the sample-summed model flux diagnostic from 3.24 to 0.031 mol/m^2/day. The "
-    "diagnosed residual also depends on filter scale: mean |S_sgs| falls from 1.92 to 1.00 as the filter "
-    "width grows from about 838 m to the study-reach scale. Lower concentration error therefore does not "
+    "mass balance defines a subgrid residual term S_sgs, closed in three ways: a zero-residual Baseline, "
+    "machine-learned residual closures, and a multiplicative correction to the empirical gas-transfer "
+    "velocity. Each closure is trained with one reach held out and reinserted into the quasi-steady "
+    "balance before held-out concentrations are scored. The residual closures do not improve held-out "
+    "prediction: C_aq RMSE is 0.0573 mol/m^3 for a multilayer perceptron and 0.0745 for a random "
+    "forest, compared with 0.0284 for the Baseline. The k-correction reduces RMSE to 0.0244, but the "
+    "gain coincides with a median effective velocity 3.35e-4 times the empirical value and with a "
+    "collapse of the sample-summed model flux diagnostic from 3.24 to 0.031 mol/m^2/day. The diagnosed "
+    "residual also depends on filter scale: mean |S_sgs| falls from 1.92 to 1.00 as the filter width "
+    "grows from about 838 m to the study-reach scale. Lower concentration error therefore does not "
     "uniquely identify how model discrepancy is allocated between unresolved sources and gas exchange. "
-    "The contribution is methodological: an operable filter definition, a transport-coupled grouped "
-    "evaluation protocol, and evidence consistent with practical equifinality under concentration-only "
+    "The study establishes a transport-coupled procedure for comparing alternative closure allocations, "
+    "together with evidence consistent with practical equifinality under concentration-only "
     "observations."
 )
 
@@ -257,12 +257,10 @@ CONTENT: list[tuple] = [
      "Baseline, machine-learned residual closures, and a multiplicative correction to the empirical "
      "gas-transfer velocity. Evaluation is transport-coupled and grouped by reach: a closure predicted "
      "for a held-out reach is reinserted into the quasi-steady balance before concentrations are scored. "
-     "The contribution is methodological rather than predictive. We provide an operable definition of a "
-     "filter-induced residual, a grouped evaluation protocol that couples predicted closures back into "
-     "transport, and a diagnostic for practical equifinality between source terms and gas exchange. "
-     "Boundaries of the experiment, including partially observed upstream boundary conditions, strongly "
-     "unequal reach support, and idealized channel geometry, are treated as part of the evaluation "
-     "design."),
+     "We test whether such transport-coupled holdout evaluation can distinguish corrections assigned to "
+     "unresolved sources from corrections assigned to gas exchange. The experiment is bounded by "
+     "partially observed upstream boundary conditions, strongly unequal reach support, and idealized "
+     "channel geometry; these boundaries are treated as part of the evaluation design."),
 
     ("h2", "2. Methods"),
 
@@ -287,16 +285,15 @@ CONTENT: list[tuple] = [
      "River at Almont) on the sample dates. Tributary discharges are the published synoptic values from "
      "the campaign supplement, with no gage-ratio scaling applied."),
     ("p",
-     "Two data boundaries shape the analysis. First, channel width is not measured along the corridor. "
-     "Computed widths come from a coordinate-based widening proxy, with clipping, for multi-sample "
-     "reaches, and from a fallback width for single-sample reaches; the width enters water depth, flow "
-     "velocity, k<sub>600</sub>, and the water-surface area A<sub>s</sub> = L\u00b7W. Sensitivity of the "
-     "results to this width proxy remains to be tabulated. Second, biogeochemical covariates are "
-     "incomplete. DIC and DOC are available for 41 of the 120 samples, and alkalinity, nitrogen, "
-     "phosphorus, and photosynthetically active radiation were not available for this campaign. A "
-     "same-day merge against the Water Quality Portal returned no matching samples (0 of 120), and the "
-     "StreamPULSE database contains no East River sites. These gaps constrain the covariate set "
-     "available to the closures."),
+     "Channel width is not measured along the corridor. Computed widths come from a coordinate-based "
+     "widening proxy, with clipping, for multi-sample reaches, and from a fallback width for "
+     "single-sample reaches; the width enters water depth, flow velocity, k<sub>600</sub>, and the "
+     "water-surface area A<sub>s</sub> = L\u00b7W. Sensitivity of the results to this width proxy "
+     "remains to be tabulated. Biogeochemical covariates are likewise incomplete: DIC and DOC are "
+     "available for 41 of the 120 samples, and alkalinity, nitrogen, phosphorus, and photosynthetically "
+     "active radiation were not available for this campaign. A same-day merge against the Water Quality "
+     "Portal returned no matching samples (0 of 120), and the StreamPULSE database contains no East "
+     "River sites. These gaps constrain the covariate set available to the closures."),
     ("raw", "REACH_TABLE"),
     ("fig", "gis_reach_assignment_map.png"),
     ("fig", "gis_samples_on_network.png"),
@@ -323,10 +320,10 @@ CONTENT: list[tuple] = [
      "in which q<sub>A</sub> = \u03c4<sub>d</sub>\u00b7Q/A<sub>s</sub> (m d\u207b\u00b9) is a daily "
      "area-normalized discharge and every term has units mol m\u207b\u00b2 d\u207b\u00b9."),
     ("p",
-     "The role of Eq. (1) in the design is to provide one common balance into which every closure "
-     "configuration is inserted. A closure is defined entirely by how it supplies S<sub>sgs</sub> and k, "
-     "and all configurations are scored after the same balance is re-solved. The comparison therefore "
-     "isolates the allocation of model discrepancy rather than differences in transport numerics."),
+     "All closures are inserted into this same balance: a closure configuration is defined entirely by "
+     "how it supplies S<sub>sgs</sub> and k, and every configuration is scored after the identical "
+     "transport calculation is re-solved. Differences between configurations therefore reflect the "
+     "allocation of model discrepancy rather than differences in transport numerics."),
     ("p",
      "Gas exchange is summarized by the model flux density"),
     ("eq", 2),
@@ -363,12 +360,11 @@ CONTENT: list[tuple] = [
      "ordering. This fallback is disclosed as an operator boundary; it does not change the definition of "
      "the diagnosed residual."),
     ("p",
-     "The construction is analogous at the operator level to the coarse-graining used in large-eddy "
-     "simulation and in learned subgrid parameterization studies (Yuval &amp; O\u2019Gorman, 2020): the "
-     "filter separates resolved from unresolved contributions at a chosen scale. The analogy stops "
-     "there. S<sub>sgs</sub> is not a turbulence closure and is not claimed to follow a universal "
-     "river-network scaling law. Once resolved transport and gas exchange are recomputed on the filtered "
-     "balance, the residual implied by the observations is"),
+     "At the operator level the construction parallels the coarse-graining used in large-eddy simulation "
+     "and in learned subgrid parameterization studies (Yuval &amp; O\u2019Gorman, 2020); the analogy is "
+     "limited to spatial filtering, and S<sub>sgs</sub> denotes the residual of the filtered river "
+     "CO\u2082 balance at the chosen scale. Once resolved transport and gas exchange are recomputed on "
+     "the filtered balance, the residual implied by the observations is"),
     ("eq", 5),
     ("p",
      "S<sub>sgs</sub> is a filter-induced closure residual. It can absorb measurement error, errors "
@@ -382,10 +378,10 @@ CONTENT: list[tuple] = [
      "Three closure configurations are compared. They differ only in how S<sub>sgs</sub> and k are "
      "supplied to Eq. (1)."),
     ("p",
-     "The Baseline sets S<sub>sgs</sub> = 0 and uses the Raymond-type empirical velocity "
-     "k<sub>emp</sub>. It serves as a fair null closure rather than as a full independent hydrodynamic "
-     "model. The comparison targets closure form and evaluation protocol, not an alternative hydraulic "
-     "baseline."),
+     "The Baseline retains the transport and hydraulic formulation of the other configurations while "
+     "setting S<sub>sgs</sub> = 0 and using the Raymond-type empirical velocity k<sub>emp</sub>. It "
+     "therefore serves as the zero-residual reference against which closure form and evaluation protocol "
+     "are compared."),
     ("p",
      "The Residual-AI configuration learns S<sub>sgs</sub> from hydraulic and water-quality covariates. "
      "Two learners are trained with a fixed seed (42): a multilayer perceptron and a random forest. The "
@@ -407,14 +403,13 @@ CONTENT: list[tuple] = [
      "against observed C<sub>aq</sub>. No inner hyperparameter-selection loop is used, so we refer to "
      "the procedure as grouped cross-validation rather than nested cross-validation."),
     ("p",
-     "Two boundaries of the protocol are stated explicitly. First, when an upstream concentration state "
-     "is unavailable, the solver uses the observed C<sub>aq</sub> at the current sample as a fallback "
-     "boundary value c<sub>in</sub>. The experiment therefore evaluates closure generalization under "
-     "partially observed boundary conditioning, not fully target-blind forecasting. Second, sampling is "
-     "strongly imbalanced among reaches: R008 contributes 58 of the 120 samples, while three reaches "
-     "contribute one each. Pooled errors are therefore read together with reach-level evidence weights "
-     "(Table 5). A date-grouped variant is reported as a time-sensitivity analysis and is not nested "
-     "inside the reach split."),
+     "When an upstream concentration state is unavailable, the solver uses the observed C<sub>aq</sub> "
+     "at the current sample as the fallback boundary value c<sub>in</sub>; the experiment therefore "
+     "evaluates closure generalization under partially observed boundary conditioning rather than fully "
+     "target-blind forecasting. Sampling is also strongly imbalanced among reaches: R008 contributes 58 "
+     "of the 120 samples, while three reaches contribute one each, so pooled errors are read together "
+     "with reach-level evidence weights (Table 5). A date-grouped variant is reported as a "
+     "time-sensitivity analysis and is not nested inside the reach split."),
 
     ("h3", "2.6 Metrics and flux diagnostic"),
     ("p",
@@ -435,10 +430,10 @@ CONTENT: list[tuple] = [
      "At fixed concentration and resolved transport state, S<sub>implied</sub> is the source-sink "
      "adjustment that makes a model retaining k<sub>emp</sub> locally equivalent to a model that uses "
      "k<sub>eff</sub> and no additional source term. A large S<sub>implied</sub> together with a small "
-     "change in concentration error indicates that the observations do not distinguish between the two "
-     "allocations. We describe this behaviour as practical equifinality, or compensating closure "
-     "behaviour. The diagnostic is algebraic and empirical; it is not a formal proof of structural "
-     "non-identifiability."),
+     "change in concentration error indicates that the observations provide limited discrimination "
+     "between the two allocations; we refer to this compensating closure behaviour as practical "
+     "equifinality. The diagnostic is algebraic and empirical rather than a formal structural-"
+     "identifiability analysis."),
 
     ("h3", "2.8 Sparse dimensionless closure"),
     ("p",
@@ -446,17 +441,12 @@ CONTENT: list[tuple] = [
      "Candidate \u03a0-group features are assembled from the hydraulic state: Froude number Fr, slope, "
      "relative depth h/W, and the logarithms of the Reynolds and Damk\u00f6hler numbers. A standardized "
      "LASSO selects terms within each cross-validation fold, following the spirit of sparse discovery "
-     "methods (Xie et al., 2022); PySINDy was not available in the environment, so the selection uses a "
-     "scikit-learn LASSO middleware. The resulting form is reported in standardized (z-score) space and "
-     "reinserted into the transport calculation under the same leave-one-reach-out protocol as the other "
-     "closures. Compactness is tested against predictive utility; the two are not assumed to coincide."),
+     "methods (Xie et al., 2022), implemented with a scikit-learn LASSO. The resulting form is reported "
+     "in standardized (z-score) space and reinserted into the transport calculation under the same "
+     "leave-one-reach-out protocol as the other closures. Compactness is tested against predictive "
+     "utility; the two are not assumed to coincide."),
 
     ("h2", "3. Results"),
-    ("p",
-     "The results follow an evidence ladder. We first report the primary grouped evaluation of the three "
-     "closures, then the concentration\u2013flux disagreement that motivates the equifinality "
-     "diagnostic, then the filter-scale behaviour of the diagnosed residual, and finally the sparse "
-     "dimensionless form. All metrics come from the repository evaluation tables."),
 
     ("h3", "3.1 Residual closures do not improve held-out concentration prediction"),
     ("p",
@@ -472,7 +462,7 @@ CONTENT: list[tuple] = [
      "R008, both residual closures are slightly better than the Baseline: RMSE is 0.0121 for the MLP and "
      "0.0087 for the random forest against 0.0136 for the Baseline. On the multi-sample tributaries the "
      "pattern reverses: RMSE is 0.0381 for the Baseline, 0.0808 for the MLP, and 0.1058 for the random "
-     "forest. The pooled degradation is therefore driven by reaches with moderate sample support, where "
+     "forest. The pooled degradation is concentrated in reaches with moderate sample support, where "
      "training data for the residual are sparse and heterogeneous. The holdout scatter (Figure 4) shows "
      "the same structure: mainstem predictions cluster near the observations while tributary predictions "
      "spread widely."),
@@ -488,8 +478,8 @@ CONTENT: list[tuple] = [
      "and MAE falls from 0.0132 to 0.0046 (Tables 2 and 3). The improvement is achieved entirely "
      "through the transfer velocity. The median effective velocity is 0.0329 m d\u207b\u00b9, compared "
      "with a median empirical value of 98.1 m d\u207b\u00b9; the median ratio "
-     "k<sub>eff</sub>/k<sub>emp</sub> is 3.35\u00d710\u207b\u2074 (Table 7; Figure 5). The correction "
-     "therefore does not fine-tune gas exchange. It switches gas exchange almost off."),
+     "k<sub>eff</sub>/k<sub>emp</sub> is 3.35\u00d710\u207b\u2074 (Table 7; Figure 5). Under this "
+     "correction, gas exchange is reduced to nearly zero rather than fine-tuned."),
     ("fig", "identifiability_k_vs_sgs.png"),
 
     ("h3", "3.3 The concentration gain coincides with collapse of the flux diagnostic"),
@@ -508,8 +498,8 @@ CONTENT: list[tuple] = [
      "implied adjustment S<sub>implied</sub> is 1.00 mol m\u207b\u00b2 d\u207b\u00b9, the mean "
      "Residual-AI prediction is 0.56, and the two are anti-correlated across samples (Spearman "
      "\u22120.57; Table 7; Figure S3). A positive source term and a reduced transfer velocity act on the "
-     "concentration balance in compensating directions, and the held-out concentration metric does not "
-     "distinguish them."),
+     "concentration balance in compensating directions, and the held-out concentration metric provides "
+     "limited discrimination between them."),
     ("raw", "INNOVATION_TABLES"),
     ("fig", "ablation_flux_comparison.png"),
     ("fig", "identifiability_tradeoff.png"),
@@ -543,55 +533,52 @@ CONTENT: list[tuple] = [
 
     ("h3", "3.6 In-sample fit (appendix)"),
     ("p",
-     "For completeness, the in-sample fit of the residual model is reported in Table 4 and Figure A1, "
-     "with R\u00b2 \u2248 0.997 and RMSE 0.00127 mol m\u207b\u00b3. The same 120 rows are used for "
-     "training and prediction, so the value describes the capacity of the learner to memorize the sample "
-     "rather than its generalization. It is not used as a paper metric."),
+     "The in-sample fit of the residual model is reported in the appendix (Table 4; Figure A1), with "
+     "R\u00b2 \u2248 0.997 and RMSE 0.00127 mol m\u207b\u00b3 computed on the same 120 rows used for "
+     "training. The value describes the capacity of the learner to memorize the sample rather than its "
+     "generalization, and it is not used as a paper metric."),
     ("fig", "obs_vs_model_scatter_large.png"),
 
     ("h2", "4. Discussion"),
 
     ("h3", "4.1 Failed generalization of residual closures is a modelling diagnosis"),
     ("p",
-     "The most direct result is negative, and it is informative. The residual closures reproduce the "
-     "observations well in-sample but degrade held-out concentration prediction relative to a "
-     "zero-residual Baseline. This pattern indicates that the residual diagnosed from the present "
-     "resolved model, predictors, spatial representation, and sampling design does not carry enough "
-     "transferable structure to improve predictions after transport coupling. In the evaluation logic of "
-     "Bennett et al. (2013) and Vilas et al. (2023), the discrepancy is itself diagnostic: it separates "
-     "apparent learnability from held-out usefulness. The subgroup evidence points to where the transfer "
-     "fails. Tributary reaches with moderate sample counts carry heterogeneous residual behaviour, and "
-     "learners trained across reaches do not extrapolate there; the mainstem reach, with 58 samples, is "
-     "the only subgroup where the residual closures are competitive. A practical implication is that "
-     "learned residual closures for river networks need reach-level diagnostics and balanced sampling "
-     "before pooled metrics can be interpreted."),
+     "The residual closures reproduce the observations well in-sample but degrade held-out "
+     "concentration prediction relative to a zero-residual Baseline. This pattern suggests that the "
+     "residual diagnosed from the present resolved model, predictors, spatial representation, and "
+     "sampling design does not carry enough transferable structure to improve predictions after "
+     "transport coupling. In the evaluation logic of Bennett et al. (2013) and Vilas et al. (2023), the "
+     "discrepancy is itself diagnostic: it separates apparent learnability from held-out usefulness. The "
+     "subgroup evidence points to where the transfer fails. Tributary reaches with moderate sample "
+     "counts carry heterogeneous residual behaviour, and learners trained across reaches do not "
+     "extrapolate there; the mainstem reach, with 58 samples, is the only subgroup where the residual "
+     "closures are competitive. For model evaluation, this implies that learned residual closures for "
+     "river networks need reach-level diagnostics and balanced sampling before pooled metrics can be "
+     "interpreted."),
 
-    ("h3", "4.2 Concentration skill does not uniquely determine process allocation"),
+    ("h3", "4.2 Process allocation and practical equifinality"),
     ("p",
-     "The k-correction provides the complementary result. It achieves the lowest concentration error of "
-     "any configuration, and it does so by reducing the effective transfer velocity by roughly three "
-     "orders of magnitude. Because both source terms and gas exchange act on the same balance, a "
-     "near-zero k can be offset by the existing gradient (C \u2212 C<sub>eq</sub>) and still reproduce "
-     "concentrations. The collapse of \u03a3F<sub>CO\u2082</sub> from 3.24 to 0.031 shows what this fit "
-     "implies for the process budget. Without independent evasion measurements, the data cannot "
-     "adjudicate between the Baseline and corrected allocations. The lower RMSE is evidence of improved "
-     "concentration fit. It is not independent evidence of improved process fidelity."),
-
-    ("h3", "4.3 Practical equifinality is restricted to a closure-compensation mode"),
+     "The k-correction achieves the lowest concentration error of any configuration, and it does so by "
+     "reducing the effective transfer velocity by roughly three orders of magnitude. Because both source "
+     "terms and gas exchange act on the same balance, a near-zero k can be offset by the existing "
+     "gradient (C \u2212 C<sub>eq</sub>) and still reproduce concentrations. The collapse of "
+     "\u03a3F<sub>CO\u2082</sub> from 3.24 to 0.031 shows what this fit implies for the process budget. "
+     "Without independent evasion measurements, the data cannot adjudicate between the Baseline and "
+     "corrected allocations; the lower RMSE is evidence of improved concentration fit, not independent "
+     "evidence of improved process fidelity."),
     ("p",
-     "We use practical equifinality in a deliberately restricted sense. Eq. (6) defines an algebraic "
-     "direction along which a change in gas exchange can be compensated by an additional source-sink "
-     "term at fixed concentration and transport state. The Baseline/k-correction contrast shows that "
-     "this direction is consequential in the present experiment: similar concentration errors coexist "
-     "with markedly different transfer velocities and flux diagnostics. This is not a formal "
-     "structural-identifiability analysis, and it does not establish statistical equivalence between the "
-     "competing predictions. It supports the narrower conclusion that concentration-dominated evaluation "
-     "does not uniquely constrain how discrepancy is allocated between S<sub>sgs</sub> and k in this "
-     "configuration. The degraded RMSE of the MLP, random forest, and sparse closures is not "
-     "equifinality evidence. It shows that closure choice matters and that flexible residual learning "
-     "did not generalize here."),
+     "Here, practical equifinality refers to the compensation between S<sub>sgs</sub> and k represented "
+     "by Eq. (6). The Baseline/k-correction contrast shows that this compensation direction is "
+     "consequential in the present experiment: similar concentration errors coexist with markedly "
+     "different transfer velocities and flux diagnostics. The argument is restricted in scope: it is not "
+     "a formal structural-identifiability analysis, and it does not establish statistical equivalence "
+     "between the competing predictions. The degraded RMSE of the MLP, random forest, and sparse "
+     "closures is likewise not equifinality evidence; it shows that closure choice matters and that "
+     "flexible residual learning did not generalize here. Within those boundaries, concentration-"
+     "dominated evaluation does not uniquely constrain how discrepancy is allocated between "
+     "S<sub>sgs</sub> and k in this configuration."),
 
-    ("h3", "4.4 Scale dependence belongs to the diagnosed residual"),
+    ("h3", "4.3 What filtering and sparse representation reveal about the residual"),
     ("p",
      "The filter-scale results show that the diagnosed residual is not a fixed property of the "
      "watershed. Its magnitude changes as the filter width changes, because the split between resolved "
@@ -599,53 +586,48 @@ CONTENT: list[tuple] = [
      "implemented operator, which uses reach-local merging and a coordinate-ordering fallback rather "
      "than a fully directed network filter. Within those boundaries, the result is consistent with the "
      "coarse-graining logic used elsewhere for learned subgrid terms (Yuval &amp; O\u2019Gorman, 2020): "
-     "the statistics of the unresolved term depend on resolution. It does not support a universal "
-     "scaling claim for river-network CO\u2082 sources."),
-
-    ("h3", "4.5 Sparsity does not imply predictive sufficiency"),
+     "the statistics of the unresolved term depend on resolution."),
     ("p",
      "The sparse dimensionless closure provides a counterpoint to the flexible learners. It identifies a "
      "limited set of candidate dependencies, with Froude number, slope, and relative depth surviving "
-     "selection. Its compactness, however, does not transfer into held-out skill: RMSE remains above the "
-     "Baseline and the S* reconstruction fails under reach holdout. Sparsity should therefore not be "
-     "conflated with validated interpretability or with predictive sufficiency. In this experiment the "
-     "\u03a0-group formulation is most useful as a diagnostic simplification: it asks whether the "
-     "residual can be summarized compactly while retaining cross-reach utility, and the answer under the "
-     "present protocol is negative."),
+     "selection, yet its compactness does not transfer into held-out skill: RMSE remains above the "
+     "Baseline and the S* reconstruction fails under reach holdout. Compact forms are therefore not "
+     "automatically validated or predictive. In this experiment the \u03a0-group formulation is most "
+     "useful as a diagnostic simplification, and under the present protocol the residual does not admit "
+     "a compact representation with cross-reach predictive utility."),
 
-    ("h3", "4.6 Implications for environmental-model evaluation"),
+    ("h3", "4.4 Implications for environmental-model evaluation"),
     ("p",
-     "Taken together, the results favor an evaluation strategy in which predictive error and "
-     "process-sensitive diagnostics are considered jointly. A closure that lowers concentration error "
-     "deserves scrutiny of the process allocation that produces the lowering, particularly when the "
-     "observations constrain only concentrations."),
+     "These findings suggest that concentration RMSE should be interpreted together with diagnostics of "
+     "gas exchange and unresolved source allocation. A closure that lowers concentration error deserves "
+     "scrutiny of the process allocation that produces the lowering, particularly when the observations "
+     "constrain only concentrations."),
     ("p",
      "The present conclusions are bounded by partially observed upstream conditioning, strongly unequal "
      "reach support, the coordinate-based ordering fallback, idealized hydraulic geometry, incomplete "
      "covariates (alkalinity, nitrogen, phosphorus, photosynthetically active radiation), and the "
      "absence of independent evasion measurements. The Water Quality Portal merge and the StreamPULSE "
      "search returned no usable additional constraints for this campaign. These limitations restrict "
-     "inference to the East River experiment. They also identify the observations that would most help "
-     "to discriminate closures: improved upstream boundary information, better-resolved channel "
+     "inference to the East River experiment, and they also identify the observations that would most "
+     "help to discriminate closures: improved upstream boundary information, better-resolved channel "
      "geometry, more balanced reach sampling, and independent constraints on gas exchange. The central "
-     "implication is not that one closure should replace another. It is that lower concentration error "
-     "alone is insufficient to determine which allocation of unresolved processes is better supported."),
+     "implication is that lower concentration error alone is insufficient to determine which allocation "
+     "of unresolved processes is better supported."),
 
     ("h2", "5. Conclusions"),
     ("p",
-     "Three conclusions follow from the East River experiment. First, machine-learned residual closures "
-     "do not improve held-out concentration prediction at the scale of these observations: the "
-     "Residual-AI RMSE of 0.0573 mol m\u207b\u00b3 for the MLP exceeds the Baseline value of 0.0284. "
-     "Second, under concentration-only observations, the source term S<sub>sgs</sub> and the transfer "
-     "velocity k exhibit practical equifinality: the k-correction lowers concentration RMSE to 0.0244 "
-     "while the sample-summed model flux diagnostic falls from 3.24 to 0.031 mol m\u207b\u00b2 "
-     "d\u207b\u00b9. Third, the experiment demonstrates an operable diagnostic workflow, combining "
-     "spatial aggregation, grouped reach holdout, and transport coupling, within which a sparse "
-     "dimensionless closure is compact but does not recover Baseline generalization. The contribution is "
-     "methodological: a filter definition, an evaluation protocol, and evidence of closure compensation. "
-     "The conclusions are bounded accordingly: no accuracy gain is claimed, flux values are model "
-     "diagnostics rather than validated evasion estimates, and transfer to other basins has not been "
-     "tested."),
+     "Under leave-one-reach-out transport-coupled evaluation, machine-learned residual closures did not "
+     "improve held-out concentration prediction (Residual-AI RMSE 0.0573 mol m\u207b\u00b3 for the MLP "
+     "against 0.0284 for the Baseline), while the k-correction lowered RMSE to 0.0244 only as the "
+     "sample-summed model flux diagnostic fell from 3.24 to 0.031 mol m\u207b\u00b2 d\u207b\u00b9 and "
+     "the median k<sub>eff</sub>/k<sub>emp</sub> reached 3.35\u00d710\u207b\u2074. Concentration-only "
+     "observations therefore provide limited discrimination between discrepancy assigned to the source "
+     "term S<sub>sgs</sub> and discrepancy assigned to the transfer velocity k."),
+    ("p",
+     "Methodologically, the experiment establishes an operable filter definition, a grouped evaluation "
+     "protocol that couples predicted closures back into transport, and an algebraic diagnostic of "
+     "closure compensation. No accuracy gain is claimed, flux values are model diagnostics rather than "
+     "validated evasion estimates, and transfer to other basins has not been tested."),
 
     ("h2", "6. Data availability"),
     ("p",
@@ -655,9 +637,7 @@ CONTENT: list[tuple] = [
      "2a2132999fb84214aad0596783812db2. Mainstem discharge is from USGS gage 09112500. River-network "
      "geometry uses NHDPlus HR flowlines for HUC 14020001. Processed tables, figures, and the analysis "
      "code are maintained in the public repository "
-     "(https://github.com/Coucou2016/river-carbon-transport). A StreamPULSE search found no East River "
-     "sites, and a same-day Water Quality Portal merge returned no samples for the 120 campaign records; "
-     "both negative results are reported as resolved data-availability checks."),
+     "(https://github.com/Coucou2016/river-carbon-transport)."),
 ]
 
 REFERENCES = [
@@ -731,8 +711,7 @@ def sanitize_paper_tables(html: str) -> str:
          "<caption>Table 9. Sparse dimensionless closure inserted into transport under grouped "
          "cross-validation (compare the Baseline value of 0.0284 in Table 3).</caption>"),
         (r"<caption>表 8 无量纲稀疏闭合.*?</caption>",
-         "<caption>Table 8. Sparse dimensionless closure (\u03a0-group LASSO; PySINDy not "
-         "installed).</caption>"),
+         "<caption>Table 8. Sparse dimensionless closure (\u03a0-group LASSO).</caption>"),
     ]
     for pat, rep in caption_map:
         html = re.sub(pat, rep, html, flags=re.S)
