@@ -532,17 +532,23 @@ CONTENT: list[tuple] = [
      "C<sub>aq</sub> RMSE is 0.0284 mol m\u207b\u00b3 for the Baseline, 0.0573 for the Residual-AI "
      "multilayer perceptron, and 0.0745 for the random forest. The corresponding MAE values are 0.0132, "
      "0.0326, and 0.0301, and the residual closures show positive concentration bias (0.0177 and "
-     "0.0180) where the Baseline bias is \u22120.0132. The date-grouped sensitivity gives the same "
-     "ordering (0.0284, 0.0591, and 0.0747)."),
+     "0.0180) where the Baseline bias is \u22120.0132. The date-grouped sensitivity reported in the "
+     "repository metrics tables (Data availability) gives the same ordering (0.0284, 0.0591, and "
+     "0.0747)."),
     ("p",
      "The subgroup decomposition locates the error (Table 5; Figures 4 and S1). On the mainstem reach "
-     "R008, both residual closures are slightly better than the Baseline: RMSE is 0.0121 for the MLP and "
-     "0.0087 for the random forest against 0.0136 for the Baseline. On the multi-sample tributaries the "
-     "pattern reverses: RMSE is 0.0381 for the Baseline, 0.0808 for the MLP, and 0.1058 for the random "
-     "forest. The pooled degradation is concentrated in reaches with moderate sample support, where "
-     "training data for the residual are sparse and heterogeneous. The holdout scatter (Figure 4) shows "
-     "the same structure: mainstem predictions cluster near the observations while tributary predictions "
-     "spread widely."),
+     "R008, both residual closures are slightly better than the Baseline: RMSE is 0.0121 for the MLP "
+     "and 0.0087 for the random forest against 0.0136 for the Baseline. On the multi-sample "
+     "tributaries the pattern reverses: RMSE is 0.0381 for the Baseline, 0.0808 for the MLP, and "
+     "0.1058 for the random forest. Table 5 reports the primary MLP closure; the corresponding "
+     "random-forest subgroup values are listed in the repository subgroup metrics table (Data "
+     "availability). The pooled degradation is concentrated in the multi-sample tributaries "
+     "R002\u2013R005, where held-out errors are substantially larger than on the mainstem. The "
+     "holdout scatter (Figure 4) shows the same structure: mainstem predictions cluster near the "
+     "observations while tributary predictions spread widely."),
+    ("p",
+     "Because residual-source learning did not improve held-out prediction, we next tested whether "
+     "reallocating discrepancy to the gas-transfer term changed the concentration error."),
     ("raw", "NESTED_TABLES"),
     ("fig", "nested_cv_rmse_bar.png"),
     ("fig", "nested_cv_scatter_holdout.png"),
@@ -552,21 +558,27 @@ CONTENT: list[tuple] = [
     ("p",
      "The k-correction is the only configuration that reduces held-out concentration error below the "
      "Baseline. Its C<sub>aq</sub> RMSE is 0.0244 mol m\u207b\u00b3 against 0.0284 for the Baseline, "
-     "and MAE falls from 0.0132 to 0.0046 (Tables 2 and 3). The improvement is achieved entirely "
-     "through the transfer velocity. The median effective velocity is 0.0329 m d\u207b\u00b9, compared "
-     "with a median empirical value of 98.1 m d\u207b\u00b9; the median ratio "
-     "k<sub>eff</sub>/k<sub>emp</sub> is 3.35\u00d710\u207b\u2074 (Table 7; Figure 5). Under this "
-     "correction, gas exchange is reduced to nearly zero rather than fine-tuned."),
+     "and MAE falls from 0.0132 to 0.0046 (Tables 2 and 3). In this configuration, the learned "
+     "correction acts only through the transfer velocity. The median effective velocity is "
+     "0.0329 m d\u207b\u00b9, compared with the median Raymond-type empirical value computed for the "
+     "present samples, 98.1 m d\u207b\u00b9; the median ratio k<sub>eff</sub>/k<sub>emp</sub> is "
+     "3.35\u00d710\u207b\u2074 (Table 7; Figure 5). Under this correction, the median effective "
+     "transfer velocity is reduced by roughly three orders of magnitude relative to "
+     "k<sub>emp</sub>."),
     ("fig", "identifiability_k_vs_sgs.png"),
+    ("p",
+     "The lower concentration error alone does not establish whether the altered process allocation "
+     "remains plausible, so we next compare the associated model flux diagnostic."),
 
     ("h3", "3.3 The concentration gain coincides with collapse of the flux diagnostic"),
     ("p",
-     "The flux diagnostic separates the closures. The sample-summed model flux \u03a3F<sub>CO\u2082</sub> "
-     "is 3.24 mol m\u207b\u00b2 d\u207b\u00b9 for the Baseline and 0.031 for the k-correction (Table 7; "
-     "Figure S2). The concentration improvement of the k-correction coincides with a collapse of the "
-     "modeled CO\u2082 release by roughly two orders of magnitude. The Residual-AI configuration moves "
-     "in the opposite direction, with \u03a3F<sub>CO\u2082</sub> of 69.5, because its predicted sources "
-     "add to the balance while k remains at k<sub>emp</sub>."),
+     "The flux diagnostic reveals substantially different process allocations among the closures. The "
+     "sample-summed model flux \u03a3F<sub>CO\u2082</sub> is 3.24 mol m\u207b\u00b2 d\u207b\u00b9 for "
+     "the Baseline and 0.031 for the k-correction (Tables 2 and 7; Figure S2). The concentration "
+     "improvement of the k-correction coincides with a collapse of the modeled CO\u2082 release by "
+     "roughly two orders of magnitude. The Residual-AI configuration moves in the opposite direction, "
+     "with \u03a3F<sub>CO\u2082</sub> of 69.5, because its predicted sources add to the balance while "
+     "k remains at k<sub>emp</sub>."),
     ("p",
      "No independent evasion observations are available for this campaign, so these values do not show "
      "that the Baseline flux is correct or that the corrected flux is wrong. They show that "
@@ -574,9 +586,12 @@ CONTENT: list[tuple] = [
      "The implied-source diagnostic makes the compensation explicit. At fixed concentrations, the mean "
      "implied adjustment S<sub>implied</sub> is 1.00 mol m\u207b\u00b2 d\u207b\u00b9, the mean "
      "Residual-AI prediction is 0.56, and the two are anti-correlated across samples (Spearman "
-     "\u22120.57; Table 7; Figure S3). A positive source term and a reduced transfer velocity act on the "
+     "\u22120.57; Figure 5). A positive source term and a reduced transfer velocity act on the "
      "concentration balance in compensating directions, and the held-out concentration metric provides "
      "limited discrimination between them."),
+    ("p",
+     "Having established compensation between alternative closure terms at the sampled scale, we next "
+     "examine whether the diagnosed residual itself changes with spatial coarse-graining."),
     ("raw", "INNOVATION_TABLES"),
     ("fig", "ablation_flux_comparison.png"),
     ("fig", "identifiability_tradeoff.png"),
@@ -593,6 +608,9 @@ CONTENT: list[tuple] = [
      "dependence for the implemented reach-local operator, not a universal scaling law."),
     ("fig", "filter_scale_sgs.png"),
     ("fig", "filter_scale_sgs_box.png"),
+    ("p",
+     "The observed scale dependence raises a separate question of whether the residual can nevertheless "
+     "be summarized by a compact dimensionless relation."),
 
     ("h3", "3.5 A sparse dimensionless closure is compact but not predictive"),
     ("p",
@@ -601,8 +619,8 @@ CONTENT: list[tuple] = [
      "zero mean and unit variance, the closure is"),
     ("eqline", SPARSE_EQ),
     ("p",
-     "with Froude number the positive contributor and slope and relative depth the negative "
-     "contributors. Because this relation is a descriptive full-data summary (Section 2.8), it is not "
+     "The fitted coefficients are positive for Froude number and negative for slope and relative "
+     "depth. Because this relation is a descriptive full-data summary (Section 2.8), it is not "
      "itself scored as a held-out law; the leave-one-reach R\u00b2 on the standardized-response "
      "reconstruction is \u22122.74. Under the same leave-one-reach-out transport-coupled protocol, in "
      "which the scaler and LASSO are refitted within each fold, the sparse closure gives a held-out "
@@ -629,39 +647,45 @@ CONTENT: list[tuple] = [
      "sampling design does not carry enough transferable structure to improve predictions after "
      "transport coupling. In the evaluation logic of Bennett et al. (2013) and Vilas et al. (2023), the "
      "discrepancy is itself diagnostic: it separates apparent learnability from held-out usefulness. The "
-     "subgroup evidence points to where the transfer fails. Tributary reaches with moderate sample "
-     "counts carry heterogeneous residual behaviour, and learners trained across reaches do not "
-     "extrapolate there; the mainstem reach, with 58 samples, is the only subgroup where the residual "
-     "closures are competitive. For model evaluation, this implies that learned residual closures for "
-     "river networks need reach-level diagnostics and balanced sampling before pooled metrics can be "
-     "interpreted."),
+     "subgroup evidence points to where the transfer fails. Errors increase most clearly in the pooled "
+     "multi-sample tributaries R002\u2013R005, whereas performance on individual tributary subsets is "
+     "less uniform; the mainstem reach, with 58 samples, is one subgroup where the residual closure "
+     "remains competitive with the Baseline. These results support reporting reach-level diagnostics "
+     "alongside pooled metrics, particularly when sampling support is strongly imbalanced."),
+    ("p",
+     "The failure of residual closures to generalize does not, however, imply that concentration error "
+     "uniquely favors the Baseline, as shown by the contrasting k-correction result."),
 
     ("h3", "4.2 Process allocation and practical equifinality"),
     ("p",
      "The k-correction achieves the lowest concentration error of any configuration, and it does so by "
-     "reducing the effective transfer velocity by roughly three orders of magnitude. Because both source "
-     "terms and gas exchange act on the same balance, a near-zero k can be offset by the existing "
-     "gradient (C \u2212 C<sub>eq</sub>) and still reproduce concentrations. The collapse of "
-     "\u03a3F<sub>CO\u2082</sub> from 3.24 to 0.031 shows what this fit implies for the process budget. "
-     "Without independent evasion measurements, the data cannot adjudicate between the Baseline and "
-     "corrected allocations; the lower RMSE is evidence of improved concentration fit, not independent "
-     "evidence of improved process fidelity."),
+     "reducing the effective transfer velocity by roughly three orders of magnitude. Because "
+     "S<sub>sgs</sub> and k(C \u2212 C<sub>eq</sub>) enter the same balance with opposing signs, "
+     "reducing k can compensate for a different source allocation while retaining a similar "
+     "concentration fit. The collapse of \u03a3F<sub>CO\u2082</sub> from 3.24 to 0.031 shows what "
+     "this fit implies for the process budget. Without independent evasion measurements, the data "
+     "cannot adjudicate between the Baseline and corrected allocations; the lower RMSE is evidence of "
+     "improved concentration fit, not independent evidence of improved process fidelity."),
     ("p",
      "Here, practical equifinality refers to the compensation between S<sub>sgs</sub> and k represented "
-     "by Eq. (5). The Baseline/k-correction contrast shows that this compensation direction is "
-     "consequential in the present experiment: similar concentration errors coexist with markedly "
-     "different transfer velocities and flux diagnostics. The argument is restricted in scope: it is not "
-     "a formal structural-identifiability analysis, and it does not establish statistical equivalence "
-     "between the competing predictions. The degraded RMSE of the MLP, random forest, and sparse "
-     "closures is likewise not equifinality evidence; it shows that closure choice matters and that "
-     "flexible residual learning did not generalize here. Within those boundaries, concentration-"
-     "dominated evaluation does not uniquely constrain how discrepancy is allocated between "
-     "S<sub>sgs</sub> and k in this configuration."),
+     "by Eq. (5). The Baseline/k-correction contrast indicates that this compensation direction is "
+     "consequential in the present experiment: the Baseline and k-correction both yield relatively low "
+     "concentration errors while producing markedly different transfer velocities and flux "
+     "diagnostics. The argument is restricted in scope: it is not a formal structural-identifiability "
+     "analysis, and it does not establish statistical equivalence between the competing predictions. "
+     "The degraded RMSE of the MLP, random forest, and sparse closures is likewise not equifinality "
+     "evidence; it shows that closure choice matters and that flexible residual learning did not "
+     "generalize here. Within those boundaries, the results suggest that concentration-dominated "
+     "evaluation does not uniquely constrain how discrepancy is allocated between S<sub>sgs</sub> and "
+     "k in this configuration."),
+    ("p",
+     "This process-allocation ambiguity concerns the closure form; the filtering experiment addresses "
+     "a related but distinct source of variability in the diagnosed residual."),
 
     ("h3", "4.3 What filtering and sparse representation reveal about the residual"),
     ("p",
-     "The filter-scale results show that the diagnosed residual is not a fixed property of the "
-     "watershed. Its magnitude changes as the filter width changes, because the split between resolved "
+     "The filter-scale results show that the diagnosed residual changes with the implemented spatial "
+     "filter. Its magnitude changes as the filter width changes, because the split between resolved "
      "and unresolved contributions is defined by the filter. This interpretation is bounded by the "
      "implemented operator, which uses reach-local merging and a coordinate-ordering fallback rather "
      "than a fully directed network filter. Within those boundaries, the result is consistent with the "
@@ -672,9 +696,9 @@ CONTENT: list[tuple] = [
      "limited set of candidate dependencies, with Froude number, slope, and relative depth surviving "
      "selection, yet its compactness does not transfer into held-out skill: RMSE remains above the "
      "Baseline and the S* reconstruction fails under reach holdout. Compact forms are therefore not "
-     "automatically validated or predictive. In this experiment the \u03a0-group formulation is most "
-     "useful as a diagnostic simplification, and under the present protocol the residual does not admit "
-     "a compact representation with cross-reach predictive utility."),
+     "automatically validated or predictive. Under the present protocol, the tested sparse "
+     "\u03a0-group representation does not provide cross-reach predictive utility; it remains useful "
+     "as a diagnostic simplification."),
 
     ("h3", "4.4 Implications for environmental-model evaluation"),
     ("p",

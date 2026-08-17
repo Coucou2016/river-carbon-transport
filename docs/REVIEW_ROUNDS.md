@@ -20,13 +20,13 @@
 | 10 | Repo-level style review (AI-tell + exemplar comparison) | Done (2026-08-18) |
 | 11 | Abstract + Introduction rewrite | Done (2026-08-18) |
 | 12 | Methods clarity + notation/units | Done (2026-08-18) |
-| 13 | Results/Discussion prose + claims audit | Pending |
+| 13 | Results/Discussion prose + claims audit | Done (2026-08-18) |
 | 14 | Full referee pass + consistency sweep | Pending |
 | 15 | Re-review of final text (if needed) | Pending |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.  
-**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`); `08_ROUND11_ABS_INTRO.md` (Round 11); `09_ROUND12_METHODS.md` (commit `88e4f8f`); `10_ROUND13_RESULTS_DISCUSSION.md` (commit `cfd7441`).
+**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`); `08_ROUND11_ABS_INTRO.md` (Round 11); `09_ROUND12_METHODS.md` (commit `88e4f8f`); `10_ROUND13_RESULTS_DISCUSSION.md` (commits `cfd7441`, `15c3698`).
 
 ---
 
@@ -108,6 +108,35 @@ Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`,
 - DEFERRED: the C_eq temperature-dependence appendix and a supplementary parameter table (kept as 待补充).
 
 **Verification:** regenerate PASS (HTML 4.71 MB, MD 46.7 KB); frozen numbers all present (0.0284×11, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×3, 3.24×7, 0.031×5, 1.916×2, 1.00×10, 838×5); base64 figures = 13 in HTML (MD keeps file references by design); zero external img/link/script http; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (tables only, none in prose); mean sentence length ≈ 24.7 words.
+
+---
+
+## Round 13 — Results/Discussion prose + claims/integrity audit
+
+**Sent:** Brief `10_ROUND13_RESULTS_DISCUSSION.md` at commit `15c3698` (Sections 3.1–3.6 and 4.1–4.4 verbatim plus Tables 2/3/5/6/7/8/9, with the post-Round-12 equation numbering and P0 disclosures noted) with Q13.1–Q13.5: claims-vs-tables audit, over/under-claiming, hedging calibration, transitions, borrowed-data integrity check.
+
+**ChatGPT browsed?** YES — confirmed reading the Round 13 brief and `docs/RESEARCH_INTEGRITY_AUDIT.md` before reviewing (GitHub citation chips).
+
+**Q13.5 integrity result:** no borrowed-data sentences found; all manuscript metrics traced to repository-produced result files from public East River inputs. Two provenance clarifications accepted (see below).
+
+**ACCEPTED (merged into `scripts/generate_paper.py`, every number first verified against `results/tables/`):**
+- 3.1 citation repair (ChatGPT's main finding): the random-forest subgroup values 0.0087/0.1058 are in `subgroup_metrics.csv` but rendered Table 5 excludes `random_forest` rows and Figure S1 (`plot_subgroup_rmse`) plots only Baseline/MLP/k-correction. Prose no longer cites Figure S1 for these values; it states Table 5 reports the primary MLP closure and points to the repository subgroup metrics table via Data availability. Verified: RF rows 0.008732/0.105817 in `subgroup_metrics.csv`.
+- 3.1 date-grouped sensitivity (0.0284/0.0591/0.0747): verified in `nested_cv_metrics.csv` (loo_date), not in any rendered table; now cited as "repository metrics tables (Data availability)".
+- 3.3 implied-source statistics citation: mean S_implied 1.00, mean Residual-AI 0.56, Spearman −0.57 verified in `identifiability_summary.json` (0.999643/0.558089/−0.566400); Table 7 does not contain them. Removed the Table 7 citation; Spearman now cited to Figure 5 (the `identifiability_k_vs_sgs.png` panel that annotates the coefficient; code-verified in `src/14_identifiability_ksgs.py`). Corrected ChatGPT's proposed "Figure S3" here: the trade-off figure S3 does not display the Spearman value.
+- 3.2 hedging: "The improvement is achieved entirely through the transfer velocity" → "In this configuration, the learned correction acts only through the transfer velocity"; "gas exchange is reduced to nearly zero rather than fine-tuned" → "the median effective transfer velocity is reduced by roughly three orders of magnitude relative to k_emp"; "median empirical value of 98.1 m d⁻¹" → "the median Raymond-type empirical value computed for the present samples, 98.1 m d⁻¹" (provenance clarification).
+- 3.3: "The flux diagnostic separates the closures" → "The flux diagnostic reveals substantially different process allocations among the closures".
+- 3.5: "with Froude number the positive contributor..." → "The fitted coefficients are positive for Froude number and negative for slope and relative depth".
+- 4.1: removed the causal "sparse and heterogeneous training data" explanation (now "held-out errors are substantially larger than on the mainstem"); fixed the contradicted "only subgroup" claim (Table 5: MLP 0.0049 < Baseline 0.0069 on R004+R006) to "one subgroup where the residual closure remains competitive"; softened the sampling prescription to "These results support reporting reach-level diagnostics alongside pooled metrics, particularly when sampling support is strongly imbalanced".
+- 4.2 mechanistic fix: "a near-zero k can be offset by the existing gradient" → "Because S_sgs and k(C − C_eq) enter the same balance with opposing signs, reducing k can compensate for a different source allocation while retaining a similar concentration fit" (verified against Eq. (1)); hedging "shows" → "indicates" for the compensation claim and "the results suggest that concentration-dominated evaluation does not uniquely constrain ...".
+- 4.3: "not a fixed property of the watershed" → "the diagnosed residual changes with the implemented spatial filter"; sparse conclusion restricted to the tested Π-group representation.
+- Transitions added (Q13.4): 3.1→3.2, 3.2→3.3, 3.3→3.4 (merged in the same batch), 3.4→3.5 ("The observed scale dependence raises a separate question..."), 4.1→4.2, 4.2→4.3 ("This process-allocation ambiguity concerns the closure form...").
+
+**REJECTED / locally corrected:**
+- REJECTED ChatGPT's "Figure S3" citation for the Spearman statistic: verified the coefficient is annotated on Figure 5, not Figure S3; cited Figure 5 instead.
+- No change made to the 3.6 in-sample RMSE 0.00127 sentence: ChatGPT said it was not checkable from the brief, but rendered Table 4 (in-sample appendix) does contain 0.0013 and the caption/lead make the optimism explicit (verified in `nested_cv_metrics.csv`, r2_c = 0.997465).
+- Kept "shows" in 3.3 second paragraph and 3.4 per ChatGPT's own Q13.3 calibration (directly demonstrated contrasts).
+
+**Verification:** regenerate PASS (HTML 4.72 MB, MD 48.1 KB); frozen numbers all present (0.0284×11, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×3, 3.24×7, 0.031×5, 1.916×2, 1.00×10, 838×5); base64 figures = 13 in HTML (MD keeps file references by design); zero external http in img/link/script; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (table placeholder cells only, none in prose); mean sentence length ≈ 24.7 words.
 
 ---
 
