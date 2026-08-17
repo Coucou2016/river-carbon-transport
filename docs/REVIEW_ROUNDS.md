@@ -22,7 +22,7 @@
 | 12 | Methods clarity + notation/units | Done (2026-08-18) |
 | 13 | Results/Discussion prose + claims audit | Done (2026-08-18) |
 | 14 | Full referee pass + consistency sweep | Done (2026-08-18) |
-| 15 | Re-review of final text (if needed) | Pending |
+| 15 | Re-review of final text (final polish merge) | Done (2026-08-18) |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.  
@@ -192,6 +192,27 @@ Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`,
 - DEFERRED (cannot be fabricated): C_eq appendix at submission, width-sensitivity table, fold-level RMSE — the width sentence was changed to an explicit conditional statement instead (per ChatGPT's fallback wording). Q14.4 gap table recorded: authors/affiliations and the C_eq appendix block a defensible EMS submission; fold-level RMSE is an SI item before acceptance; alkalinity/N/P/PAR and Gao DOI are not blockers; the two disclosed implementation limitations remain acceptance-critical wording items.
 
 **Verification:** regenerate PASS (HTML 4.72 MB, MD 48.6 KB); frozen numbers all present (0.0284×12, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×5, 3.24×7, 0.031×7, 1.916×3, 1.00×10, 838×5); base64 figures = 13 in HTML (MD keeps file references by design); zero external http in img/link/script; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (table placeholder cells only, none in prose); bold spans = 12 (front-matter + table captions only); mean sentence length ≈ 24.7 words over 286 sentences.
+
+---
+
+## Round 15 — Final re-review (Q15.2/Q15.3 prose merge; session interrupted mid-round)
+
+**Sent:** Brief `12_ROUND15_FINAL_REREVIEW.md` (full post-Round-14 manuscript, generated programmatically from `paper.md`) with Q15.1–Q15.3: verdict against the Round-14 points, residual defect list with exact corrections, up to five optional sentence-level polishes. ChatGPT replied; the merge was in progress when the session connection was interrupted, and was completed locally afterwards with full re-verification.
+
+**ACCEPTED & MERGED (all code-checked before commit):**
+- KP1/Abstract: "Residual-AI performed worse than the Baseline" → "For the implemented Residual-AI target, the C_aq RMSE was 0.0573 ..." with the added clause that the negative result applies to the tested target formulation rather than to residual closure learning in general (carries the Round-12 P0 disclosure into the Abstract; no number changed). KP1 rephrased to "The implemented residual learners do not beat the zero-residual Baseline under reach-grouped evaluation."
+- 2.2 C_eq: replaced the "full derivation will be given in a supporting appendix" placeholder with the explicit constant derivation: C_eq = K_H·pCO₂,atm, K_H = 0.033 mol L⁻¹ atm⁻¹ at the ~10 °C reference, atmospheric pCO₂ = 400 µatm, C_eq = 0.0132 mol m⁻³ applied to every sample. Verified against `src/utils.py` (`co2_eq_concentration`, k_h = 3.3e-2, µatm→atm 1e-6, ×1000 to mol m⁻³) and `configs/east_river.yaml` (henry_k_h 3.3e-2, c_eq_pco2_uatm 400.0). This closes the last 待补充 derivation block in Methods.
+- Conclusions paragraph 1 rewritten to "the implemented Residual-AI closures did not improve concentration prediction ..." (parallel to Abstract); paragraph 2 replaced the triple-negative limitation cadence with the bounded statement: within the East River experiment the framework provides a diagnostic comparison, flux values remain model diagnostics, transfer untested; results support transport-coupled process-aware evaluation when concentration is the primary constraint.
+- PLS: "reduced the modeled CO₂ release to nearly zero" → "sharply reduced the model-derived CO₂ flux diagnostic" (consistent with the F-diagnostic terminology established in Rounds 13/14).
+- 3.1: "(Data availability)" pointers for date-grouped and RF-subgroup metrics replaced by "archived in the public repository cited in Section 6"; the date-grouped sentence now reads as a sensitivity analysis with archived outputs rather than a dangling table reference.
+- Intro paragraph 3: "creates an evaluation problem rather than simply a parameter-estimation problem" → "complicates model evaluation because different process allocations can produce similar concentration responses"; the closing test sentence now references the reach-grouped transport coupling and the boundary-conditioning/target-construction limitations stated in Methods.
+- Minor wording: 2.2 Baseline sentence, 2.4 c_in fallback notation aligned, 2.8 sparse-feature sentence restructured to keep the Damköhler candidate's time-base caveat.
+
+**REJECTED:** none material — all accepted items are wording/scope edits with frozen numbers untouched.
+
+**Verification (post-merge, local):** regenerate PASS (HTML 4.72 MB, MD 49.1 KB); frozen numbers all present (0.0284×12, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×5, 3.24×7, 0.031×7, 1.916×3, 1.00×10, 838×5); base64 figures = 13 in HTML; zero external http in img/link/script; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (tables only); bold spans = 12 (front-matter + captions only); mean sentence length ≈ 24.9 words over 286 sentences.
+
+**Pre-edit backup:** `paper_versions/v2_20260818-0121_fraehr_style_rewrite/` (pre-Round-15 state, commit `1b7d0f1`). Round-15 merged state is archived as `v3_20260818-0715_round15_final`.
 
 ---
 

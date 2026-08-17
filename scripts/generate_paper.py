@@ -45,7 +45,7 @@ ZH_TITLE = "河网 CO\u2082 闭合的输运耦合评价：浓度单变量观测�
 
 KEY_POINTS = [
     "A spatial filter turns the reach-scale CO\u2082 balance into a diagnosable subgrid residual term.",
-    "Learned residual closures do not beat a zero-residual baseline on held-out reaches.",
+    "The implemented residual learners do not beat the zero-residual Baseline under reach-grouped evaluation.",
     "Lower concentration error coincides with collapse of the model-derived CO\u2082 flux diagnostic.",
 ]
 
@@ -57,8 +57,8 @@ PLAIN_LANGUAGE_SUMMARY = (
     "Using 120 public water samples from the East River in Colorado, we compared a baseline transport "
     "model with variants that add a machine-learned source term or a corrected gas-exchange rate. The "
     "machine-learned term did not improve predictions for river reaches that were held out of training. "
-    "The corrected gas-exchange variant fitted the concentrations slightly better but reduced the "
-    "modeled CO\u2082 release to nearly zero. In this East River experiment, concentration data alone "
+    "The corrected gas-exchange variant fitted the concentrations slightly better but sharply "
+    "reduced the model-derived CO\u2082 flux diagnostic. In this East River experiment, concentration data alone "
     "provided limited discrimination between alternative allocations of model discrepancy. Evaluations "
     "of river-carbon models should combine concentration skill with process-level diagnostics."
 )
@@ -74,10 +74,12 @@ ABSTRACT = (
     "zero-residual Baseline, machine-learned residual closures (Residual-AI), or a multiplicative "
     "correction to empirical gas-transfer velocity. Each closure was evaluated by leaving one reach "
     "out and reinserting the predicted closure into the quasi-steady transport balance before scoring "
-    "concentration under partially observed upstream boundary conditioning. Residual-AI performed "
-    "worse than the Baseline: the C_aq root-mean-square error (RMSE) was 0.0573 mol m\u207b\u00b3 for "
+    "concentration under partially observed upstream boundary conditioning. For the implemented "
+    "Residual-AI target, the C_aq root-mean-square error (RMSE) was 0.0573 mol m\u207b\u00b3 for "
     "the multilayer perceptron (MLP) and 0.0745 mol m\u207b\u00b3 for the random forest, compared with "
-    "0.0284 for the Baseline. The k-correction reduced RMSE to 0.0244, but the median "
+    "0.0284 for the Baseline; because this training target is not dimensionally identical to the "
+    "diagnosed residual, the negative result applies to the tested target formulation rather than to "
+    "residual closure learning in general. The k-correction reduced RMSE to 0.0244, but the median "
     "effective-to-empirical transfer-velocity ratio, k_eff/k_emp, was 3.35e-4 and the "
     "sample-summed model flux diagnostic decreased from 3.24 to 0.031 mol m\u207b\u00b2 d\u207b\u00b9. A sparse closure "
     "gave RMSE 0.0506. Mean |S_sgs| decreased from 1.916 to 1.000 as filter width increased from about "
@@ -241,8 +243,9 @@ CONTENT: list[tuple] = [
      "resolved. Errors in these processes and errors in gas exchange can therefore enter the same "
      "concentration equation and potentially offset one another."),
     ("p",
-     "This compensation creates an evaluation problem rather than simply a parameter-estimation "
-     "problem. Bennett et al. (2013) argued that environmental-model performance should be "
+     "This compensation complicates model evaluation because different process allocations can "
+     "produce similar concentration responses. Bennett et al. (2013) argued that environmental-model "
+     "performance should be "
      "characterized using evidence appropriate to model purpose rather than a single goodness-of-fit "
      "statistic. Vilas et al. (2023) likewise treated model-data discrepancy as information that may "
      "arise from the model, the observations, or their interaction, while Markovich et al. (2022) "
@@ -252,7 +255,8 @@ CONTENT: list[tuple] = [
      "source-sink correction and the gas-transfer velocity can both alter the same predicted "
      "concentration, optimizing either term may reduce residual error. The relevant test is whether "
      "their effects remain distinguishable when each candidate closure is coupled back to the transport "
-     "model and evaluated on observations that were not used to fit that closure."),
+     "model and evaluated under reach-grouped transport coupling, subject to the boundary-conditioning "
+     "and target-construction limitations described below."),
     ("p",
      "Machine learning provides one possible representation of unresolved process terms. In climate "
      "modeling, for example, spatial coarse-graining has been used to define unresolved tendencies and "
@@ -288,7 +292,8 @@ CONTENT: list[tuple] = [
     ("h3", "2.1 Study data and river-network representation"),
     ("p",
      "The study uses public observations from the upper East River watershed near Almont, Colorado "
-     "(HUC 14020001). The water-chemistry data come from the field campaign of Saccardi and Winnick "
+     "(hydrologic unit code (HUC) 14020001). The water-chemistry data come from the field campaign of "
+     "Saccardi and Winnick "
      "(2021), which comprises 120 samples collected between 2 and 11 August 2019. Samples are assigned "
      "to eight logical reaches, R001 through R008, with counts of 1, 3, 15, 24, 17, 1, 1, and 58, "
      "respectively (Table 1). Three reaches (R001, R006, R007) contain a single sample and are treated "
@@ -300,7 +305,8 @@ CONTENT: list[tuple] = [
      "The river-network representation combines three public sources. The HydroShare supplement of "
      "Saccardi and Winnick (2021) provides 393 NHD centerline segments for the study corridor. An "
      "extract of the NHDPlus HR product for HUC 14020001 contributes 8212 flowlines used for "
-     "corridor-level filtering. Reach-to-line matching identified 85 segments through GNIS name matching "
+     "corridor-level filtering. Reach-to-line matching identified 85 segments through Geographic Names "
+     "Information System (GNIS) name matching "
      "and assigned the remainder by proximity to campaign coordinates; the median sample-to-centerline "
      "snap distance is 8.5 m. Discharge for the mainstem reach comes from USGS gage 09112500 (East "
      "River at Almont) on the sample dates. Tributary discharges are the published synoptic values from "
@@ -353,8 +359,9 @@ CONTENT: list[tuple] = [
     ("p",
      "All closures are inserted into this same balance: a closure configuration is defined entirely by "
      "how it supplies S<sub>sgs</sub> and k, and every configuration is scored after the identical "
-     "transport calculation is re-solved. Differences between configurations therefore reflect the "
-     "allocation of model discrepancy rather than differences in transport numerics."),
+     "transport calculation is re-solved. Because the transport numerics are held fixed, differences "
+     "among configurations arise from their closure specification and the resulting allocation of "
+     "model discrepancy."),
     ("p",
      "Gas exchange is summarized by the model flux density"),
     ("eq", 3),
@@ -372,10 +379,12 @@ CONTENT: list[tuple] = [
      "CO\u2082-specific empirical velocity k<sub>emp</sub>. The empirical "
      "relation is evaluated with u in m s\u207b\u00b9 and slope in m m\u207b\u00b9, yielding "
      "k<sub>600</sub> in m d\u207b\u00b9; the CO\u2082 Schmidt number is dimensionless and is "
-     "evaluated at the sample water temperature. The equilibrium concentration C<sub>eq</sub> is taken "
-     "from the preprocessed campaign table, computed from Henry\u2019s law with atmospheric "
-     "pCO\u2082 and a constant Henry coefficient; the full derivation will be given in a supporting "
-     "appendix."),
+     "evaluated at the sample water temperature. The equilibrium concentration C<sub>eq</sub> is "
+     "computed from Henry\u2019s law as C<sub>eq</sub> = K<sub>H</sub>\u00b7pCO\u2082,atm, "
+     "with K<sub>H</sub> = 0.033 mol L\u207b\u00b9 atm\u207b\u00b9 at the ~10 \u00b0C reference "
+     "temperature, atmospheric pCO\u2082 of 400 \u00b5atm, and the \u00b5atm-to-atm conversion "
+     "(10\u207b\u2076), giving C<sub>eq</sub> = 0.0132 mol m\u207b\u00b3; the same constant applies "
+     "to every sample."),
     ("p",
      "Cross-section visualizations used elsewhere in this work are idealized trapezoids, and the "
      "vertical velocity profile is a schematic parabola rather than an ADCP measurement. These "
@@ -426,8 +435,8 @@ CONTENT: list[tuple] = [
     ("p",
      "The Baseline retains the transport and hydraulic formulation of the other configurations while "
      "setting S<sub>sgs</sub> = 0 and using the Raymond-type empirical velocity k<sub>emp</sub>. It "
-     "therefore serves as the zero-residual reference against which closure form and evaluation protocol "
-     "are compared."),
+     "serves as the zero-residual reference for comparison with the alternative closure "
+     "formulations."),
     ("p",
      "The Residual-AI configuration learns S<sub>sgs</sub> from hydraulic and water-quality covariates. "
      "Two learners are trained with a fixed seed (42): a multilayer perceptron and a random forest. "
@@ -477,7 +486,7 @@ CONTENT: list[tuple] = [
      "cross-validation rather than nested cross-validation."),
     ("p",
      "When an upstream concentration state is unavailable, the solver uses the observed C<sub>aq</sub> "
-     "at the current sample as the fallback boundary value c<sub>in</sub>; the experiment therefore "
+     "at the current sample as the fallback boundary value C<sub>in</sub>; the experiment therefore "
      "evaluates closure generalization under partially observed boundary conditioning rather than fully "
      "target-blind forecasting. Sampling is also strongly imbalanced among reaches: R008 contributes 58 "
      "of the 120 samples, while three reaches contribute one each, so pooled errors are read together "
@@ -514,9 +523,9 @@ CONTENT: list[tuple] = [
     ("p",
      "A final experiment asks whether the residual admits a compact dimensionless representation. The "
      "dimensionless response is defined as S* = S<sub>sgs</sub>/(k<sub>emp</sub>C<sub>eq</sub>), with "
-     "Froude number Fr, slope, relative depth h/W, and the base-10 logarithms of the Reynolds and "
-     "Damk\u00f6hler numbers as candidate nondimensional features (the Damk\u00f6hler candidate\u2019s "
-     "time-base inconsistency is described below). Sparse selection "
+     "Froude number Fr, slope, relative depth h/W, and the base-10 logarithm of the Reynolds number "
+     "as candidate nondimensional features, together with an implemented Damköhler candidate whose "
+     "time-base inconsistency is described below. Sparse selection "
      "follows the spirit of sparse discovery methods (Xie et al., 2022), implemented with a "
      "least absolute shrinkage and selection operator (LASSO). Within each "
      "leave-one-reach-out fold, missing predictors are imputed from the training reaches, the "
@@ -542,17 +551,17 @@ CONTENT: list[tuple] = [
      "multilayer perceptron, and 0.0745 for the random forest. The corresponding mean absolute error "
      "(MAE) values are 0.0132, "
      "0.0326, and 0.0301, and the residual closures show positive concentration bias (0.0177 and "
-     "0.0180) where the Baseline bias is \u22120.0132. The date-grouped sensitivity reported in the "
-     "repository metrics tables (Data availability) gives the same ordering (0.0284, 0.0591, and "
-     "0.0747)."),
+     "0.0180) where the Baseline bias is \u22120.0132. The date-grouped sensitivity analysis gives "
+     "the same ordering (0.0284, 0.0591, and 0.0747), with the date-grouped evaluation outputs "
+     "archived in the public repository cited in Section 6."),
     ("p",
      "The subgroup decomposition locates the error (Table 5; Figures 4 and S1). On the mainstem reach "
      "R008, both residual closures are slightly better than the Baseline: RMSE is 0.0121 for the MLP "
      "and 0.0087 for the random forest against 0.0136 for the Baseline. On the multi-sample "
      "tributaries the pattern reverses: RMSE is 0.0381 for the Baseline, 0.0808 for the MLP, and "
      "0.1058 for the random forest. Table 5 reports the primary MLP closure; the corresponding "
-     "random-forest subgroup values are listed in the repository subgroup metrics table (Data "
-     "availability). The pooled degradation is concentrated in the multi-sample tributaries "
+     "random-forest subgroup values are available with the archived evaluation outputs cited in "
+     "Section 6. The pooled degradation is concentrated in the multi-sample tributaries "
      "R002\u2013R005, where held-out errors are substantially larger than on the mainstem. The "
      "holdout scatter (Figure 4) shows the same structure: mainstem predictions cluster near the "
      "observations while tributary predictions spread widely."),
@@ -725,20 +734,21 @@ CONTENT: list[tuple] = [
 
     ("h2", "5. Conclusions"),
     ("p",
-     "Under leave-one-reach-out transport-coupled evaluation, machine-learned residual closures did not "
-     "improve held-out concentration prediction (Residual-AI RMSE 0.0573 mol m\u207b\u00b3 for the MLP "
-     "against 0.0284 for the Baseline), while the k-correction lowered RMSE to 0.0244 only as the "
-     "sample-summed model flux diagnostic fell from 3.24 to 0.031 mol m\u207b\u00b2 d\u207b\u00b9 and "
-     "the median k<sub>eff</sub>/k<sub>emp</sub> reached 3.35\u00d710\u207b\u2074. Concentration-only "
-     "observations therefore provide limited discrimination between discrepancy assigned to the source "
-     "term S<sub>sgs</sub> and discrepancy assigned to the transfer velocity k."),
+     "Under leave-one-reach-out transport-coupled evaluation, the implemented Residual-AI closures did "
+     "not improve concentration prediction relative to the Baseline (Residual-AI RMSE 0.0573 mol "
+     "m\u207b\u00b3 for the MLP against 0.0284 for the Baseline), while the k-correction "
+     "lowered RMSE to 0.0244 only as the sample-summed model flux diagnostic fell from 3.24 to 0.031 "
+     "mol m\u207b\u00b2 d\u207b\u00b9 and the median k<sub>eff</sub>/k<sub>emp</sub> reached "
+     "3.35\u00d710\u207b\u2074. Concentration-only observations therefore provide limited "
+     "discrimination between discrepancy assigned to the source term S<sub>sgs</sub> and discrepancy "
+     "assigned to the transfer velocity k."),
     ("p",
      "The framework combines an explicit spatial filter, transport-coupled grouped evaluation, and an "
-     "algebraic closure-compensation diagnostic. No accuracy gain is claimed, flux values are model "
-     "diagnostics rather than validated evasion estimates, and transfer to other basins has not been "
-     "tested. These results support the diagnostic framework within the East River experiment; they do "
-     "not establish a predictive advantage, validate the modeled evasion flux, or demonstrate transfer "
-     "to other basins."),
+     "algebraic closure-compensation diagnostic. Within the East River experiment, the framework "
+     "provides a diagnostic comparison of alternative closure allocations; the flux values remain model "
+     "diagnostics, and transfer to other basins has not been tested. The results therefore support "
+     "transport-coupled, process-aware evaluation of alternative closure allocations when concentration "
+     "is the primary observational constraint."),
 
     ("h2", "6. Data availability"),
     ("p",
@@ -1250,11 +1260,13 @@ ABSTRACT_HTML = (
     "zero-residual Baseline, machine-learned residual closures (Residual-AI), or a multiplicative "
     "correction to empirical gas-transfer velocity. Each closure was evaluated by leaving one reach "
     "out and reinserting the predicted closure into the quasi-steady transport balance before scoring "
-    "concentration under partially observed upstream boundary conditioning. Residual-AI performed "
-    "worse than the Baseline: the C<sub>aq</sub> root-mean-square error (RMSE) was 0.0573 mol "
+    "concentration under partially observed upstream boundary conditioning. For the implemented "
+    "Residual-AI target, the C<sub>aq</sub> root-mean-square error (RMSE) was 0.0573 mol "
     "m<sup>\u22123</sup> for the multilayer perceptron (MLP) and 0.0745 mol m<sup>\u22123</sup> for the "
-    "random forest, compared with 0.0284 for the Baseline. The k-correction reduced RMSE to 0.0244, "
-    "but the median effective-to-empirical transfer-velocity ratio, "
+    "random forest, compared with 0.0284 for the Baseline; because this training target is not "
+    "dimensionally identical to the diagnosed residual, the negative result applies to the tested "
+    "target formulation rather than to residual closure learning in general. The k-correction reduced "
+    "RMSE to 0.0244, but the median effective-to-empirical transfer-velocity ratio, "
     "k<sub>eff</sub>/k<sub>emp</sub>, was 3.35\u00d710<sup>\u22124</sup> and the sample-summed model "
     "flux diagnostic decreased from 3.24 to 0.031 mol m<sup>\u22122</sup> d<sup>\u22121</sup>. A sparse "
     "closure gave RMSE 0.0506. Mean |S<sub>sgs</sub>| decreased from 1.916 to 1.000 as filter width "
