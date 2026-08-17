@@ -17,7 +17,12 @@
 | 7 | Paper↔report audit + GitHub Markdown briefs | Done (2026-08-17) |
 | 8 | EMS Abstract/Intro/Discussion prose rewrite | Done |
 | 9 | Data integrity + Methods consistency (no script paths) | Done |
-| 10 | Optional EMS referee pass on revised excerpts | Deferred (time); Round 5 + R7–9 cover referee risks |
+| 10 | Repo-level style review (AI-tell + exemplar comparison) | In progress (2026-08-18) |
+| 11 | Abstract + Introduction rewrite | Pending |
+| 12 | Methods clarity + notation/units | Pending |
+| 13 | Results/Discussion prose + claims audit | Pending |
+| 14 | Full referee pass + consistency sweep | Pending |
+| 15 | Re-review of final text (if needed) | Pending |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.
