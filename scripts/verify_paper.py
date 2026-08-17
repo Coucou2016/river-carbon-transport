@@ -7,7 +7,7 @@ md = (ROOT / "paper.md").read_text(encoding="utf-8")
 html = (ROOT / "paper.html").read_text(encoding="utf-8")
 
 nums = ["0.0284", "0.0573", "0.0745", "0.0244", "0.0506",
-        "3.35", "3.24", "0.031", "1.916", "1.92", "1.00", "838"]
+        "3.35", "3.24", "0.031", "1.916", "1.00", "838"]
 print("frozen-number counts in paper.md:")
 for n in nums:
     print(f"  {n}: {md.count(n)}")

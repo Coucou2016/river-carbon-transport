@@ -57,28 +57,30 @@ PLAIN_LANGUAGE_SUMMARY = (
     "Using 120 public water samples from the East River in Colorado, we compared a baseline transport "
     "model with variants that add a machine-learned source term or a corrected gas-exchange rate. The "
     "machine-learned term did not improve predictions for river reaches that were held out of training. "
-    "The corrected gas-exchange rate fitted the concentrations slightly better, while the modeled "
-    "CO\u2082 release was reduced to nearly zero. Concentration data alone therefore cannot determine where "
-    "model error should be assigned. Evaluations of river-carbon models should combine concentration "
-    "skill with process-level diagnostics."
+    "The corrected gas-exchange variant fitted the concentrations slightly better but reduced the "
+    "modeled CO\u2082 release to nearly zero. In this East River experiment, concentration data alone "
+    "provided limited discrimination between alternative allocations of model discrepancy. Evaluations "
+    "of river-carbon models should combine concentration skill with process-level diagnostics."
 )
 
 ABSTRACT = (
     "River-network carbon models combine downstream transport, unresolved source and sink processes, "
     "and air-water gas exchange, but concentration-based evaluation may not distinguish errors "
     "assigned to different terms in the same mass balance. Existing process-based models provide a "
-    "basis for predicting stream CO2, yet the consequences of alternative unresolved-process closures "
+     "basis for predicting stream CO\u2082, yet the consequences of alternative unresolved-process closures "
     "under held-out evaluation remain unclear. We developed a transport-coupled diagnostic framework "
     "for 120 public East River observations organized into eight logical reaches. Spatial "
-    "coarse-graining defines a residual source-sink term, S_sgs, which was represented by a "
-    "zero-residual Baseline, machine-learned residual closures, or a multiplicative correction to "
-    "empirical gas-transfer velocity. Each closure was evaluated by leaving one reach out and "
-    "reinserting the predicted closure into the quasi-steady transport balance before scoring "
-    "concentration. Residual-AI performed worse than the Baseline: C_aq RMSE was 0.0573 mol/m^3 for "
-    "the multilayer perceptron and 0.0745 for the random forest, compared with 0.0284 for the "
-    "Baseline. The k-correction reduced RMSE to 0.0244, but median k_eff/k_emp was 3.35e-4 and the "
-    "sample-summed model flux diagnostic decreased from 3.24 to 0.031 mol/m^2/day. A sparse closure "
-    "gave RMSE 0.0506. Mean |S_sgs| decreased from 1.92 to 1.00 as filter width increased from about "
+    "coarse-graining defines a residual source-sink term (S_sgs), which was represented by a "
+    "zero-residual Baseline, machine-learned residual closures (Residual-AI), or a multiplicative "
+    "correction to empirical gas-transfer velocity. Each closure was evaluated by leaving one reach "
+    "out and reinserting the predicted closure into the quasi-steady transport balance before scoring "
+    "concentration under partially observed upstream boundary conditioning. Residual-AI performed "
+    "worse than the Baseline: the C_aq root-mean-square error (RMSE) was 0.0573 mol m\u207b\u00b3 for "
+    "the multilayer perceptron (MLP) and 0.0745 mol m\u207b\u00b3 for the random forest, compared with "
+    "0.0284 for the Baseline. The k-correction reduced RMSE to 0.0244, but the median "
+    "effective-to-empirical transfer-velocity ratio, k_eff/k_emp, was 3.35e-4 and the "
+    "sample-summed model flux diagnostic decreased from 3.24 to 0.031 mol m\u207b\u00b2 d\u207b\u00b9. A sparse closure "
+    "gave RMSE 0.0506. Mean |S_sgs| decreased from 1.916 to 1.000 as filter width increased from about "
     "838 m to the study-reach scale. These results indicate practical equifinality between S_sgs and "
     "k under concentration-only East River observations, so lower concentration error alone is "
     "insufficient to identify how model discrepancy is allocated between unresolved sources and gas "
@@ -154,9 +156,9 @@ FIG_CAPTIONS: dict[str, str] = {
         "Residual-AI (MLP) closure under the leave-one-reach-out protocol."
     ),
     "identifiability_k_vs_sgs.png": (
-        "<strong>Figure 5.</strong> Identifiability diagnostics: effective gas-transfer velocity "
-        "k<sub>eff</sub>, the implied source term S<sub>implied</sub>, and the Residual-AI held-out "
-        "source predictions."
+        "<strong>Figure 5.</strong> Closure-compensation diagnostics: effective gas-transfer velocity "
+        "k<sub>eff</sub>, the implied source adjustment S<sub>implied</sub>, and the Residual-AI "
+        "held-out source predictions."
     ),
     "filter_scale_sgs.png": (
         "<strong>Figure 6.</strong> Filter-scale dependence: mean |S<sub>sgs</sub>| and variance of "
@@ -265,14 +267,15 @@ CONTENT: list[tuple] = [
      "effect is evaluated through the coupled model under held-out conditions."),
     ("p",
      "Here we examine that question using 120 public East River campaign observations organized into "
-     "eight logical reaches and mapped to an NHDPlus HR representation. We spatially coarse-grain the "
+     "eight logical reaches and mapped to a National Hydrography Dataset Plus High Resolution "
+    "(NHDPlus HR) representation. We spatially coarse-grain the "
      "reach-scale mass balance to diagnose a residual source-sink term, S<sub>sgs</sub>, and compare "
      "three closure strategies: a zero-residual Baseline, machine-learned residual closures, and a "
      "multiplicative correction to the empirical gas-transfer velocity. Evaluation is grouped by reach "
      "and transport-coupled, so the closure predicted for a held-out reach is reinserted into the "
      "quasi-steady mass balance before C<sub>aq</sub> is scored. We also examine how the diagnosed "
      "residual changes with filter scale and whether a sparse dimensionless representation retains "
-     "held-out predictive value. The experiment has deliberate boundaries. Upstream concentration is "
+     "held-out predictive value. Several boundaries constrain the interpretation. Upstream concentration is "
      "partially observed because the solver uses observed C<sub>aq</sub> as a fallback when an upstream "
      "state is unavailable, reach support is strongly unequal, channel geometry is idealized, and the "
      "spatial ordering includes a coordinate-based fallback rather than a complete directed network "
@@ -310,13 +313,16 @@ CONTENT: list[tuple] = [
      "h = [Qn/(W S<sup>0.5</sup>)]<sup>0.6</sup> with roughness n = 0.035, and bulk velocity is "
      "u = Q/(Wh). Width, depth, and velocity are therefore model-derived hydraulic inputs rather than "
      "measured cross-section properties, and the width enters water depth, flow velocity, "
-     "k<sub>600</sub>, and the water-surface area A<sub>s</sub> = L\u00b7W. Sensitivity of the "
-     "results to this width proxy remains to be tabulated. Biogeochemical covariates are likewise "
-     "incomplete: DIC and DOC are available for 41 of the 120 samples, and alkalinity, nitrogen, "
+     "k<sub>600</sub>, and the water-surface area A<sub>s</sub> = L\u00b7W. Sensitivity to this width "
+     "proxy has not been quantified, so all hydraulic and gas-exchange results are conditional on the "
+     "adopted width representation. Biogeochemical covariates are likewise "
+     "incomplete: dissolved inorganic carbon (DIC) and dissolved organic carbon (DOC) are available "
+     "for 41 of the 120 samples, and alkalinity, nitrogen, "
      "phosphorus, and photosynthetically active radiation were not available for this campaign. A "
      "same-day merge against the Water Quality Portal returned no matching samples (0 of 120), and "
      "the StreamPULSE database contains no East River sites. These gaps constrain the covariate set "
-     "available to the closures."),
+     "available to the closures. Figures 2a and 2b show the logical-reach assignment and the "
+     "distribution of the 120 campaign samples on the river network."),
     ("raw", "REACH_TABLE"),
     ("fig", "gis_reach_assignment_map.png"),
     ("fig", "gis_samples_on_network.png"),
@@ -336,11 +342,9 @@ CONTENT: list[tuple] = [
      "the water-surface planform area (m\u00b2), and \u03c4<sub>d</sub> = 86400 s d\u207b\u00b9 converts "
      "the daily areal flux into mol s\u207b\u00b9. The planform area A<sub>s</sub> is not the hydraulic "
      "cross-section area; the bulk velocity used below is u = Q/A<sub>c</sub> with A<sub>c</sub> the "
-     "cross-section area. The same symbols serve two roles depending on direction: in diagnostic "
-     "calculations C is the observed concentration used to infer a residual, whereas in forward "
-     "transport calculations C is the concentration solved from the balance; likewise the residual "
-     "diagnosed from observations provides the training target, while a closure supplies its own "
-     "predicted S<sub>sgs</sub>. Writing the balance explicitly on a daily areal basis avoids mixing "
+     "cross-section area. For residual diagnosis, C is the observed concentration and "
+     "S<sub>sgs</sub> is inferred from the observations; for forward simulation, C is solved from the "
+     "balance and the closure supplies the source term. Writing the balance explicitly on a daily areal basis avoids mixing "
      "time bases. Dividing Eq. (1) by A<sub>s</sub>/\u03c4<sub>d</sub> gives the equivalent form"),
     ("eq", 2),
     ("p",
@@ -364,7 +368,8 @@ CONTENT: list[tuple] = [
      "and the CO\u2082-specific velocity is obtained by Schmidt-number scaling:"),
     ("eqline", K600_EQ),
     ("p",
-     "Symbolically, k<sub>600</sub> and k<sub>emp</sub> are distinct quantities. The empirical "
+     "We distinguish the Schmidt-600-normalized velocity k<sub>600</sub> from the "
+     "CO\u2082-specific empirical velocity k<sub>emp</sub>. The empirical "
      "relation is evaluated with u in m s\u207b\u00b9 and slope in m m\u207b\u00b9, yielding "
      "k<sub>600</sub> in m d\u207b\u00b9; the CO\u2082 Schmidt number is dimensionless and is "
      "evaluated at the sample water temperature. The equilibrium concentration C<sub>eq</sub> is taken "
@@ -388,13 +393,14 @@ CONTENT: list[tuple] = [
      "consecutive pairs, consecutive groups of four, or one whole-reach cell, giving four discrete "
      "filter operators. Where a fully directed chainage ordering is not available, segments are first "
      "ordered by midpoint Y coordinate and then X coordinate before cumulative segment length is "
-     "assigned; this fallback is disclosed as an operator boundary and does not change the definition "
-     "of the diagnosed residual. Each campaign observation is snapped to its nearest cell at each "
+     "assigned, so the resulting filter represents the implemented reach-local ordering rather than a "
+     "fully directed network topology. Each campaign observation is snapped to its nearest cell at each "
      "scale. The reported \u0394x is the arithmetic mean of the cell lengths associated with the "
      "sample records at that scale, so cells containing multiple samples receive corresponding "
      "weight; this gives \u0394x \u2248 838 m for the native operator. At the coarsest study-reach "
      "operator, all segments assigned to a represented reach are merged into one cell, producing "
-     "seven cells in the spatial lattice, six of which contain campaign samples."),
+     "seven cells in the spatial lattice, six of which contain campaign samples. Figure 1 summarizes "
+     "the reach-local filtering construction."),
     ("p",
      "For each date and filter scale, C<sub>in</sub> is taken from the nearest sampled cell upstream "
      "within the same represented reach; when no upstream sampled cell is available, the current "
@@ -441,7 +447,7 @@ CONTENT: list[tuple] = [
      "constructed by first solving the balance for the transfer velocity k<sub>need</sub> required to "
      "reproduce the observed concentration with S<sub>sgs</sub> = 0, then setting "
      "g = ln(k<sub>need</sub>/k<sub>emp</sub>); the predicted correction is applied as "
-     "k<sub>eff</sub> = k<sub>emp</sub>exp(g<sub>\u03b8</sub>) before the transport balance is "
+     "k<sub>eff</sub> = k<sub>emp</sub>\u00b7exp(g<sub>\u03b8</sub>(X)) before the transport balance is "
      "re-solved. Because k<sub>need</sub> is constructed from the observations before the fold loop, "
      "a training-row target can draw on an observed upstream concentration from the reach that is "
      "subsequently held out; the k-correction is therefore not fully fold-isolated at the level of "
@@ -451,17 +457,18 @@ CONTENT: list[tuple] = [
     ("p",
      "The training target for the residual learners is the diagnosed residual constructed from the "
      "observations and the baseline model output: an evasion term evaluated at the observed "
-     "concentration is combined with a depth-normalized concentration deficit. In the public "
-     "implementation these two terms carry different units, so the target as computed does not "
-     "coincide exactly with Eq. (4); reconciling the diagnostic residual and the training target is "
-     "recorded in the reproducibility audit as a known implementation limitation."),
+     "concentration is combined with a depth-normalized concentration deficit. Because these terms "
+     "carry different units in the current implementation, the Residual-AI training target does not "
+     "coincide exactly with Eq. (4). The Residual-AI results below therefore characterize the "
+     "implemented target rather than a dimensionally consistent closure of Eq. (4)."),
 
     ("h3", "2.5 Leave-one-reach-out transport-coupled evaluation"),
     ("p",
      "Closure generalization is evaluated by leaving one logical reach out at a time across the eight "
      "logical reaches. Each reach is held out once. For each fold, missing predictors are imputed "
      "with medians from the training reaches; predictor standardization is fitted on the training "
-     "data only for the models that use it, specifically the multilayer perceptron and the LASSO. The "
+     "data only for the models that use it, specifically the multilayer perceptron and the sparse "
+     "model described in Section 2.8. The "
      "closure is fitted on the training-reach targets and then used to generate closure values for "
      "the full network state required by the transport calculation; the complete quasi-steady network "
      "is re-solved with those closure values, and only then are the predictions belonging to the "
@@ -508,8 +515,10 @@ CONTENT: list[tuple] = [
      "A final experiment asks whether the residual admits a compact dimensionless representation. The "
      "dimensionless response is defined as S* = S<sub>sgs</sub>/(k<sub>emp</sub>C<sub>eq</sub>), with "
      "Froude number Fr, slope, relative depth h/W, and the base-10 logarithms of the Reynolds and "
-     "Damk\u00f6hler numbers as candidate \u03a0-group features, following the spirit of sparse "
-     "discovery methods (Xie et al., 2022), implemented with a scikit-learn LASSO. Within each "
+     "Damk\u00f6hler numbers as candidate nondimensional features (the Damk\u00f6hler candidate\u2019s "
+     "time-base inconsistency is described below). Sparse selection "
+     "follows the spirit of sparse discovery methods (Xie et al., 2022), implemented with a "
+     "least absolute shrinkage and selection operator (LASSO). Within each "
      "leave-one-reach-out fold, missing predictors are imputed from the training reaches, the "
      "predictors are standardized using training-fold statistics, and a LASSO with fixed penalty "
      "\u03b1 = 0.05 is fitted on the dimensional residual; the predicted S<sub>sgs</sub> is "
@@ -527,10 +536,11 @@ CONTENT: list[tuple] = [
 
     ("h3", "3.1 Residual closures do not improve held-out concentration prediction"),
     ("p",
-     "The primary result is negative. Under leave-one-reach-out transport-coupled evaluation, neither "
+     "Under leave-one-reach-out transport-coupled evaluation, neither "
      "residual closure improves on the Baseline (Tables 2 and 3; Figure 3). The held-out "
      "C<sub>aq</sub> RMSE is 0.0284 mol m\u207b\u00b3 for the Baseline, 0.0573 for the Residual-AI "
-     "multilayer perceptron, and 0.0745 for the random forest. The corresponding MAE values are 0.0132, "
+     "multilayer perceptron, and 0.0745 for the random forest. The corresponding mean absolute error "
+     "(MAE) values are 0.0132, "
      "0.0326, and 0.0301, and the residual closures show positive concentration bias (0.0177 and "
      "0.0180) where the Baseline bias is \u22120.0132. The date-grouped sensitivity reported in the "
      "repository metrics tables (Data availability) gives the same ordering (0.0284, 0.0591, and "
@@ -546,9 +556,6 @@ CONTENT: list[tuple] = [
      "R002\u2013R005, where held-out errors are substantially larger than on the mainstem. The "
      "holdout scatter (Figure 4) shows the same structure: mainstem predictions cluster near the "
      "observations while tributary predictions spread widely."),
-    ("p",
-     "Because residual-source learning did not improve held-out prediction, we next tested whether "
-     "reallocating discrepancy to the gas-transfer term changed the concentration error."),
     ("raw", "NESTED_TABLES"),
     ("fig", "nested_cv_rmse_bar.png"),
     ("fig", "nested_cv_scatter_holdout.png"),
@@ -564,11 +571,13 @@ CONTENT: list[tuple] = [
      "present samples, 98.1 m d\u207b\u00b9; the median ratio k<sub>eff</sub>/k<sub>emp</sub> is "
      "3.35\u00d710\u207b\u2074 (Table 7; Figure 5). Under this correction, the median effective "
      "transfer velocity is reduced by roughly three orders of magnitude relative to "
-     "k<sub>emp</sub>."),
+     "k<sub>emp</sub>. This comparison remains conditional on the partially observed boundary "
+     "construction and the pre-fold construction of k<sub>need</sub> described in Sections 2.4 and "
+     "2.5; it is therefore not a fully target-blind out-of-sample estimate."),
     ("fig", "identifiability_k_vs_sgs.png"),
     ("p",
      "The lower concentration error alone does not establish whether the altered process allocation "
-     "remains plausible, so we next compare the associated model flux diagnostic."),
+     "remains plausible; the associated model flux diagnostic is examined next."),
 
     ("h3", "3.3 The concentration gain coincides with collapse of the flux diagnostic"),
     ("p",
@@ -588,10 +597,8 @@ CONTENT: list[tuple] = [
      "Residual-AI prediction is 0.56, and the two are anti-correlated across samples (Spearman "
      "\u22120.57; Figure 5). A positive source term and a reduced transfer velocity act on the "
      "concentration balance in compensating directions, and the held-out concentration metric provides "
-     "limited discrimination between them."),
-    ("p",
-     "Having established compensation between alternative closure terms at the sampled scale, we next "
-     "examine whether the diagnosed residual itself changes with spatial coarse-graining."),
+     "limited discrimination between them. Figure S3 summarizes the corresponding "
+     "concentration\u2013flux trade-off."),
     ("raw", "INNOVATION_TABLES"),
     ("fig", "ablation_flux_comparison.png"),
     ("fig", "identifiability_tradeoff.png"),
@@ -608,9 +615,6 @@ CONTENT: list[tuple] = [
      "dependence for the implemented reach-local operator, not a universal scaling law."),
     ("fig", "filter_scale_sgs.png"),
     ("fig", "filter_scale_sgs_box.png"),
-    ("p",
-     "The observed scale dependence raises a separate question of whether the residual can nevertheless "
-     "be summarized by a compact dimensionless relation."),
 
     ("h3", "3.5 A sparse dimensionless closure is compact but not predictive"),
     ("p",
@@ -621,8 +625,8 @@ CONTENT: list[tuple] = [
     ("p",
      "The fitted coefficients are positive for Froude number and negative for slope and relative "
      "depth. Because this relation is a descriptive full-data summary (Section 2.8), it is not "
-     "itself scored as a held-out law; the leave-one-reach R\u00b2 on the standardized-response "
-     "reconstruction is \u22122.74. Under the same leave-one-reach-out transport-coupled protocol, in "
+     "itself scored as a held-out law; the leave-one-reach R\u00b2 for reconstructing the "
+     "dimensionless response S* is \u22122.743. Under the same leave-one-reach-out transport-coupled protocol, in "
      "which the scaler and LASSO are refitted within each fold, the sparse closure gives a held-out "
      "C<sub>aq</sub> RMSE of 0.0506 mol m\u207b\u00b3, above the Baseline value of 0.0284 (Table 9). "
      "The sparse form is therefore useful as a compact diagnostic description of the residual but "
@@ -632,9 +636,9 @@ CONTENT: list[tuple] = [
     ("h3", "3.6 In-sample fit (appendix)"),
     ("p",
      "The in-sample fit of the residual model is reported in the appendix (Table 4; Figure A1), with "
-     "R\u00b2 \u2248 0.997 and RMSE 0.00127 mol m\u207b\u00b3 computed on the same 120 rows used for "
-     "training. The value describes the capacity of the learner to memorize the sample rather than its "
-     "generalization, and it is not used as a paper metric."),
+     "R\u00b2 \u2248 0.997 and RMSE 0.0013 mol m\u207b\u00b3 computed on the same 120 rows used for "
+     "training. This optimistic in-sample fit is reported only as an overfitting diagnostic and is not "
+     "used as evidence of generalization."),
     ("fig", "obs_vs_model_scatter_large.png"),
 
     ("h2", "4. Discussion"),
@@ -651,7 +655,10 @@ CONTENT: list[tuple] = [
      "multi-sample tributaries R002\u2013R005, whereas performance on individual tributary subsets is "
      "less uniform; the mainstem reach, with 58 samples, is one subgroup where the residual closure "
      "remains competitive with the Baseline. These results support reporting reach-level diagnostics "
-     "alongside pooled metrics, particularly when sampling support is strongly imbalanced."),
+     "alongside pooled metrics, particularly when sampling support is strongly imbalanced. Because the "
+     "training target does not coincide dimensionally with Eq. (4), this failure characterizes the "
+     "present implementation rather than the general learnability of a dimensionally consistent "
+     "S<sub>sgs</sub> closure."),
     ("p",
      "The failure of residual closures to generalize does not, however, imply that concentration error "
      "uniquely favors the Baseline, as shown by the contrasting k-correction result."),
@@ -671,8 +678,8 @@ CONTENT: list[tuple] = [
      "by Eq. (5). The Baseline/k-correction contrast indicates that this compensation direction is "
      "consequential in the present experiment: the Baseline and k-correction both yield relatively low "
      "concentration errors while producing markedly different transfer velocities and flux "
-     "diagnostics. The argument is restricted in scope: it is not a formal structural-identifiability "
-     "analysis, and it does not establish statistical equivalence between the competing predictions. "
+     "diagnostics. This empirical comparison does not constitute a structural-identifiability "
+     "analysis or establish statistical equivalence between the competing predictions. "
      "The degraded RMSE of the MLP, random forest, and sparse closures is likewise not equifinality "
      "evidence; it shows that closure choice matters and that flexible residual learning did not "
      "generalize here. Within those boundaries, the results suggest that concentration-dominated "
@@ -692,9 +699,8 @@ CONTENT: list[tuple] = [
      "coarse-graining logic used elsewhere for learned subgrid terms (Yuval &amp; O\u2019Gorman, 2020): "
      "the statistics of the unresolved term depend on resolution."),
     ("p",
-     "The sparse dimensionless closure provides a counterpoint to the flexible learners. It identifies a "
-     "limited set of candidate dependencies, with Froude number, slope, and relative depth surviving "
-     "selection, yet its compactness does not transfer into held-out skill: RMSE remains above the "
+     "The sparse closure retains only Froude number, slope, and relative depth, but its compact form "
+     "does not improve held-out prediction: RMSE remains above the "
      "Baseline and the S* reconstruction fails under reach holdout. Compact forms are therefore not "
      "automatically validated or predictive. Under the present protocol, the tested sparse "
      "\u03a0-group representation does not provide cross-reach predictive utility; it remains useful "
@@ -703,9 +709,8 @@ CONTENT: list[tuple] = [
     ("h3", "4.4 Implications for environmental-model evaluation"),
     ("p",
      "These findings suggest that concentration RMSE should be interpreted together with diagnostics of "
-     "gas exchange and unresolved source allocation. A closure that lowers concentration error deserves "
-     "scrutiny of the process allocation that produces the lowering, particularly when the observations "
-     "constrain only concentrations."),
+     "gas exchange and unresolved source allocation. When observations constrain only concentration, "
+     "lower RMSE should be interpreted alongside diagnostics of the process terms that produced it."),
     ("p",
      "The present conclusions are bounded by partially observed upstream conditioning, strongly unequal "
      "reach support, the coordinate-based ordering fallback, idealized hydraulic geometry, incomplete "
@@ -728,10 +733,12 @@ CONTENT: list[tuple] = [
      "observations therefore provide limited discrimination between discrepancy assigned to the source "
      "term S<sub>sgs</sub> and discrepancy assigned to the transfer velocity k."),
     ("p",
-     "Methodologically, the experiment establishes an operable filter definition, a grouped evaluation "
-     "protocol that couples predicted closures back into transport, and an algebraic diagnostic of "
-     "closure compensation. No accuracy gain is claimed, flux values are model diagnostics rather than "
-     "validated evasion estimates, and transfer to other basins has not been tested."),
+     "The framework combines an explicit spatial filter, transport-coupled grouped evaluation, and an "
+     "algebraic closure-compensation diagnostic. No accuracy gain is claimed, flux values are model "
+     "diagnostics rather than validated evasion estimates, and transfer to other basins has not been "
+     "tested. These results support the diagnostic framework within the East River experiment; they do "
+     "not establish a predictive advantage, validate the modeled evasion flux, or demonstrate transfer "
+     "to other basins."),
 
     ("h2", "6. Data availability"),
     ("p",
@@ -741,7 +748,8 @@ CONTENT: list[tuple] = [
      "2a2132999fb84214aad0596783812db2. Mainstem discharge is from USGS gage 09112500. River-network "
      "geometry uses NHDPlus HR flowlines for HUC 14020001. Processed tables, figures, and the analysis "
      "code are maintained in the public repository "
-     "(https://github.com/Coucou2016/river-carbon-transport)."),
+     "(https://github.com/Coucou2016/river-carbon-transport); a version-specific release or immutable "
+     "commit should be cited alongside the mutable repository state at submission."),
 ]
 
 REFERENCES = [
@@ -759,23 +767,25 @@ REFERENCES = [
     "with the size of streams and rivers. <em>Nature Geoscience</em>, 8, 696\u2013699. "
     "https://doi.org/10.1038/ngeo2507",
     "Markovich, K. H., White, J. T., &amp; Knowling, M. J. (2022). Sequential and batch data "
-    "assimilation approaches to cope with groundwater model error. <em>Environmental Modelling &amp; "
-    "Software</em>, 158, 105498. https://doi.org/10.1016/j.envsoft.2022.105498",
+    "assimilation approaches to cope with groundwater model error: An empirical evaluation. "
+    "<em>Environmental Modelling &amp; Software</em>, 156, 105498. "
+    "https://doi.org/10.1016/j.envsoft.2022.105498",
     "Raymond, P. A., et al. (2012). Scaling the gas transfer velocity and hydraulic geometry in streams "
     "and small rivers. <em>Limnology and Oceanography: Fluids and Environments</em>, 2, 41\u201353. "
     "https://doi.org/10.1215/21573689-1597669",
     "Saccardi, B., &amp; Winnick, M. J. (2021). Improving predictions of stream CO\u2082 concentrations "
-    "and fluxes using a stream network model. <em>Global Biogeochemical Cycles</em>, 35, "
+    "and fluxes using a stream network model: A case study in the East River Watershed, CO, USA. "
+    "<em>Global Biogeochemical Cycles</em>, 35, "
     "e2021GB006972. https://doi.org/10.1029/2021GB006972",
     "Vilas, M. P., et al. (2023). TALKS: A systematic framework for resolving model-data discrepancies. "
-    "<em>Environmental Modelling &amp; Software</em>, 166, 105668. "
+    "<em>Environmental Modelling &amp; Software</em>, 163, 105668. "
     "https://doi.org/10.1016/j.envsoft.2023.105668",
     "Xie, X., Samaei, A., Guo, J., Liu, W. K., &amp; Gan, Z. (2022). Data-driven discovery of "
     "dimensionless numbers and governing laws from scarce measurements. <em>Nature Communications</em>, "
-    "13, 7402. https://doi.org/10.1038/s41467-022-35084-w",
+    "13, 7562. https://doi.org/10.1038/s41467-022-35084-w",
     "Yuval, J., &amp; O\u2019Gorman, P. A. (2020). Stable machine-learning parameterization of subgrid "
-    "processes for climate modeling. <em>Nature Communications</em>, 11, 3710. "
-    "https://doi.org/10.1038/s41467-020-17142-3",
+    "processes for climate modeling at a range of resolutions. <em>Nature Communications</em>, 11, "
+    "3295. https://doi.org/10.1038/s41467-020-17142-3",
 ]
 
 # ---------------------------------------------------------------------------
@@ -803,14 +813,14 @@ def sanitize_paper_tables(html: str) -> str:
          "C<sub>aq</sub> and F<sub>CO\u2082</sub> metrics (primary paper metrics; F values are model "
          "flux diagnostics).</caption>"),
         (r"<caption>表 5 子组嵌套交叉验证.*?</caption>",
-         "<caption>Table 5. Subgroup metrics under leave-one-reach-out cross-validation. Mainstem and "
+         "<caption>Table 5. Subgroup metrics under leave-one-reach-out grouped cross-validation. Mainstem and "
          "tributary reaches are not equally weighted.</caption>"),
         (r"<caption>表 6 滤波尺度实验.*?</caption>",
          "<caption>Table 6. Filter-scale experiment: S<sub>sgs</sub> diagnosed after snapping the 120 "
          "samples onto coarsened NHDPlus HR HUC 14020001 networks.</caption>"),
         (r"<caption>表 7 可辨识性.*?</caption>",
-         "<caption>Table 7. Identifiability: trade-off between k and S<sub>sgs</sub> under the same "
-         "leave-one-reach-out transport-coupled protocol.</caption>"),
+         "<caption>Table 7. Practical-equifinality diagnostic: k and source-term compensation under "
+         "the leave-one-reach-out grouped protocol.</caption>"),
         (r"<caption>表 8b 无量纲稀疏式代入输运后.*?</caption>",
          "<caption>Table 9. Sparse dimensionless closure inserted into transport under grouped "
          "cross-validation (compare the Baseline value of 0.0284 in Table 3).</caption>"),
@@ -873,7 +883,7 @@ def sanitize_paper_tables(html: str) -> str:
          "<th>Scheme</th><th>Subgroup</th><th>Evidence weight</th><th>C RMSE</th><th>C R\u00b2</th><th>n</th>"),
         ("<th>尺度</th><th>Δx (m)</th><th>单元总数</th><th>有样点单元</th><th>n 样点</th>",
          "<th>Scale</th><th>\u0394x (m)</th><th>Cells</th><th>Sampled cells</th><th>Samples</th>"),
-        ("<th>平均 |S|</th><th>Var(S)</th>", "<th>Mean |S|</th><th>Var(S)</th>"),
+        ("<th>平均 |S|</th><th>Var(S)</th>", "<th>Mean |S<sub>sgs</sub>|</th><th>Var(S<sub>sgs</sub>)</th>"),
         ("<th>方案</th><th>C RMSE</th><th>F 合计</th><th>k 中位数</th><th>k<sub>eff</sub>/k<sub>emp</sub></th>",
          "<th>Scheme</th><th>C RMSE</th><th>F total</th><th>Median k</th><th>k<sub>eff</sub>/k<sub>emp</sub></th>"),
         ("<th>项目</th><th colspan=\"4\" class=\"left\">结果</th>",
@@ -898,14 +908,52 @@ def sanitize_paper_tables(html: str) -> str:
         ("R004+R006（Copper + Quigley）", "R004+R006 (Copper + Quigley)"),
         ("（留一河段）", " (leave-one-reach)"),
         ("（负值 = 不能推广）", " (negative value = does not generalize)"),
-        ("标准化式", "Standardized form"),
+        ("标准化式", "Standardized-predictor form"),
         ("原始变量式", "Original-variable form"),
         ("主导项", "Dominant terms"),
-        ("对 S* 的留一河段 R²", "Leave-one-reach R\u00b2 on S*"),
+        ("对 S* 的留一河段 R²", "Leave-one-reach R\u00b2 for reconstructing S*"),
         ("<td>否</td>", "<td>No</td>"),
         ("<td>是</td>", "<td>Yes</td>"),
     ]
     for old, new in cell_map:
+        html = html.replace(old, new)
+
+    # Manuscript terminology for raw scheme identifiers (display labels only).
+    scheme_label_map = [
+        ("<td class=\"left\">baseline / none</td>", "<td class=\"left\">Baseline</td>"),
+        ("<td class=\"left\">k_correction / xgboost</td>",
+         "<td class=\"left\">k-correction / XGBoost</td>"),
+        ("<td class=\"left\">residual_ai / mlp</td>", "<td class=\"left\">Residual-AI / MLP</td>"),
+        ("<td class=\"left\">residual_ai / random_forest</td>",
+         "<td class=\"left\">Residual-AI / random forest</td>"),
+        ("<td class=\"left\">sparse_pi / lasso_pi", "<td class=\"left\">Sparse-\u03a0 / LASSO"),
+        ("<td class=\"left\">baseline</td>", "<td class=\"left\">Baseline</td>"),
+        ("<td class=\"left\">k_correction</td>", "<td class=\"left\">k-correction</td>"),
+        ("<td class=\"left\">residual_ai</td>", "<td class=\"left\">Residual-AI</td>"),
+        ("baseline_in_sample (in-sample, optimistic)", "Baseline (in-sample, optimistic)"),
+        ("residual_ai_in_sample_optimistic (in-sample, optimistic)",
+         "Residual-AI / MLP (in-sample, optimistic)"),
+        ("<td class=\"left\">Native NHD</td>", "<td class=\"left\">Native NHDPlus HR</td>"),
+    ]
+    for old, new in scheme_label_map:
+        html = html.replace(old, new)
+
+    # One-metric-one-precision display pass (values rounded for display only).
+    precision_map = [
+        ("<td>69.51</td>", "<td>69.5</td>"),
+        ("<td>69.507</td>", "<td>69.5</td>"),
+        ("<td>143.33</td>", "<td>143.3</td>"),
+        ("<td>244.18</td>", "<td>244.2</td>"),
+        ("<td>0.0244</td><td>0.03</td>", "<td>0.0244</td><td>0.031</td>"),
+        ("<td>-1.000</td><td>0.03</td>", "<td>-1.000</td><td>0.031</td>"),
+        ("<td>0.033</td>", "<td>0.0329</td>"),
+        ("<td>98.096</td>", "<td>98.1</td>"),
+        ("<td>0.00034</td>", "<td>3.35\u00d710\u207b\u2074</td>"),
+        ("<td>1.00000</td>", "<td>1.00</td>"),
+        ("<code>S_sgs*_z \u2248 + 1.059 + 1.536*Fr \u2212 1.669*Slope \u2212 2.179*h_over_W</code>",
+         "<code>S* \u2248 1.059 + 1.536\u00b7Fr_z \u2212 1.669\u00b7Slope_z \u2212 2.179\u00b7(h/W)_z</code>"),
+    ]
+    for old, new in precision_map:
         html = html.replace(old, new)
 
     # Residual script-name/path references, if any survive.
@@ -974,6 +1022,32 @@ def _md_table(headers: list[str], rows: list[list[str]]) -> str:
     return "\n".join(out)
 
 
+def _flux_disp(v: float) -> str:
+    if v < 1.0:
+        return f"{v:.3f}"
+    if v < 10.0:
+        return f"{v:.2f}"
+    return f"{v:.1f}"
+
+
+SCHEME_LABELS = {
+    ("baseline", "none"): "Baseline",
+    ("k_correction", "xgboost"): "k-correction / XGBoost",
+    ("residual_ai", "mlp"): "Residual-AI / MLP",
+    ("residual_ai", "random_forest"): "Residual-AI / random forest",
+    ("sparse_pi", "lasso_pi"): "Sparse-\u03a0 / LASSO",
+}
+SCHEME_ONLY = {
+    "baseline": "Baseline",
+    "k_correction": "k-correction",
+    "residual_ai": "Residual-AI",
+}
+IN_SAMPLE_LABELS = {
+    "baseline_in_sample": "Baseline",
+    "residual_ai_in_sample_optimistic": "Residual-AI / MLP",
+}
+
+
 def md_tables() -> str:
     import json
     import pandas as pd
@@ -1010,9 +1084,16 @@ def md_tables() -> str:
             beats = r.get("beats_baseline_c")
             beat_s = "\u2014" if pd.isna(beats) else ("Yes" if str(beats).lower() == "true" else "No")
             kr = r.get("k_ratio_median")
-            kr_s = f"{kr:.5f}" if kr == kr else "\u2014"
-            rows.append([f"{r['scheme']} / {r['model']}", f"{r['rmse_c']:.4f}",
-                         f"{r['flux_total_mol_m2d']:.3f}", kr_s, beat_s])
+            if kr != kr:
+                kr_s = "\u2014"
+            elif kr >= 0.5:
+                kr_s = "1.00"
+            else:
+                kr_s = f"{kr * 1e4:.2f}\u00d710\u207b\u2074"
+            rows.append([SCHEME_LABELS.get((r["scheme"], r["model"]),
+                                           f"{r['scheme']} / {r['model']}"),
+                         f"{r['rmse_c']:.4f}",
+                         _flux_disp(r["flux_total_mol_m2d"]), kr_s, beat_s])
         parts.append(
             "**Table 2.** Main results under leave-one-reach-out grouped cross-validation with "
             "transport coupling (flux totals are model diagnostics).\n\n" +
@@ -1024,9 +1105,10 @@ def md_tables() -> str:
     if p.exists():
         df = pd.read_csv(p)
         loo = df[(df["cv_protocol"] == "loo_reach") & (df["subgroup"] == "all_120")]
-        rows = [[f"{r['scheme']} / {r['model']}", f"{r['rmse_c']:.4f}", f"{r['mae_c']:.4f}",
+        rows = [[SCHEME_LABELS.get((r["scheme"], r["model"]), f"{r['scheme']} / {r['model']}"),
+                 f"{r['rmse_c']:.4f}", f"{r['mae_c']:.4f}",
                  f"{r['bias_c']:.4f}", f"{r['r2_c']:.3f}", f"{r['rmse_f']:.3f}",
-                 f"{r['bias_f']:.3f}", f"{r['flux_total_mol_m2d']:.2f}", int(r["n"])]
+                 f"{r['bias_f']:.3f}", _flux_disp(r["flux_total_mol_m2d"]), int(r["n"])]
                 for _, r in loo.iterrows()]
         parts.append(
             "**Table 3.** Leave-one-reach-out grouped cross-validation: held-out C_aq and F_CO2 "
@@ -1034,7 +1116,8 @@ def md_tables() -> str:
             _md_table(["Scheme / model", "C RMSE", "C MAE", "C Bias", "C R2", "F RMSE",
                        "F Bias", "F total", "n"], rows))
         ins = df[df["cv_protocol"] == "in_sample"]
-        rows = [[f"{r['model']} (in-sample, optimistic)", f"{r['rmse_c']:.5f}",
+        rows = [[IN_SAMPLE_LABELS.get(r["model"], r["model"]) + " (in-sample, optimistic)",
+                 f"{r['rmse_c']:.4f}",
                  f"{r['bias_c']:.4f}", f"{r['r2_c']:.3f}", int(r["n"])]
                 for _, r in ins.iterrows()]
         parts.append(
@@ -1047,18 +1130,19 @@ def md_tables() -> str:
         sub = pd.read_csv(p)
         sub = sub[(sub["cv_protocol"] == "loo_reach") &
                   (sub["model"].isin(["none", "mlp", "xgboost"]))]
-        rows = [[r["scheme"],
+        rows = [[SCHEME_ONLY.get(r["scheme"], r["scheme"]),
                  str(r["subgroup_label"]).replace("（Copper + Quigley）", " (Copper + Quigley)"),
                  r["evidence_weight"], f"{r['rmse_c']:.4f}", f"{r['r2_c']:.3f}", int(r["n"])]
                 for _, r in sub.iterrows()]
         parts.append(
-            "**Table 5.** Subgroup metrics under leave-one-reach-out cross-validation.\n\n" +
+            "**Table 5.** Subgroup metrics under leave-one-reach-out grouped cross-validation.\n\n" +
             _md_table(["Scheme", "Subgroup", "Evidence weight", "C RMSE", "C R2", "n"], rows))
 
     # Table 6: filter scale
     p = tables_dir / "filter_scale_metrics.csv"
     if p.exists():
         fs = pd.read_csv(p)
+        fs["dx_label"] = fs["dx_label"].replace({"Native NHD": "Native NHDPlus HR"})
         rows = [[r["dx_label"], f"{r['dx_m']:.0f}", int(r["n_cells_total"]),
                  int(r["n_cells_with_samples"]), int(r["n_samples"]),
                  f"{r['mean_abs_S_sgs']:.3f}", f"{r['var_S_sgs']:.3f}"]
@@ -1066,18 +1150,24 @@ def md_tables() -> str:
         parts.append(
             "**Table 6.** Filter-scale experiment: S_sgs after snapping the 120 samples onto "
             "coarsened NHDPlus HR networks.\n\n" +
-            _md_table(["Scale", "dx (m)", "Cells", "Sampled cells", "Samples",
-                       "Mean |S|", "Var(S)"], rows))
+            _md_table(["Scale", "\u0394x (m)", "Cells", "Sampled cells", "Samples",
+                       "Mean |S_sgs|", "Var(S_sgs)"], rows))
 
-    # Table 7: identifiability
+    # Table 7: practical equifinality diagnostic
     p = tables_dir / "identifiability_metrics.csv"
     if p.exists():
         idf = pd.read_csv(p)
-        rows = [[r["scheme"], f"{r['rmse_c']:.4f}", f"{r['flux_total']:.2f}",
-                 f"{r['k_eff_median']:.3f}", f"{r['k_ratio_median']:.5f}"]
-                for _, r in idf.iterrows()]
+        rows = []
+        for _, r in idf.iterrows():
+            kmed = r["k_eff_median"]
+            kmed_s = "98.1" if kmed > 1.0 else f"{kmed:.4f}"
+            kr = r["k_ratio_median"]
+            kr_s = "1.00" if kr >= 0.5 else f"{kr * 1e4:.2f}\u00d710\u207b\u2074"
+            rows.append([SCHEME_ONLY.get(r["scheme"], r["scheme"]), f"{r['rmse_c']:.4f}",
+                         _flux_disp(r["flux_total"]), kmed_s, kr_s])
         parts.append(
-            "**Table 7.** Identifiability: k versus S_sgs under the same grouped protocol.\n\n" +
+            "**Table 7.** Practical-equifinality diagnostic: k and source-term compensation under "
+            "the grouped protocol.\n\n" +
             _md_table(["Scheme", "C RMSE", "F total", "Median k", "k_eff/k_emp"], rows))
 
     # Tables 8 and 9: sparse closure
@@ -1085,10 +1175,10 @@ def md_tables() -> str:
     if p.exists():
         sp = json.loads(p.read_text(encoding="utf-8"))
         rows = [
-            ["Standardized form", sp.get("equation_standardized_Sstar", "")],
+            ["Standardized-predictor form", SPARSE_EQ[1].replace("~=", "\u2248").replace("*", "\u00b7")],
             ["Original-variable form", sp.get("equation_original_Sstar", "")],
             ["Dominant terms", sp.get("dominant_standardized", "")],
-            ["Leave-one-reach R2 on S*",
+            ["Leave-one-reach R2 for reconstructing S*",
              f"{sp.get('loo_reach_Sstar_r2', float('nan')):.3f} (negative = does not generalize)"],
         ]
         parts.append("**Table 8.** Sparse dimensionless closure (Pi-group LASSO).\n\n" +
@@ -1096,10 +1186,10 @@ def md_tables() -> str:
         sp_cv = tables_dir / "sparse_pi_nested_cv.csv"
         if sp_cv.exists():
             r = pd.read_csv(sp_cv).iloc[0]
-            rows = [["sparse_pi / lasso_pi (leave-one-reach)", f"{r['rmse_c']:.4f}",
+            rows = [["Sparse-\u03a0 / LASSO (leave-one-reach)", f"{r['rmse_c']:.4f}",
                      f"{r['r2_c']:.3f}", f"{r['rmse_f']:.3f}", int(r["n"])]]
         else:
-            rows = [["sparse_pi", f"{sp.get('nested_cv_transport_rmse_c', 0):.4f}",
+            rows = [["Sparse-\u03a0 / LASSO", f"{sp.get('nested_cv_transport_rmse_c', 0):.4f}",
                      f"{sp.get('nested_cv_transport_r2_c', 0):.3f}", "\u2014", 120]]
         parts.append(
             "**Table 9.** Sparse dimensionless closure inserted into transport under grouped "
@@ -1111,11 +1201,8 @@ def md_tables() -> str:
 
 def render_markdown(n_figs: int, missing: list[str]) -> str:
     lines: list[str] = [f"# {EN_TITLE}", ""]
-    lines += [f"**Chinese title (metadata only):** {ZH_TITLE}", ""]
     lines += ["**Authors:** To be completed (待补充)  ",
-              "**Affiliations:** To be completed (待补充)  ",
-              f"**Date:** 2026-08-17  ",
-              f"**Figures:** {n_figs} embedded in paper.html", ""]
+              "**Affiliations:** To be completed (待补充)", ""]
     lines += ["## Key Points", ""]
     lines += [f"- {kp}" for kp in KEY_POINTS]
     lines += ["", "## Plain Language Summary", "", PLAIN_LANGUAGE_SUMMARY, ""]
@@ -1140,15 +1227,12 @@ def render_markdown(n_figs: int, missing: list[str]) -> str:
             if (FIG_DIR / fname).exists():
                 lines += [f"![{strip_tags(FIG_CAPTIONS[fname])}](results/figures/{fname})", ""]
         elif kind == "raw":
-            if not table_pending:
-                lines += ["*(Tables 1\u20139 are rendered below.)*", ""]
-                table_pending = True
+            table_pending = True
     if table_pending:
         lines += ["## Tables", "", md_tables(), ""]
 
     lines += ["## References", ""]
     lines += [f"{i}. {strip_tags(ref)}" for i, ref in enumerate(REFERENCES, 1)]
-    lines += ["", f"*Self-contained HTML with {n_figs} embedded figures: paper.html (no CDN).*"]
     if missing:
         lines.append(f"*Missing figures: {', '.join(missing)}*")
     return "\n".join(lines) + "\n"
@@ -1163,15 +1247,17 @@ ABSTRACT_HTML = (
     "closures under held-out evaluation remain unclear. We developed a transport-coupled diagnostic "
     "framework for 120 public East River observations organized into eight logical reaches. Spatial "
     "coarse-graining defines a residual source-sink term, S<sub>sgs</sub>, which was represented by a "
-    "zero-residual Baseline, machine-learned residual closures, or a multiplicative correction to "
-    "empirical gas-transfer velocity. Each closure was evaluated by leaving one reach out and "
-    "reinserting the predicted closure into the quasi-steady transport balance before scoring "
-    "concentration. Residual-AI performed worse than the Baseline: C<sub>aq</sub> RMSE was 0.0573 mol "
-    "m<sup>\u22123</sup> for the multilayer perceptron and 0.0745 for the random forest, compared with "
-    "0.0284 for the Baseline. The k-correction reduced RMSE to 0.0244, but median "
-    "k<sub>eff</sub>/k<sub>emp</sub> was 3.35\u00d710<sup>\u22124</sup> and the sample-summed model "
+    "zero-residual Baseline, machine-learned residual closures (Residual-AI), or a multiplicative "
+    "correction to empirical gas-transfer velocity. Each closure was evaluated by leaving one reach "
+    "out and reinserting the predicted closure into the quasi-steady transport balance before scoring "
+    "concentration under partially observed upstream boundary conditioning. Residual-AI performed "
+    "worse than the Baseline: the C<sub>aq</sub> root-mean-square error (RMSE) was 0.0573 mol "
+    "m<sup>\u22123</sup> for the multilayer perceptron (MLP) and 0.0745 mol m<sup>\u22123</sup> for the "
+    "random forest, compared with 0.0284 for the Baseline. The k-correction reduced RMSE to 0.0244, "
+    "but the median effective-to-empirical transfer-velocity ratio, "
+    "k<sub>eff</sub>/k<sub>emp</sub>, was 3.35\u00d710<sup>\u22124</sup> and the sample-summed model "
     "flux diagnostic decreased from 3.24 to 0.031 mol m<sup>\u22122</sup> d<sup>\u22121</sup>. A sparse "
-    "closure gave RMSE 0.0506. Mean |S<sub>sgs</sub>| decreased from 1.92 to 1.00 as filter width "
+    "closure gave RMSE 0.0506. Mean |S<sub>sgs</sub>| decreased from 1.916 to 1.000 as filter width "
     "increased from about 838 m to the study-reach scale. These results indicate practical "
     "equifinality between S<sub>sgs</sub> and k under concentration-only East River observations, so "
     "lower concentration error alone is insufficient to identify how model discrepancy is allocated "
@@ -1282,7 +1368,6 @@ def build_html_body(tables: dict[str, str], n_figs: int, missing: list[str]) -> 
     body = "\n".join(parts)
     refs = references_html()
     key_points = "\n".join(f"      <li>{kp}</li>" for kp in KEY_POINTS)
-    missing_note = f" &middot; missing figures: {', '.join(missing)}" if missing else ""
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1300,9 +1385,6 @@ def build_html_body(tables: dict[str, str], n_figs: int, missing: list[str]) -> 
   <div class="zh-title">{ZH_TITLE}</div>
   <div class="authors">Authors: to be completed</div>
   <div class="affil">Affiliations: to be completed &middot; Corresponding author: to be completed</div>
-  <div class="affil" style="margin-top:0.6rem;">Target journals: Environmental Modelling &amp;
-  Software / Water Resources Research &middot; Manuscript date: 2026-08-17 &middot;
-  {n_figs} embedded figures</div>
 </div>
 
 <div class="front-block key-points">
@@ -1330,10 +1412,6 @@ def build_html_body(tables: dict[str, str], n_figs: int, missing: list[str]) -> 
 {refs}
 </section>
 
-<div class="footer">
-  paper.html &middot; IMRaD methods paper &middot; {n_figs} figures base64-embedded &middot; no CDN
-  &middot; Residual-AI does not beat Baseline{missing_note}
-</div>
 </div>
 </body>
 </html>"""

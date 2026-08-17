@@ -21,12 +21,12 @@
 | 11 | Abstract + Introduction rewrite | Done (2026-08-18) |
 | 12 | Methods clarity + notation/units | Done (2026-08-18) |
 | 13 | Results/Discussion prose + claims audit | Done (2026-08-18) |
-| 14 | Full referee pass + consistency sweep | Pending |
+| 14 | Full referee pass + consistency sweep | Done (2026-08-18) |
 | 15 | Re-review of final text (if needed) | Pending |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.  
-**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`); `08_ROUND11_ABS_INTRO.md` (Round 11); `09_ROUND12_METHODS.md` (commit `88e4f8f`); `10_ROUND13_RESULTS_DISCUSSION.md` (commits `cfd7441`, `15c3698`).
+**Round 10+ briefs:** `06_ROUND10_CONTEXT.md`, `07_ROUND10_PAPER_FULL.md` (commits `d867d84`, `33a6d40`); `08_ROUND11_ABS_INTRO.md` (Round 11); `09_ROUND12_METHODS.md` (commit `88e4f8f`); `10_ROUND13_RESULTS_DISCUSSION.md` (commits `cfd7441`, `15c3698`); `11_ROUND14_FULL_REFEREE.md` (commit `c773af0`).
 
 ---
 
@@ -137,6 +137,61 @@ Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`,
 - Kept "shows" in 3.3 second paragraph and 3.4 per ChatGPT's own Q13.3 calibration (directly demonstrated contrasts).
 
 **Verification:** regenerate PASS (HTML 4.72 MB, MD 48.1 KB); frozen numbers all present (0.0284×11, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×3, 3.24×7, 0.031×5, 1.916×2, 1.00×10, 838×5); base64 figures = 13 in HTML (MD keeps file references by design); zero external http in img/link/script; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (table placeholder cells only, none in prose); mean sentence length ≈ 24.7 words.
+
+---
+
+## Round 14 — Full harsh-referee pass + consistency sweep (whole manuscript)
+
+**Sent:** Brief `11_ROUND14_FULL_REFEREE.md` at commit `c773af0` (full current manuscript text generated programmatically from `paper.md` to avoid transcription drift; figure images omitted, captions retained) with Q14.1–Q14.4: harsh EMS referee report, whole-manuscript consistency sweep (precision/units/acronyms/tense/cross-references/term drift), AI-marker check, and pre-submission gap list.
+
+**ChatGPT browsed?** YES — confirmed reading the commit-pinned brief and the pinned `paper.md` at `c773af04de39ab00a370a7003597c38a1769d18b` (GitHub chips). Web search used for Crossref verification of the five references it flagged.
+
+**Verdict (Q14.1):** MAJOR REVISION — publishable core; the negative Residual-AI result and the concentration-vs-process conflict are the strengths, but the three disclosed implementation limitations must be carried through every claim. Explicit "do not change" list accepted (keep negative result, R² ≈ 0.997 appendix-only, no "best model" relabel, no basin expansion, no formal non-identifiability claim).
+
+**ACCEPTED (merged into `scripts/generate_paper.py`; every value first checked against `results/tables/` and Crossref):**
+
+*Scope qualifiers (Major points 1–3):*
+- 2.4 target-disclosure paragraph rewritten: "the Residual-AI results therefore characterize the implemented target rather than a dimensionally consistent closure of Eq. (4)" (audit-trail sentence removed).
+- 4.1: added "Because the training target does not coincide dimensionally with Eq. (4), this failure characterizes the present implementation rather than the general learnability of a dimensionally consistent S_sgs closure."
+- 3.2: added evaluation-independence qualifier ("This comparison remains conditional on the partially observed boundary construction and the pre-fold construction of k_need described in Sections 2.4 and 2.5; it is therefore not a fully target-blind out-of-sample estimate.").
+- 2.1 width sentence: "remains to be tabulated" → "Sensitivity to this width proxy has not been quantified, so all hydraulic and gas-exchange results are conditional on the adopted width representation."
+- PLS categorical claim replaced by the bounded version: "In this East River experiment, concentration data alone provided limited discrimination between alternative allocations of model discrepancy."
+
+*Consistency sweep (Q14.2), verified against `results/tables/`:*
+- Abstract: 1.92/1.00 → 1.916/1.000 (matches `filter_scale_metrics.csv`); mol/m^3 → mol m⁻³, mol/m^2/day → mol m⁻² d⁻¹; RMSE defined at first use; "(Residual-AI)" label assigned at first use; k_eff/k_emp verbally defined ("median effective-to-empirical transfer-velocity ratio"); MLP defined in Abstract (first occurrence in document).
+- Table displays harmonized to the frozen narrative precisions (verified raw values: 3.2435→3.24, 69.507→69.5, 143.331→143.3, 244.183→244.2, 0.0313→0.031, median k 98.0955→98.1 and 0.0329, ratio 0.000335→3.35×10⁻⁴, in-sample RMSE 0.0013): applied to HTML tables via sanitization pass and to Markdown tables via `md_tables()`.
+- Table 8 row relabeled "Standardized-predictor form" and equation display rewritten to the paper's `S* ≈ 1.059 + 1.536·Fr_z − 1.669·Slope_z − 2.179·(h/W)_z` convention (code check: `src/15_dimensionless_sparse.py` standardizes predictors only, response is raw S*).
+- 3.5 body: R² wording changed to "for reconstructing the dimensionless response S*" and precision unified to −2.743 (matches `dimensionless_sparse_summary.json` −2.7429); 3.6 body in-sample RMSE 0.00127 → 0.0013 to match Table 4.
+- k_eff = k_emp·exp(g_θ(X)) typesetting fixed in 2.4.
+
+*Terminology drift:*
+- "Identifiability" labels replaced per the paper's deliberate terminology: Table 7 caption → "Practical-equifinality diagnostic: k and source-term compensation under the grouped protocol"; Figure 5 caption → "Closure-compensation diagnostics: effective gas-transfer velocity k_eff, implied source adjustment S_implied, and Residual-AI held-out source predictions".
+- Raw code scheme identifiers replaced by manuscript terminology in Tables 2/3/4/5/9 (Baseline; k-correction / XGBoost; Residual-AI / MLP; Residual-AI / random forest; Sparse-Π / LASSO).
+- Table 5 caption now says "grouped cross-validation"; Table 6 headers Mean |S|/Var(S) → Mean |S_sgs|/Var(S_sgs) and "Native NHD" → "Native NHDPlus HR".
+- Acronym first uses: NHDPlus HR expanded in Introduction; DIC/DOC expanded in 2.1; LASSO deferred from 2.5 ("the sparse model described in Section 2.8") and defined in 2.8; MAE defined in 3.1. ("PLS" is not used as an abbreviation, so no action — confirmed.)
+
+*Figure/table cross-references:* added Figure 1 callout (2.3), Figures 2a/2b callout (2.1), Figure S3 callout (3.3). All captions re-checked to resolve.
+
+*AI-marker / report-style fixes (Q14.3):*
+- Deleted "The primary result is negative." opener; deleted three editorial-steering transition sentences (end of 3.1, end of 3.3, end of 3.4); rewrote the kept 3.2→3.3 transition without "we next".
+- Intro "The experiment has deliberate boundaries." → "Several boundaries constrain the interpretation."
+- 2.2 dual-role sentence and k600/k_emp sentence rewritten to direct statements; 2.3 operator-boundary fallback rephrased; 3.6 "capacity of the learner to memorize" → overfitting-diagnostic sentence; 4.2 scope sentence, 4.3 sparse-contrast sentence, 4.4 scrutiny sentence, and both Conclusions sentences rewritten per ChatGPT's proposals (adapted where wording overlapped existing text).
+- Production artifacts removed: markdown front-matter "Chinese title (metadata only)", Date, "Figures: 13 embedded" lines; "*(Tables 1–9 are rendered below.)*"; HTML footer block and "Target journals / Manuscript date" header line; trailing self-reference line in `paper.md`.
+
+*Reference corrections (all five verified against Crossref before merging):*
+- Markovich et al. 2022: volume 158 → 156; full title now includes "An empirical evaluation" (Crossref 10.1016/j.envsoft.2022.105498).
+- Vilas et al. 2023: volume 166 → 163 (Crossref 10.1016/j.envsoft.2023.105668).
+- Xie et al. 2022: article 7402 → 7562 (Crossref 10.1038/s41467-022-35084-w).
+- Yuval & O'Gorman 2020: article 3710 → 3295; title completed with "at a range of resolutions" (Crossref 10.1038/s41467-020-17142-3).
+- Saccardi & Winnick 2021: full title including "A case study in the East River Watershed, CO, USA" (Crossref 10.1029/2021GB006972).
+- Data availability: added that a version-specific release or immutable commit should be cited at submission.
+
+**REJECTED / deferred (with local evidence):**
+- REJECTED removing the Gao et al. "manuscript in preparation" reference: it carries no novelty-critical claim and the user has not provided a DOI/preprint; kept as 待补充.
+- REJECTED deleting the Chinese title from the HTML rendering: removed only the "(metadata only)" front-matter line in `paper.md`; the bilingual subtitle stays as a non-submission companion in `paper.html`.
+- DEFERRED (cannot be fabricated): C_eq appendix at submission, width-sensitivity table, fold-level RMSE — the width sentence was changed to an explicit conditional statement instead (per ChatGPT's fallback wording). Q14.4 gap table recorded: authors/affiliations and the C_eq appendix block a defensible EMS submission; fold-level RMSE is an SI item before acceptance; alkalinity/N/P/PAR and Gao DOI are not blockers; the two disclosed implementation limitations remain acceptance-critical wording items.
+
+**Verification:** regenerate PASS (HTML 4.72 MB, MD 48.6 KB); frozen numbers all present (0.0284×12, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×5, 3.24×7, 0.031×7, 1.916×3, 1.00×10, 838×5); base64 figures = 13 in HTML (MD keeps file references by design); zero external http in img/link/script; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (table placeholder cells only, none in prose); bold spans = 12 (front-matter + table captions only); mean sentence length ≈ 24.7 words over 286 sentences.
 
 ---
 
