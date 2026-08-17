@@ -1,7 +1,13 @@
 # Round 13 brief — Results/Discussion prose and claims audit
 
 **Repo:** https://github.com/Coucou2016/river-carbon-transport (branch `main`)
-**Paper text below is extracted from `paper.md` (current `main` after Rounds 10–11).** Sections 3.1–3.6, 4.1–4.4 verbatim, plus Tables 2, 3, 5, 6, 7, 8, 9 for claims checking.
+**Paper text below is extracted from `paper.md` (current `main` after Round 12).** Sections 3.1–3.6, 4.1–4.4 verbatim, plus Tables 2, 3, 5, 6, 7, 8, 9 for claims checking.
+
+**Changes since your Round 12 reply that affect this text (all code-verified and merged):**
+- Equations were renumbered sequentially: the implied-source diagnostic formerly Eq. (6) is now Eq. (5); the residual diagnosis formerly Eq. (5) is now Eq. (4); F_CO2 is now Eq. (3). The text below already uses the new numbering.
+- Section 2.4 now discloses that the Residual-AI training target as implemented is not unit-consistent with Eq. (4) (P0 from your Round 12 reply, confirmed in code), and that the k-correction target k_need is built from observations before the fold loop.
+- Section 2.8 now states that the sparse law reported below is a descriptive full-data LASSO refit (α = 0.05, X standardized, response not standardized), not a coefficient vector applied unchanged across folds, and that log10 Da and log10 Re were dropped by selection (their construction was not strictly dimensionless, as now disclosed).
+- Do not propose re-running anything; only prose changes within the frozen numbers.
 
 ## What we ask of ChatGPT
 
@@ -53,11 +59,11 @@ The magnitude of the diagnosed residual varies systematically with the filter wi
 
 ### 3.5 A sparse dimensionless closure is compact but not predictive
 
-The standardized LASSO retains three of the five candidate Pi terms (Table 8; Figure 7). In standardized space the closure is
+The full-data LASSO refit on the dimensionless response retains three of the five candidate Pi terms (Table 8; Figure 7). With subscript z denoting predictors standardized to zero mean and unit variance, the closure is
 
-S*_z ~= 1.059 + 1.536*Fr - 1.669*Slope - 2.179*h/W
+S* ~= 1.059 + 1.536*Fr_z - 1.669*Slope_z - 2.179*(h/W)_z
 
-with Froude number the positive contributor and slope and relative depth the negative contributors. Under the same leave-one-reach-out transport-coupled protocol, the sparse closure gives a held-out C_aq RMSE of 0.0506 mol m-3, above the Baseline value of 0.0284 (Table 9). The leave-one-reach R2 for S* itself is -2.74. The sparse form is therefore useful as a compact diagnostic description of the residual but does not recover predictive skill on held-out reaches.
+with Froude number the positive contributor and slope and relative depth the negative contributors. Because this relation is a descriptive full-data summary (Section 2.8), it is not itself scored as a held-out law; the leave-one-reach R2 on the standardized-response reconstruction is -2.74. Under the same leave-one-reach-out transport-coupled protocol, in which the scaler and LASSO are refitted within each fold, the sparse closure gives a held-out C_aq RMSE of 0.0506 mol m-3, above the Baseline value of 0.0284 (Table 9). The sparse form is therefore useful as a compact diagnostic description of the residual but does not recover predictive skill on held-out reaches.
 
 ### 3.6 In-sample fit (appendix)
 
@@ -73,7 +79,7 @@ The residual closures reproduce the observations well in-sample but degrade held
 
 The k-correction achieves the lowest concentration error of any configuration, and it does so by reducing the effective transfer velocity by roughly three orders of magnitude. Because both source terms and gas exchange act on the same balance, a near-zero k can be offset by the existing gradient (C - C_eq) and still reproduce concentrations. The collapse of ΣF_CO2 from 3.24 to 0.031 shows what this fit implies for the process budget. Without independent evasion measurements, the data cannot adjudicate between the Baseline and corrected allocations; the lower RMSE is evidence of improved concentration fit, not independent evidence of improved process fidelity.
 
-Here, practical equifinality refers to the compensation between S_sgs and k represented by Eq. (6). The Baseline/k-correction contrast shows that this compensation direction is consequential in the present experiment: similar concentration errors coexist with markedly different transfer velocities and flux diagnostics. The argument is restricted in scope: it is not a formal structural-identifiability analysis, and it does not establish statistical equivalence between the competing predictions. The degraded RMSE of the MLP, random forest, and sparse closures is likewise not equifinality evidence; it shows that closure choice matters and that flexible residual learning did not generalize here. Within those boundaries, concentration-dominated evaluation does not uniquely constrain how discrepancy is allocated between S_sgs and k in this configuration.
+Here, practical equifinality refers to the compensation between S_sgs and k represented by Eq. (5). The Baseline/k-correction contrast shows that this compensation direction is consequential in the present experiment: similar concentration errors coexist with markedly different transfer velocities and flux diagnostics. The argument is restricted in scope: it is not a formal structural-identifiability analysis, and it does not establish statistical equivalence between the competing predictions. The degraded RMSE of the MLP, random forest, and sparse closures is likewise not equifinality evidence; it shows that closure choice matters and that flexible residual learning did not generalize here. Within those boundaries, concentration-dominated evaluation does not uniquely constrain how discrepancy is allocated between S_sgs and k in this configuration.
 
 ### 4.3 What filtering and sparse representation reveal about the residual
 
