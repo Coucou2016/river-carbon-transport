@@ -190,6 +190,27 @@ local renders were already fixed. Process fix: every regeneration now re-syncs A
 published PNGs hash-identical to the canonical renders. `verify_paper.py` PASS. Pushed commit
 `89ff580`.
 
+## Round 20 — ChatGPT resync gate (10/11 PASS) + Fig 6 closure
+
+**Sent:** Brief `16_ROUND20_FINAL_RESYNC_GATE.md` with commit-pinned URLs (`89ff580`). ChatGPT
+confirmed 10/11 PASS, quoting exact rendered text from the re-synced PNGs (Fig 4 external legend +
+upper-right stats box, Fig 5 "(a)/(b)" and "n = 120, leave-one-reach-out", Fig 7 clean mathtext
+equation, Fig S1 "Multi-sample tributaries" / "n=58", Fig S3 mathtext title). All commit-pinned
+PNGs returned HTTP 200 with the new renders — the sync gap is closed.
+
+**Only remaining defect:** Fig 6 — the three left-side per-point annotations ("Native NHDPlus HR /
+sampled cells = 39", "~2× merge / 30", "~4× merge / 24") collided with each other and the data.
+ChatGPT's pass condition: replace them with one compact legend/text block.
+
+**Fix applied:** `plot_filter_scale` in `src/13_filter_scale_sgs.py` — all per-point annotations
+removed; a single boxed text block in the lower-left lists the four scales with sampled-cell counts
+(Native NHDPlus HR: 39, ~2× merge: 30, ~4× merge: 24, Study-reach scale: 6). Right panel keeps
+curve + title only. Regenerated, hash-synced to `results/figures/paper/`, paper rebuilt,
+`verify_paper.py` PASS (11 figures, all frozen counts intact). Pushed commit `e8ef7e0`.
+
+**Audit closed:** all 11 paper figures cleared by both tracks. Track A (code + frozen numbers) and
+Track B (ChatGPT visual reads at commit-pinned URLs) agree the figure set is submission-ready.
+
 ## Fix policy
 
 1. Titles/labels/wording fixes are applied in the generating script, figures regenerated, and the
