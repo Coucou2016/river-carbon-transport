@@ -37,7 +37,9 @@ data_proc/
 report.pdf
 
 # Figure PNGs duplicated inside paper.html / report.html
-results/figures/
+results/figures/*
+# Keep the 13 paper figures published for external visual audit
+!results/figures/paper/
 
 # Credentials / secrets
 *.pem
