@@ -23,7 +23,8 @@
 | 13 | Results/Discussion prose + claims audit | Done (2026-08-18) |
 | 14 | Full referee pass + consistency sweep | Done (2026-08-18) |
 | 15 | Re-review of final text (final polish merge) | Done (2026-08-18) |
-| 16 | Dual-track visual audit: track A (code/data) + ChatGPT reads images | In progress (2026-08-18) |
+| 16 | Dual-track visual audit: track A (code/data) + ChatGPT reads images | Done (2026-08-18) |
+| 17 | Apply ChatGPT visual-audit fixes (labels, precision, backgrounds, captions) | Done (2026-08-18) |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.  
@@ -214,6 +215,40 @@ Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`,
 **Verification (post-merge, local):** regenerate PASS (HTML 4.72 MB, MD 49.1 KB); frozen numbers all present (0.0284×12, 0.0573×7, 0.0745×4, 0.0244×7, 0.0506×4, 3.35×5, 3.24×7, 0.031×7, 1.916×3, 1.00×10, 838×5); base64 figures = 13 in HTML; zero external http in img/link/script; no `D:`/`.venv`/`scripts/` narrative; em-dash count = 4 (tables only); bold spans = 12 (front-matter + captions only); mean sentence length ≈ 24.9 words over 286 sentences.
 
 **Pre-edit backup:** `paper_versions/v2_20260818-0121_fraehr_style_rewrite/` (pre-Round-15 state, commit `1b7d0f1`). Round-15 merged state is archived as `v3_20260818-0715_round15_final`.
+
+---
+
+## Round 16 — Dual-track figure audit (Cursor code/data + ChatGPT visual)
+
+**Sent:** Brief `13_ROUND16_FIGURE_AUDIT.md` with all 13 public PNG raw URLs (commit `cf9dc29`), current captions, the audit checklist, and Cursor's Track-A findings A1–A11 for independent confirmation.
+
+**ChatGPT viewed the images?** YES — 53 embedded citations to the raw PNG URLs; described concrete rendered content (cyan R008 / purple R004 reach colors, "0.0" label in Fig S2, rounded RMSE labels 0.028/0.057/0.024 in Fig S3, missing R001 in the Fig 2a legend, triangles on the 1:1 line in Fig A1).
+
+**Verdict:** Track A confirmed on all 11 items (A3/A11 partial); ~20 additional visual defects found: Fig S2 flux label rounded to "0.0" (frozen 0.031), Fig S3 RMSE labels at 3 instead of 4 decimals, Fig S3 purple flux markers unlabeled, Fig 2a R001 missing from legend + unexplained multicolor raster background + weak reach-color contrast, Fig 6 "Study reaches (8)" vs "n_cell=6" confusion, Fig 7 code-style predictor names + crowded bottom text box, Fig 1 unexplained "CV" callouts, Fig 5 missing (a)/(b) panel labels, Fig A1 "color=reach" with no reach legend, plus per-figure caption rewrites.
+
+**Local pre-checks (Track A verification used in the brief):** R001 absent from `gis_reach_line_mapping.csv` by data (only 393/8212 segments near the corridor get assigned; R001 receives none because no GNIS name match and no campaign sample nearby falls to it) — real, not a rendering bug; the raster background was a synthetic segment-density imshow (`_terrain_background`), no physical meaning — must be removed or explained.
+
+---
+
+## Round 17 — Apply ChatGPT visual-audit fixes
+
+**Pre-edit backup:** `paper_versions/v5_20260818-1255_pre_round17_figure_rework/` (commit `e5fd6cc`).
+
+**ACCEPTED & APPLIED (all figures-only; frozen numbers untouched):**
+- Fig S2: label format `_fmt_flux` (3.24 / 69.5 / 0.031 — never rounds 0.031 to 0.0); titles → "Model flux diagnostics across closure configurations" / "Sample-summed model flux diagnostic" / "Flux-diagnostic RMSE relative to empirical comparison proxy"; ylim headroom.
+- Fig S3: RMSE labels 4 decimals (0.0284/0.0573/0.0244); purple flux markers annotated (3.24/69.5/0.031); titles de-colloquialized; left y-axis → "k-correction model F_CO2 diagnostic"; suptitle → full protocol terminology + n=120.
+- Fig 5: panel labels (a)/(b) added; axis titles → "Implied source adjustment S_implied" / "Residual-AI held-out source prediction"; left annotation → "Smaller k_eff implies a larger compensating source adjustment at fixed C".
+- Fig 3/S1: y-axis "LOO-reach C_aq RMSE" → "Held-out C_aq RMSE"; Fig 3 title gains "(n=120)".
+- Fig 6/S4: "Native NHD" → "Native NHDPlus HR"; "Study reaches (8)" → "Study-reach scale"; "n_cell=" → "sampled cells ="; x-axis unified to "Filter scale Δx, mean sampled-cell length (m)"; S4 title drops "real samples".
+- Fig 1: "CV" callouts replaced with "control volume" wording; "Fine grid/Coarse grid" → "Fine representation: native NHDPlus HR segments" / "Coarse representation: merged filter cells".
+- Fig 7: predictor labels use display names (Fr_z, Slope_z, (h/W)_z, log10(Re)_z, log10(Da)_z); equation target "S_sgs*_z" → "S*"; annotation → "Leave-one-reach R² for S* = −2.743, n = 120".
+- Fig A1: "AI-coupled" legend → "Residual-AI MLP"; title drops "color=reach".
+- Fig 2a/2b: multicolor density raster background removed (neutral light fill) and titles/captions state background is spatial context only; 2a title → "NHDPlus HR segments mapped to logical reaches using GNIS name matching and proximity to campaign coordinates".
+- Captions: all 13 rewritten in `scripts/generate_paper.py` per ChatGPT's Q16.4 suggestions (panel descriptions, n=120, 1:1 lines, S_implied, six sampled cells, R001 absence, in-sample warning, Spearman ρ=−0.57).
+
+**REJECTED / deferred (for Round 18 discussion):** merging Figs 2a+2b into one two-panel figure; merging Figs S2+S3; moving Fig 4 legend outside the axes — structural layout changes need a separate layout pass.
+
+**Verification:** stages 08/10/12/13/14/15 regenerated; LOO-reach RMSEs 0.0284/0.0573/0.0745/0.0244, filter ladder 1.916/1.120/1.050/1.000, compensation median ratio 3.3546e-4 & Spearman −0.5664, sparse law 1.059/+1.536/−1.669/−2.179 & R² −2.743 all reproduced exactly. `verify_paper.py` PASS; 13 paper PNGs re-synced to `results/figures/paper/` and pushed (commits `1d71163`, `2995c5d`).
 
 ---
 

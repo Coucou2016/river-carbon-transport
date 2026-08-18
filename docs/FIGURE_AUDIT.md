@@ -76,6 +76,37 @@ Round 16 brief: `docs/chatgpt/13_ROUND16_FIGURE_AUDIT.md`. ChatGPT receives, for
 figures: raw PNG URL, caption, the audit-question checklist, and the Track A findings to
 independently confirm or refute. Track B findings are appended below after each round.
 
+### Round 16 outcome
+
+ChatGPT visually read all 13 PNGs (53 raw-URL citations) and CONFIRMED all Track-A findings
+(A3/A11 partial: no "≡" glyph was present; 0.081 label not clipped). Additional Track-B defects:
+
+| ID | Figure | Defect (Track B) | Fix applied in Round 17 |
+|----|--------|------------------|-------------------------|
+| B1 | Fig S2 | k-correction flux label rounded to "0.0", contradicting frozen 0.031 | `_fmt_flux` precision formatter; labels 3.24 / 69.5 / 0.031 |
+| B2 | Fig S3 | RMSE labels 0.028/0.057/0.024 instead of 0.0284/0.0573/0.0244 | 4-decimal labels |
+| B3 | Fig S3 | purple flux markers unlabeled | annotated 3.24/69.5/0.031 |
+| B4 | Fig 2a | R001 absent from legend; unexplained multicolor raster background; weak reach-color contrast | caption discloses R001 absence (verified: no segment assigned in data); density raster removed, neutral background |
+| B5 | Fig 2b | same unexplained raster background | neutral background + caption note |
+| B6 | Fig 3 | n=120 not stated; "LOO-reach" abbreviation on y-axis | "(n=120)" in title; y-axis "Held-out C_aq RMSE" |
+| B7 | Fig 4 | title says "Residual-AI" not "MLP" | title specifies MLP |
+| B8 | Fig 5 | x-axis "Nested-CV k_eff"; argumentative left annotation; no (a)/(b) labels | axis → "Leave-one-reach-out k_eff"; neutral annotation; (a)/(b) added |
+| B9 | Fig 6 | "Study reaches (8)" over "n_cell=6" is confusing; "Native NHD" drift; inconsistent x-axis labels | "Study-reach scale / sampled cells = 6"; "Native NHDPlus HR"; unified x-label |
+| B10 | Fig 7 | code-style labels h_over_W/log10_Da/log10_Re; crowded bottom box; equation target "S_sgs*_z" | display names Fr_z/Slope_z/(h/W)_z/log10(Re)_z/log10(Da)_z; annotation → "Leave-one-reach R² for S*"; equation → S* |
+| B11 | Fig 1 | "CV" unexplained (collides with cross-validation); "fine/coarse grid" misleading | "control volume" wording; "Fine/Coarse representation" |
+| B12 | Fig A1 | "color=reach" claim with no reach legend; "AI-coupled" legend drift | title drops color claim; legend → "Residual-AI MLP" |
+| B13 | Fig S4 | "real samples" audit prose; "Study reaches (8)" category | title/category labels corrected |
+| B14 | All | captions incomplete (panels, n, 1:1 lines, sample structure) | all 13 captions rewritten in `scripts/generate_paper.py` |
+
+Deferred to Round 18 (layout changes, not wording): merge Figs 2a+2b into one two-panel figure;
+combine Figs S2+S3 redundancy; move Fig 4 legend outside the plotting area.
+
+### Round 17 verification
+
+Figures regenerated from the fixed scripts; frozen numbers reproduced exactly (stage logs above);
+result-table MD5 hashes unchanged; `verify_paper.py` PASS; public copies in
+`results/figures/paper/` re-synced and pushed (commits `1d71163`, `2995c5d`).
+
 ## Fix policy
 
 1. Titles/labels/wording fixes are applied in the generating script, figures regenerated, and the
