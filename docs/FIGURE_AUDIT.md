@@ -161,6 +161,35 @@ Pre-edit backup: `paper_versions/v6_20260818-1330_pre_round19_rendering/` (commi
 PASS with 11 base64 figures, all frozen counts intact. Public copies in `results/figures/paper/`
 re-synced (old standalone maps and S2/S3 files removed from the published set).
 
+## Round 19 — ChatGPT final gate + sync-gap root cause
+
+**Sent:** Brief `15_ROUND19_FINAL_FIGURE_GATE.md` with the 11 merged/re-rendered PNG URLs (commit
+`e9e2609`) and Q19.1–Q19.4. ChatGPT passed 8/11 outright and approved both merges (Fig 2 two-panel
+and three-panel Fig S2, "no unique evidence lost"), but flagged Figures 4/5/6/7/S1/S3 as still
+showing the Round-17 defects.
+
+**Root cause (Cursor post-audit):** the Round-19 regeneration wrote fixed figures to
+`results/figures/`, but only the two NEW merged files were copied into `results/figures/paper/`
+(the published set served by GitHub). The other nine public PNGs were stale Round-17 renders —
+hash comparison confirmed 7 DIFF / 4 SAME. ChatGPT correctly audited what GitHub served; the
+local renders were already fixed. Process fix: every regeneration now re-syncs ALL paper figures
+(hash-checked) before pushing.
+
+**Additional genuine fixes found while verifying (applied and re-rendered):**
+- Fig 6: the offset-point annotation still touched the panel title at some scales; the native-scale
+  annotation is now anchored to the lower-left axes corner as plain text, and the remaining three
+  annotations keep the marker offset. Right panel title confirmed as "Variance of S_sgs versus
+  filter scale" (matches y-axis and caption).
+- Fig 7: equation intercept rendered as "≈ +1.059"; leading sign removed (`format_equation_math`
+  uses unsigned intercept), equation now reads S* ≈ 1.059 + 1.536 Fr_z − 1.669 Slope_z − 2.179
+  (h/W)_z in mathtext.
+- Fig S1: "n≈58" → "n=58" (exact count).
+
+**Verification:** stages 12/13/15 regenerated; frozen numbers reproduced (0.0284/0.0573/0.0745/
+0.0244; filter ladder 1.916/1.120/1.050/1.000; sparse law and R² −2.743 unchanged). All 11
+published PNGs hash-identical to the canonical renders. `verify_paper.py` PASS. Pushed commit
+`89ff580`.
+
 ## Fix policy
 
 1. Titles/labels/wording fixes are applied in the generating script, figures regenerated, and the
