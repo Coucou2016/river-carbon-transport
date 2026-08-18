@@ -131,7 +131,7 @@ SPARSE_EQ = (
 )
 
 # ---------------------------------------------------------------------------
-# Figures (same 13 files as before; captions rewritten as English journal captions)
+# Figures (11 files after merging Figs 2a/2b and combining S2/S3; captions in journal style)
 # ---------------------------------------------------------------------------
 
 FIG_CAPTIONS: dict[str, str] = {
@@ -141,16 +141,13 @@ FIG_CAPTIONS: dict[str, str] = {
         "volumes. Right: merged filter cells at larger \u0394x, for which unresolved contributions to "
         "the filtered mass balance are represented by S<sub>sgs</sub>."
     ),
-    "gis_reach_assignment_map.png": (
-        "<strong>Figure 2a.</strong> NHDPlus HR segments assigned to the logical study-reach labels. "
-        "Colors indicate reach assignment; the single-sample reach R001 receives no assigned segment "
-        "in this rendering. The background provides spatial context only and is not used in the "
-        "assignment."
-    ),
-    "gis_samples_on_network.png": (
-        "<strong>Figure 2b.</strong> Locations of the 120 campaign samples on the NHDPlus HR network. "
-        "Point colors denote logical reaches R001\u2013R008; R008 contains 58 samples. The background "
-        "provides spatial context only."
+    "figure2_reach_assignment_and_samples.png": (
+        "<strong>Figure 2.</strong> (a) Logical reach assignment on the NHDPlus HR network: segments "
+        "were assigned to the logical study-reach labels by GNIS name matching and proximity to "
+        "campaign coordinates; colors indicate reach assignment, and the single-sample reach R001 "
+        "receives no assigned segment in this rendering. (b) Locations of the 120 campaign samples; "
+        "point colors denote logical reaches R001\u2013R008 and R008 contains 58 samples. The "
+        "background provides spatial context only and is not used in the assignment."
     ),
     "nested_cv_rmse_bar.png": (
         "<strong>Figure 3.</strong> Leave-one-reach-out grouped cross-validation with transport "
@@ -187,20 +184,16 @@ FIG_CAPTIONS: dict[str, str] = {
         "and k-correction. R008 contains 58 samples; the multi-sample tributary group R002\u2013R005 "
         "contains 59 samples; R001, R006, and R007 are single-sample logical reaches."
     ),
-    "ablation_flux_comparison.png": (
+    "supp_flux_diagnostics.png": (
         "<strong>Figure S2.</strong> Model F<sub>CO\u2082</sub> diagnostics for the Baseline, "
-        "Residual-AI (MLP), and k-correction. Left: sample-summed model flux diagnostic. Right: "
-        "flux-diagnostic RMSE relative to the empirical comparison proxy. These quantities are model "
-        "diagnostics and are not independently validated evasion measurements."
-    ),
-    "identifiability_tradeoff.png": (
-        "<strong>Figure S3.</strong> Concentration and flux diagnostics under leave-one-reach-out "
-        "grouped evaluation (n=120). Left: sample-level k<sub>eff</sub>/k<sub>emp</sub> versus the "
-        "k-correction model F<sub>CO\u2082</sub> diagnostic. Right: held-out C<sub>aq</sub> RMSE and "
-        "sample-summed model flux diagnostic for the Baseline, Residual-AI (MLP), and k-correction."
+        "Residual-AI (MLP), and k-correction under leave-one-reach-out grouped evaluation (n=120). "
+        "(a) Sample-summed model flux diagnostic. (b) Flux-diagnostic RMSE relative to the empirical "
+        "comparison proxy. (c) Sample-level k<sub>eff</sub>/k<sub>emp</sub> versus the k-correction "
+        "model flux diagnostic. These quantities are model diagnostics and are not independently "
+        "validated evasion measurements."
     ),
     "filter_scale_sgs_box.png": (
-        "<strong>Figure S4.</strong> Distribution of |S<sub>sgs</sub>| across the 120 sample records "
+        "<strong>Figure S3.</strong> Distribution of |S<sub>sgs</sub>| across the 120 sample records "
         "at each implemented filter scale. Boxes summarize the distributions and individual points "
         "show sample-level values; the final category is the study-reach scale."
     ),
@@ -214,16 +207,14 @@ FIG_CAPTIONS: dict[str, str] = {
 
 FIG_ORDER = [
     "les_filter_conceptual.png",
-    "gis_reach_assignment_map.png",
-    "gis_samples_on_network.png",
+    "figure2_reach_assignment_and_samples.png",
     "nested_cv_rmse_bar.png",
     "nested_cv_scatter_holdout.png",
     "identifiability_k_vs_sgs.png",
     "filter_scale_sgs.png",
     "dimensionless_coefficients.png",
     "subgroup_rmse_r008_vs_trib.png",
-    "ablation_flux_comparison.png",
-    "identifiability_tradeoff.png",
+    "supp_flux_diagnostics.png",
     "filter_scale_sgs_box.png",
     "obs_vs_model_scatter_large.png",
 ]
@@ -347,11 +338,10 @@ CONTENT: list[tuple] = [
      "phosphorus, and photosynthetically active radiation were not available for this campaign. A "
      "same-day merge against the Water Quality Portal returned no matching samples (0 of 120), and "
      "the StreamPULSE database contains no East River sites. These gaps constrain the covariate set "
-     "available to the closures. Figures 2a and 2b show the logical-reach assignment and the "
+     "available to the closures. Figure 2 shows the logical-reach assignment and the "
      "distribution of the 120 campaign samples on the river network."),
     ("raw", "REACH_TABLE"),
-    ("fig", "gis_reach_assignment_map.png"),
-    ("fig", "gis_samples_on_network.png"),
+    ("fig", "figure2_reach_assignment_and_samples.png"),
 
     ("h3", "2.2 Quasi-steady CO\u2082 mass balance and gas exchange"),
     ("p",
@@ -626,11 +616,10 @@ CONTENT: list[tuple] = [
      "Residual-AI prediction is 0.56, and the two are anti-correlated across samples (Spearman "
      "\u22120.57; Figure 5). A positive source term and a reduced transfer velocity act on the "
      "concentration balance in compensating directions, and the held-out concentration metric provides "
-     "limited discrimination between them. Figure S3 summarizes the corresponding "
-     "concentration\u2013flux trade-off."),
+     "limited discrimination between them. Figure S2(c) shows the corresponding sample-level relation "
+     "between k<sub>eff</sub>/k<sub>emp</sub> and the k-correction flux diagnostic."),
     ("raw", "INNOVATION_TABLES"),
-    ("fig", "ablation_flux_comparison.png"),
-    ("fig", "identifiability_tradeoff.png"),
+    ("fig", "supp_flux_diagnostics.png"),
 
     ("h3", "3.4 The diagnosed residual depends on filter scale"),
     ("p",
@@ -639,7 +628,7 @@ CONTENT: list[tuple] = [
      "resolution (\u0394x \u2248 838 m), decreases to 1.120 and 1.050 at successive merging levels, and "
      "reaches 1.000 at the study-reach scale (\u0394x \u2248 26,086 m; 7 cells, of which 6 contain "
      "samples). The variance of S<sub>sgs</sub> falls from 22.4 to 2.20 over the same range (Figure "
-     "S4). The result indicates that the diagnosed closure residual depends on the spatial "
+     "S3). The result indicates that the diagnosed closure residual depends on the spatial "
      "representation used to separate resolved from unresolved contributions. It is an empirical scale "
      "dependence for the implemented reach-local operator, not a universal scaling law."),
     ("fig", "filter_scale_sgs.png"),

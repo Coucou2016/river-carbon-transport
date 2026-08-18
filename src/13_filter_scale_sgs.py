@@ -311,19 +311,21 @@ def plot_filter_scale(metrics: pd.DataFrame, detail: pd.DataFrame, fig_dir: Path
     n_cell = metrics["n_cells_with_samples"].values
 
     axes[0].plot(dx, mean_abs, "-o", color="#1f4e79", ms=16, lw=2.6, markeredgecolor="white", markeredgewidth=1.3, zorder=3)
-    for x, y, lab, nc in zip(dx, mean_abs, metrics["dx_label"], n_cell):
-        axes[0].annotate(f"{lab}\nsampled cells = {int(nc)}", (x, y), textcoords="offset points", xytext=(8, 8), fontsize=11)
+    for i, (x, y, lab, nc) in enumerate(zip(dx, mean_abs, metrics["dx_label"], n_cell)):
+        xytext = (16, -38) if i == 0 else (8, 8)
+        axes[0].annotate(f"{lab}\nsampled cells = {int(nc)}", (x, y), textcoords="offset points", xytext=xytext, fontsize=11)
     axes[0].set_xlabel("Filter scale Δx, mean sampled-cell length (m)", fontsize=14)
     axes[0].set_ylabel(r"Mean $|S_{\mathrm{sgs}}|$ (mol m$^{-2}$ d$^{-1}$)", fontsize=14)
-    axes[0].set_title("|S_sgs| magnitude vs filter scale", fontweight="bold")
+    axes[0].set_title(r"Mean $|S_{\mathrm{sgs}}|$ versus filter scale", fontweight="bold")
     axes[0].grid(True, alpha=0.35)
 
     axes[1].plot(dx, var_s, "-s", color="#e67e22", ms=16, lw=2.6, markeredgecolor="white", markeredgewidth=1.3, zorder=3)
-    for x, y, lab in zip(dx, var_s, metrics["dx_label"]):
-        axes[1].annotate(lab, (x, y), textcoords="offset points", xytext=(8, 8), fontsize=11)
+    for i, (x, y, lab) in enumerate(zip(dx, var_s, metrics["dx_label"])):
+        xytext = (16, -28) if i == 0 else (8, 8)
+        axes[1].annotate(lab, (x, y), textcoords="offset points", xytext=xytext, fontsize=11)
     axes[1].set_xlabel("Filter scale Δx, mean sampled-cell length (m)", fontsize=14)
     axes[1].set_ylabel(r"$\mathrm{Var}(S_{\mathrm{sgs}})$  (mol$^2$ m$^{-4}$ d$^{-2}$)", fontsize=14)
-    axes[1].set_title("|S_sgs| variance vs filter scale", fontweight="bold")
+    axes[1].set_title(r"Variance of $S_{\mathrm{sgs}}$ versus filter scale", fontweight="bold")
     axes[1].grid(True, alpha=0.35)
 
     fig.suptitle("Subgrid residual magnitude across filter scales (120 samples)", fontsize=16, fontweight="bold", y=1.02)
@@ -352,7 +354,7 @@ def plot_filter_scale(metrics: pd.DataFrame, detail: pd.DataFrame, fig_dir: Path
     )
     ax.set_xlabel("Filter scale", fontsize=15)
     ax.set_ylabel(r"$|S_{\mathrm{sgs}}|$  (mol m$^{-2}$ d$^{-1}$)", fontsize=15)
-    ax.set_title("|S_sgs| distribution at each filter scale (n=120 samples)", fontweight="bold")
+    ax.set_title(r"$|S_{\mathrm{sgs}}|$ distribution at each filter scale (n=120 samples)", fontweight="bold")
     fig.tight_layout()
     fig.savefig(fig_dir / "filter_scale_sgs_box.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)

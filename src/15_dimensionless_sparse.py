@@ -94,9 +94,28 @@ FEATURE_DISPLAY = {
     "log10_Da": "log10(Da)_z",
 }
 
+FEATURE_MATH = {
+    "Fr": "Fr_{z}",
+    "Slope": "Slope_{z}",
+    "h_over_W": "(h/W)_{z}",
+    "log10_Re": r"\log_{10}(Re)_{z}",
+    "log10_Da": r"\log_{10}(Da)_{z}",
+}
+
 
 def _display_name(name: str) -> str:
     return FEATURE_DISPLAY.get(name, name)
+
+
+def format_equation_math(names: list[str], coef: np.ndarray, intercept: float, y_math: str) -> str:
+    """Mathtext equation for figures only (JSON tables keep the plain-text form)."""
+    parts = [f"{intercept:+.4g}"]
+    for n, a in zip(names, coef):
+        if abs(a) < 1e-12:
+            continue
+        parts.append(f"{a:+.4g}\\,{FEATURE_MATH.get(n, n)}")
+    body = " ".join(parts)
+    return rf"${y_math} \approx {body}$"
 
 
 def fit_sparse(X: pd.DataFrame, y: np.ndarray, kind: str = "lasso", alpha: float = 0.05):
@@ -136,7 +155,7 @@ def plot_coefficients(
     cv_r2: float,
 ) -> None:
     order = np.argsort(np.abs(coef_z))
-    names_o = [_display_name(names[i]) for i in order]
+    names_o = [rf"${FEATURE_MATH[names[i]]}$" for i in order]
     coef_o = coef_z[order]
     colors = ["#e74c3c" if v < 0 else "#2980b9" for v in coef_o]
 
@@ -144,12 +163,12 @@ def plot_coefficients(
     ax.barh(names_o, coef_o, color=colors, edgecolor="white", height=0.62)
     ax.axvline(0.0, color="#333", lw=1.2)
     ax.set_xlabel("Standardized LASSO coefficients (dimensionless)", fontsize=14)
-    ax.set_title("Sparse dimensionless closure: standardized LASSO coefficients for S*", fontsize=16, fontweight="bold")
+    ax.set_title("Sparse dimensionless closure: standardized LASSO coefficients for $S^{*}$", fontsize=16, fontweight="bold")
     ax.grid(True, axis="x", alpha=0.35)
     ax.text(
         0.02,
         -0.18,
-        f"{equation}\nLeave-one-reach R² for S* = {cv_r2:.3f}, n = {n}.",
+        f"{equation}\nLeave-one-reach $R^{{2}}$ for $S^{{*}}$ = {cv_r2:.3f}, n = {n}.",
         transform=ax.transAxes,
         ha="left",
         va="top",
@@ -255,6 +274,7 @@ def main(config_path: str | None = None) -> None:
 
     pipe, coef_z, intercept_z, coef_x, intercept_x = fit_sparse(X, y_star, kind="lasso", alpha=0.05)
     eq_star_z = format_equation(cols, coef_z, intercept_z, "S*")
+    eq_star_z_math = format_equation_math(cols, coef_z, intercept_z, r"S^{*}")
     eq_star_x = format_equation(cols, coef_x, intercept_x, "S_sgs*")
     # Also dimensional S_sgs on the same Π features (for transport nested CV)
     pipe_s, coef_zs, intercept_zs, coef_xs, intercept_xs = fit_sparse(X, y, kind="lasso", alpha=0.05)
@@ -279,7 +299,7 @@ def main(config_path: str | None = None) -> None:
     )
     coef_tbl.to_csv(tbl_dir / "dimensionless_sparse_coefficients.csv", index=False)
 
-    plot_coefficients(cols, coef_z, eq_star_z, fig_dir, n=int(len(train)), cv_r2=cv_r2_star)
+    plot_coefficients(cols, coef_z, eq_star_z_math, fig_dir, n=int(len(train)), cv_r2=cv_r2_star)
 
     # Nested CV coupled transport
     obs = pd.read_csv(proc / "reach_daily_observations.csv", parse_dates=["date"])

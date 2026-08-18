@@ -347,10 +347,10 @@ def plot_rmse_bar(metrics: pd.DataFrame, fig_dir: Path) -> None:
         "k_correction": "#e67e22",
     }
     labels = {
-        "baseline": "Baseline\n(S_sgs=0)",
+        "baseline": "Baseline\n$S_{sgs}$=0",
         "residual_ai_mlp": "Residual-AI\nMLP",
         "residual_ai_random_forest": "Residual-AI\nRandom Forest",
-        "k_correction": "k-correction\n(k_eff)",
+        "k_correction": "k-correction\n$k_{eff}$",
     }
     for _, row in want.iterrows():
         key = row["scheme"] if row["scheme"] != "residual_ai" else f"residual_ai_{row['model']}"
@@ -423,10 +423,11 @@ def plot_holdout_scatter(holdout: pd.DataFrame, fig_dir: Path) -> None:
     rmse = float((err**2).mean() ** 0.5)
     r2 = float(1 - (err**2).sum() / max(((df["C_obs_mol_m3"] - df["C_obs_mol_m3"].mean()) ** 2).sum(), 1e-12))
     ax.text(
-        0.04,
         0.96,
-        f"LOO-reach holdout\nn = {len(df)}\nRMSE = {rmse:.4f}\nR2 = {r2:.3f}",
+        0.96,
+        f"Leave-one-reach-out holdout\nn = {len(df)}\nRMSE = {rmse:.4f}\n$R^2$ = {r2:.3f}",
         transform=ax.transAxes,
+        ha="right",
         va="top",
         fontsize=14,
         bbox=dict(boxstyle="round", facecolor="white", alpha=0.92, edgecolor="#ccc"),
@@ -441,7 +442,7 @@ def plot_holdout_scatter(holdout: pd.DataFrame, fig_dir: Path) -> None:
         fontweight="bold",
         pad=12,
     )
-    ax.legend(loc="lower right", fontsize=11, ncol=2, framealpha=0.95)
+    ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=12, ncol=1, framealpha=0.95)
     ax.grid(True, alpha=0.35)
     fig.tight_layout()
     fig.savefig(fig_dir / "nested_cv_scatter_holdout.png", dpi=FIG_DPI, bbox_inches="tight")
@@ -463,8 +464,8 @@ def plot_subgroup_rmse(sub_df: pd.DataFrame, fig_dir: Path) -> None:
     scheme_lab = {"baseline": "Baseline", "residual_ai": "Residual-AI (MLP)", "k_correction": "k-correction"}
     sg_lab = {
         "R008_only": "R008 mainstem\n(n≈58)",
-        "multi_sample_tributaries": "Multi-sample tribs\nR002–R005",
-        "one_sample_reaches_schematic": "One-sample\n(schematic)",
+        "multi_sample_tributaries": "Multi-sample tributaries\nR002–R005",
+        "one_sample_reaches_schematic": "Single-sample\nreaches",
     }
     x = np.arange(len(keep_sg))
     w = 0.25

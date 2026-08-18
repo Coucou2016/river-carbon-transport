@@ -107,6 +107,60 @@ Figures regenerated from the fixed scripts; frozen numbers reproduced exactly (s
 result-table MD5 hashes unchanged; `verify_paper.py` PASS; public copies in
 `results/figures/paper/` re-synced and pushed (commits `1d71163`, `2995c5d`).
 
+## Round 18 — ChatGPT fix verification (10/13 pass, 3 layout approvals)
+
+**Sent:** Brief `14_ROUND18_FIX_VERIFICATION.md` with all 13 re-pushed PNG URLs (commit `3401dda`),
+the fix list, and Q18.1–Q18.4 (per-figure re-audit, three layout decisions, caption audit, residual
+defects). ChatGPT cross-checked `paper.md` at commit `3401dda` (22 citations) and reported rendered
+details visible only in the new PNGs.
+
+**Verdict:** 10 of 13 figures effectively ready. Remaining rendering defects: Fig 4 legend +
+statistics inset overlap observations; Fig 6 native-scale annotation collides with the panel title;
+Fig S3 flux label 69.51 (should be 69.5) and 0.031 cramped at the boundary; Fig 7 code-style
+math typography. Layout decisions: YES merge Figs 2a+2b; YES combine S2/S3 unique panels (drop the
+redundant S3 right panel); YES move Fig 4 legend outside.
+
+## Round 19 fixes applied (rendering pass + layout merges)
+
+Pre-edit backup: `paper_versions/v6_20260818-1330_pre_round19_rendering/` (commit `0f17211`).
+
+- **Fig 2 merge (layout a):** `src/10_gis_network_viz.py` refactored into `_draw_reach_assignment` /
+  `_draw_samples` helpers plus new `plot_figure2_combined` → `figure2_reach_assignment_and_samples.png`
+  with panel titles "(a) Logical reach assignment on the NHDPlus HR network" / "(b) Campaign sample
+  locations by logical reach". Old standalone maps still generated (report use) but removed from the
+  paper figure set.
+- **S2/S3 merge (layout b):** new `plot_flux_diagnostics_combined` in `src/14_identifiability_ksgs.py`
+  → `supp_flux_diagnostics.png` with the three unique panels: (a) closure-level sample-summed flux
+  diagnostic, (b) flux-diagnostic RMSE vs empirical proxy, (c) sample-level k_eff/k_emp vs flux
+  diagnostic. The redundant concentration-RMSE/flux-diamond panel (former S3 right) is dropped; it
+  duplicated Figure 3 content. Paper numbering: new figure = Figure S2; former S4 box plot renumbered
+  to Figure S3.
+- **Fig 4 (layout c):** reach legend moved outside the axes (`bbox_to_anchor=(1.01, 0.5)`);
+  statistics box relocated to the empty upper-right corner; "LOO-reach holdout" →
+  "Leave-one-reach-out holdout"; R² rendered as mathtext.
+- **Fig 6:** first-point annotations offset below/right of the marker so they no longer collide with
+  panel titles; panel titles → "Mean |S_sgs| versus filter scale" / "Variance of S_sgs versus filter
+  scale".
+- **Fig S3 (now part of merged S2):** flux labels fixed — 69.507 renders as "69.5" (≥10 uses one
+  decimal), 3.243512 as "3.24", 0.031266 as "0.031"; the 0.031 annotation offset up-left with right
+  alignment for clearance; category labels use mathtext S_sgs=0 / k_eff.
+- **Fig 7:** new `format_equation_math` + `FEATURE_MATH` produce real mathtext (S* ≈ 1.059 +
+  1.536 Fr_z − 1.669 Slope_z − 2.179 (h/W)_z with subscripts and log10(Da)_z / log10(Re)_z);
+  y-axis category labels rendered as mathtext; JSON tables keep the plain-text equation unchanged.
+- **Fig 3 / Fig S1 / Fig S4:** category labels mathtext (S_sgs=0, k_eff); "Multi-sample tribs" →
+  "Multi-sample tributaries"; "One-sample (schematic)" → "Single-sample reaches"; S4 title mathtext
+  |S_sgs|.
+- **Fig 5:** annotation "(LOO-reach)" → "leave-one-reach-out".
+- **generate_paper.py:** FIG_ORDER reduced to 11 files; Figure 2 caption merged; Figure S2 caption
+  rewritten for the three combined panels; S3 = box plot; body references updated ("Figure 2",
+  "Figure S2(c)", "Figure S3").
+
+**Verification:** stages 10/12/13/14/15 regenerated; frozen numbers reproduced exactly
+(0.028365/0.057317/0.074499/0.024437; filter ladder 1.916/1.120/1.050/1.000; median ratio
+3.3546e-4; Spearman −0.5664; sparse law 1.059/+1.536/−1.669/−2.179; R² −2.743). `verify_paper.py`
+PASS with 11 base64 figures, all frozen counts intact. Public copies in `results/figures/paper/`
+re-synced (old standalone maps and S2/S3 files removed from the published set).
+
 ## Fix policy
 
 1. Titles/labels/wording fixes are applied in the generating script, figures regenerated, and the

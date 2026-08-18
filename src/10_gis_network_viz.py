@@ -507,13 +507,7 @@ def plot_gis_comparison_panel(
     plt.close(fig)
 
 
-def plot_reach_assignment_map(gdf: gpd.GeoDataFrame, out_path: Path) -> None:
-    """Show which NHD segments map to each study reach."""
-    reach_colors = {
-        f"R{i:03d}": c for i, c in enumerate(plt.cm.tab10(np.linspace(0, 1, 8)), start=1)
-    }
-    fig, ax = plt.subplots(figsize=(11, 9))
-    _terrain_background(ax, gdf)
+def _draw_reach_assignment(ax, gdf: gpd.GeoDataFrame, reach_colors: dict) -> None:
     for rid in REACH_ORDER:
         sub = gdf[gdf["reach_id"] == rid]
         color = reach_colors.get(rid, "#888")
@@ -526,30 +520,12 @@ def plot_reach_assignment_map(gdf: gpd.GeoDataFrame, out_path: Path) -> None:
         if gdf["reach_id"].eq(r).any()
     ]
     ax.legend(handles=legend_handles, loc="upper left", fontsize=8, framealpha=0.9)
-    ax.set_title("NHDPlus HR segments mapped to logical reaches using GNIS name matching and proximity to campaign coordinates")
-    ax.set_xlabel("Easting (m, UTM 13N)")
-    ax.set_ylabel("Northing (m, UTM 13N)")
-    ax.set_aspect("equal", adjustable="box")
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
-    plt.close(fig)
 
 
-def plot_samples_on_network(gdf: gpd.GeoDataFrame, obs: pd.DataFrame, out_path: Path) -> None:
-    """Campaign sample locations snapped visually on river lines."""
-    fig, ax = plt.subplots(figsize=(11, 9))
-    _terrain_background(ax, gdf)
+def _draw_samples(ax, gdf: gpd.GeoDataFrame, obs_g: gpd.GeoDataFrame, reach_colors: dict) -> None:
     for _, row in gdf.iterrows():
         xs, ys = row.geometry.xy
         ax.plot(xs, ys, color="#7a9eb5", linewidth=1.2, alpha=0.7, zorder=1)
-
-    obs_g = gpd.GeoDataFrame(
-        obs,
-        geometry=gpd.points_from_xy(obs.lon, obs.lat),
-        crs="EPSG:4326",
-    ).to_crs(UTM_CRS)
-
-    reach_colors = dict(zip(REACH_ORDER, plt.cm.tab10(np.linspace(0, 1, 8))))
     for rid in REACH_ORDER:
         sub = obs_g[obs_g["reach_id"] == rid]
         if sub.empty:
@@ -565,11 +541,72 @@ def plot_samples_on_network(gdf: gpd.GeoDataFrame, obs: pd.DataFrame, out_path: 
             zorder=3,
         )
     ax.legend(loc="upper left", fontsize=8)
+
+
+def plot_reach_assignment_map(gdf: gpd.GeoDataFrame, out_path: Path) -> None:
+    """Show which NHD segments map to each study reach."""
+    reach_colors = {
+        f"R{i:03d}": c for i, c in enumerate(plt.cm.tab10(np.linspace(0, 1, 8)), start=1)
+    }
+    fig, ax = plt.subplots(figsize=(11, 9))
+    _terrain_background(ax, gdf)
+    _draw_reach_assignment(ax, gdf, reach_colors)
+    ax.set_title("NHDPlus HR segments mapped to logical reaches using GNIS name matching and proximity to campaign coordinates")
+    ax.set_xlabel("Easting (m, UTM 13N)")
+    ax.set_ylabel("Northing (m, UTM 13N)")
+    ax.set_aspect("equal", adjustable="box")
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_samples_on_network(gdf: gpd.GeoDataFrame, obs: pd.DataFrame, out_path: Path) -> None:
+    """Campaign sample locations snapped visually on river lines."""
+    fig, ax = plt.subplots(figsize=(11, 9))
+    _terrain_background(ax, gdf)
+    obs_g = gpd.GeoDataFrame(
+        obs,
+        geometry=gpd.points_from_xy(obs.lon, obs.lat),
+        crs="EPSG:4326",
+    ).to_crs(UTM_CRS)
+    reach_colors = dict(zip(REACH_ORDER, plt.cm.tab10(np.linspace(0, 1, 8))))
+    _draw_samples(ax, gdf, obs_g, reach_colors)
     ax.set_title("Campaign samples on NHD network geometry")
     ax.set_xlabel("Easting (m, UTM 13N)")
     ax.set_ylabel("Northing (m, UTM 13N)")
     ax.set_aspect("equal", adjustable="box")
     fig.tight_layout()
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_figure2_combined(gdf: gpd.GeoDataFrame, obs: pd.DataFrame, out_path: Path) -> None:
+    """Two-panel Figure 2: (a) reach assignment, (b) sample locations — same geographic frame."""
+    reach_colors = dict(zip(REACH_ORDER, plt.cm.tab10(np.linspace(0, 1, 8))))
+    obs_g = gpd.GeoDataFrame(
+        obs,
+        geometry=gpd.points_from_xy(obs.lon, obs.lat),
+        crs="EPSG:4326",
+    ).to_crs(UTM_CRS)
+
+    fig, axes = plt.subplots(1, 2, figsize=(17, 8))
+    ax = axes[0]
+    _terrain_background(ax, gdf)
+    _draw_reach_assignment(ax, gdf, reach_colors)
+    ax.set_title("(a) Logical reach assignment on the NHDPlus HR network", fontweight="bold")
+    ax.set_xlabel("Easting (m, UTM 13N)")
+    ax.set_ylabel("Northing (m, UTM 13N)")
+    ax.set_aspect("equal", adjustable="box")
+
+    ax = axes[1]
+    _terrain_background(ax, gdf)
+    _draw_samples(ax, gdf, obs_g, reach_colors)
+    ax.set_title("(b) Campaign sample locations by logical reach", fontweight="bold")
+    ax.set_xlabel("Easting (m, UTM 13N)")
+    ax.set_ylabel("Northing (m, UTM 13N)")
+    ax.set_aspect("equal", adjustable="box")
+
+    fig.tight_layout(w_pad=2.0)
     fig.savefig(out_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
 
@@ -729,6 +766,10 @@ def main(config_path: str | None = None) -> list[str]:
 
     out = fig_dir / "gis_samples_on_network.png"
     plot_samples_on_network(gdf, obs, out)
+    created.append(out.name)
+
+    out = fig_dir / "figure2_reach_assignment_and_samples.png"
+    plot_figure2_combined(gdf, obs, out)
     created.append(out.name)
 
     manifest = {

@@ -166,7 +166,7 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     ax.text(
         0.04,
         0.96,
-        f"Spearman ρ = {rho:.2f}\nn = {len(df)} (LOO-reach)",
+        f"Spearman ρ = {rho:.2f}\nn = {len(df)}, leave-one-reach-out",
         transform=ax.transAxes,
         va="top",
         fontsize=13,
@@ -205,7 +205,7 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     ax.legend(ncol=2, fontsize=10, framealpha=0.95)
 
     ax = axes[1]
-    labels = ["Baseline\n(S=0)", "Residual-AI\nMLP", "k-correction\n(k_eff)"]
+    labels = ["Baseline\n$S_{sgs}$=0", "Residual-AI\nMLP", "k-correction\n$k_{eff}$"]
     rmse = [
         float(np.sqrt((df["err_c_baseline"] ** 2).mean())),
         float(np.sqrt((df["err_c_ai"] ** 2).mean())),
@@ -227,8 +227,12 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     for i, v in enumerate(rmse):
         ax.text(i - 0.18, v, f"{v:.4f}", ha="center", va="bottom", fontsize=11)
     for i, v in enumerate(flux):
-        ax2.annotate(f"{v:.2f}" if v >= 1 else f"{v:.3f}", (i + 0.18, v),
-                     textcoords="offset points", xytext=(14, -4), color="#8e44ad", fontsize=11)
+        txt = f"{v:.1f}" if v >= 10 else (f"{v:.2f}" if v >= 1 else f"{v:.3f}")
+        offset = (14, 10) if i < len(flux) - 1 else (-16, 12)
+        ax2.annotate(txt, (i + 0.18, v),
+                     textcoords="offset points", xytext=offset,
+                     ha="right" if i == len(flux) - 1 else "left",
+                     color="#8e44ad", fontsize=11)
     ax.grid(True, axis="y", alpha=0.35)
     h1, l1 = ax.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
@@ -237,6 +241,86 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     fig.suptitle("Concentration and flux diagnostics under leave-one-reach-out grouped evaluation (n=120)", fontsize=14, fontweight="bold", y=1.02)
     fig.tight_layout()
     fig.savefig(fig_dir / "identifiability_tradeoff.png", dpi=FIG_DPI, bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_flux_diagnostics_combined(df: pd.DataFrame, metrics: pd.DataFrame, fig_dir: Path) -> None:
+    """Combined supplementary figure with the three unique flux-diagnostic panels.
+
+    (a) closure-level sample-summed model flux diagnostic, (b) flux-diagnostic RMSE
+    relative to the empirical comparison proxy, (c) sample-level k_eff/k_emp versus
+    the k-correction model flux diagnostic. Replaces the former two-figure layout in
+    which the concentration-RMSE/flux-diamond panel duplicated Figure 3 content.
+    """
+    md = metrics[(metrics["cv_protocol"] == "loo_reach") & (metrics["subgroup"] == "all_120")].copy()
+    md = md[~((md["scheme"] == "residual_ai") & (md["model"] != "mlp"))]
+    order = ["baseline", "residual_ai", "k_correction"]
+    labs = ["Baseline\n$S_{sgs}$=0", "Residual-AI\nMLP", "k-correction\n$k_{eff}$"]
+    colors = ["#7f8c8d", "#2980b9", "#e67e22"]
+    tot, rmse_f = [], []
+    for sch in order:
+        sub = md[md["scheme"] == sch]
+        tot.append(float(sub["flux_total_mol_m2d"].iloc[0]) if len(sub) else np.nan)
+        rmse_f.append(float(sub["rmse_f"].iloc[0]) if len(sub) else np.nan)
+
+    fig, axes = plt.subplots(1, 3, figsize=(17.6, 5.8))
+
+    ax = axes[0]
+    ax.bar(range(3), tot, color=colors, edgecolor="white", width=0.7)
+    ax.set_xticks(range(3))
+    ax.set_xticklabels(labs, fontsize=12)
+    ax.set_ylabel("Sample-summed model $F_{CO2}$ diagnostic (mol m$^{-2}$ d$^{-1}$)", fontsize=12)
+    ax.set_title("(a) Sample-summed model flux diagnostic", fontweight="bold")
+    for i, v in enumerate(tot):
+        if np.isfinite(v):
+            txt = f"{v:.1f}" if v >= 10 else (f"{v:.2f}" if v >= 1 else f"{v:.3f}")
+            ax.text(i, v, txt, ha="center", va="bottom", fontsize=12)
+    ax.set_ylim(0, max(np.nanmax(tot) * 1.15, 0.1))
+    ax.grid(True, axis="y", alpha=0.35)
+
+    ax = axes[1]
+    ax.bar(range(3), rmse_f, color=colors, edgecolor="white", width=0.7)
+    ax.set_xticks(range(3))
+    ax.set_xticklabels(labs, fontsize=12)
+    ax.set_ylabel("Flux-diagnostic RMSE (mol m$^{-2}$ d$^{-1}$)", fontsize=12)
+    ax.set_title("(b) Flux-diagnostic RMSE vs empirical proxy", fontweight="bold")
+    for i, v in enumerate(rmse_f):
+        if np.isfinite(v):
+            ax.text(i, v, f"{v:.3f}", ha="center", va="bottom", fontsize=12)
+    ax.set_ylim(0, max(np.nanmax(rmse_f) * 1.18, 0.1))
+    ax.grid(True, axis="y", alpha=0.35)
+
+    ax = axes[2]
+    reach_colors = {f"R{i:03d}": c for i, c in enumerate(plt.cm.tab10(np.linspace(0, 1, 8)), start=1)}
+    for rid in REACH_ORDER:
+        sub = df[df["reach_id"] == rid]
+        if sub.empty:
+            continue
+        ax.scatter(
+            sub["k_ratio"],
+            sub["F_kcorr"],
+            s=150,
+            c=[reach_colors[rid]],
+            edgecolors="white",
+            linewidths=1.1,
+            alpha=0.9,
+            label=rid,
+            zorder=3,
+        )
+    ax.axvline(1.0, color="#7f8c8d", ls=":", lw=1.6)
+    ax.set_xlabel("$k_{eff} / k_{emp}$", fontsize=13)
+    ax.set_ylabel("k-correction model $F_{CO2}$ diagnostic (mol m$^{-2}$ d$^{-1}$)", fontsize=11)
+    ax.set_title("(c) Sample-level flux diagnostic vs $k_{eff}/k_{emp}$", fontweight="bold")
+    ax.set_xscale("log")
+    ax.grid(True, alpha=0.35, which="both")
+    ax.legend(ncol=2, fontsize=9, framealpha=0.95)
+
+    fig.suptitle(
+        "Model flux diagnostics across closures under leave-one-reach-out grouped evaluation (n=120)",
+        fontsize=15, fontweight="bold", y=1.03,
+    )
+    fig.tight_layout()
+    fig.savefig(fig_dir / "supp_flux_diagnostics.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -310,6 +394,12 @@ def main(config_path: str | None = None) -> None:
             for k in rmse_c
         ]
     ).to_csv(tbl_dir / "identifiability_metrics.csv", index=False)
+
+    metrics_path = tbl_dir / "nested_cv_metrics.csv"
+    if metrics_path.exists():
+        plot_flux_diagnostics_combined(df, pd.read_csv(metrics_path), fig_dir)
+    else:
+        LOG.warning("nested_cv_metrics.csv missing; skipping combined flux-diagnostic figure")
 
     plot_identifiability(df, fig_dir)
     plt.close("all")
