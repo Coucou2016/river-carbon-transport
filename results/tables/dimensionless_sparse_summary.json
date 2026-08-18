@@ -8,9 +8,9 @@
     "log10_Da"
   ],
   "n": 120,
-  "equation_standardized_Sstar": "S_sgs*_z \u2248 + 1.059 + 1.536*Fr \u2212 1.669*Slope \u2212 2.179*h_over_W",
-  "equation_original_Sstar": "S_sgs* \u2248 + 8.368 + 1.327*Fr \u2212 38.8*Slope \u2212 349*h_over_W",
-  "equation_Ssgs": "S_sgs \u2248 + 3.145 + 0.7332*Fr \u2212 15.59*Slope \u2212 90.79*h_over_W \u2212 0.0001372*log10_Da",
+  "equation_standardized_Sstar": "S* \u2248 + 1.059 + 1.536*Fr_z \u2212 1.669*Slope_z \u2212 2.179*(h/W)_z",
+  "equation_original_Sstar": "S_sgs* \u2248 + 8.368 + 1.327*Fr_z \u2212 38.8*Slope_z \u2212 349*(h/W)_z",
+  "equation_Ssgs": "S_sgs \u2248 + 3.145 + 0.7332*Fr_z \u2212 15.59*Slope_z \u2212 90.79*(h/W)_z \u2212 0.0001372*log10(Da)_z",
   "dominant_standardized": "-2.18*h_over_W + -1.67*Slope + +1.54*Fr",
   "loo_reach_Sstar_rmse": 3.809121793809913,
   "loo_reach_Sstar_r2": -2.742942265304295,

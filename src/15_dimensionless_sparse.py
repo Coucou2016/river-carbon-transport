@@ -79,11 +79,24 @@ def format_equation(names: list[str], coef: np.ndarray, intercept: float, y_name
     for n, a in zip(names, coef):
         if abs(a) < 1e-12:
             continue
-        parts.append(f"{a:+.4g}*{n}")
+        parts.append(f"{a:+.4g}*{_display_name(n)}")
     body = " ".join(parts).replace("+", "+ ").replace("-", "− ")
     # tidy double spaces
     body = " ".join(body.split())
     return f"{y_name} ≈ {body}"
+
+
+FEATURE_DISPLAY = {
+    "Fr": "Fr_z",
+    "Slope": "Slope_z",
+    "h_over_W": "(h/W)_z",
+    "log10_Re": "log10(Re)_z",
+    "log10_Da": "log10(Da)_z",
+}
+
+
+def _display_name(name: str) -> str:
+    return FEATURE_DISPLAY.get(name, name)
 
 
 def fit_sparse(X: pd.DataFrame, y: np.ndarray, kind: str = "lasso", alpha: float = 0.05):
@@ -123,7 +136,7 @@ def plot_coefficients(
     cv_r2: float,
 ) -> None:
     order = np.argsort(np.abs(coef_z))
-    names_o = [names[i] for i in order]
+    names_o = [_display_name(names[i]) for i in order]
     coef_o = coef_z[order]
     colors = ["#e74c3c" if v < 0 else "#2980b9" for v in coef_o]
 
@@ -136,7 +149,7 @@ def plot_coefficients(
     ax.text(
         0.02,
         -0.18,
-        f"{equation}\nLeave-one-reach-out CV on S* (dimensionless response): R² = {cv_r2:.3f}, n = {n}.",
+        f"{equation}\nLeave-one-reach R² for S* = {cv_r2:.3f}, n = {n}.",
         transform=ax.transAxes,
         ha="left",
         va="top",
@@ -241,7 +254,7 @@ def main(config_path: str | None = None) -> None:
             LOG.info(sindy_eq)
 
     pipe, coef_z, intercept_z, coef_x, intercept_x = fit_sparse(X, y_star, kind="lasso", alpha=0.05)
-    eq_star_z = format_equation(cols, coef_z, intercept_z, "S_sgs*_z")
+    eq_star_z = format_equation(cols, coef_z, intercept_z, "S*")
     eq_star_x = format_equation(cols, coef_x, intercept_x, "S_sgs*")
     # Also dimensional S_sgs on the same Π features (for transport nested CV)
     pipe_s, coef_zs, intercept_zs, coef_xs, intercept_xs = fit_sparse(X, y, kind="lasso", alpha=0.05)

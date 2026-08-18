@@ -123,14 +123,14 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
             zorder=3,
         )
     ax.set_xlabel(r"Leave-one-reach-out $k_{\mathrm{eff}}$ (m d$^{-1}$)", fontsize=14)
-    ax.set_ylabel(r"Implied $S_{\mathrm{sgs}}=(k_{\mathrm{emp}}-k_{\mathrm{eff}})(C-C_{\mathrm{eq}})$", fontsize=13)
-    ax.set_title("Lowering k compensates for a larger source term", fontweight="bold")
+    ax.set_ylabel(r"Implied source adjustment S$_{\mathrm{implied}}$ (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
+    ax.set_title("(a) Implied source adjustment under the k-correction", fontweight="bold")
     ax.legend(loc="upper right", fontsize=10, ncol=2, framealpha=0.95)
     ax.grid(True, alpha=0.35)
     ax.text(
         0.03,
         0.04,
-        "When k_eff << k_emp, implied source grows\nC fits; evasion flux collapses",
+        "Smaller k$_{eff}$ implies a larger compensating\nsource adjustment at fixed C",
         transform=ax.transAxes,
         va="bottom",
         fontsize=12,
@@ -154,9 +154,9 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     ]
     pad = 0.05 * (lims[1] - lims[0] + 1e-9)
     ax.plot([lims[0] - pad, lims[1] + pad], [lims[0] - pad, lims[1] + pad], color="#333", ls="--", lw=2.0, zorder=1)
-    ax.set_xlabel(r"Residual-AI holdout $S_{\mathrm{sgs}}$ (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
-    ax.set_ylabel(r"k-corr. implied $S_{\mathrm{sgs}}$ (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
-    ax.set_title("Source adjustments implied by the two closures", fontweight="bold")
+    ax.set_xlabel(r"Residual-AI held-out source prediction (mol m$^{-2}$ d$^{-1}$)", fontsize=12)
+    ax.set_ylabel(r"Implied source adjustment S$_{\mathrm{implied}}$ (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
+    ax.set_title("(b) Implied source adjustment versus Residual-AI prediction", fontweight="bold")
     ax.grid(True, alpha=0.35)
     # Spearman
     if df["S_sgs_ai"].std() > 0 and df["S_implied_from_k"].std() > 0:
@@ -198,8 +198,8 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
         )
     ax.axvline(1.0, color="#7f8c8d", ls=":", lw=1.6)
     ax.set_xlabel(r"$k_{\mathrm{eff}} / k_{\mathrm{emp}}$", fontsize=15)
-    ax.set_ylabel(r"k-corr. holdout $F_{\mathrm{CO}_2}$ (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
-    ax.set_title("Suppressed k_eff coincides with a collapsed flux diagnostic", fontweight="bold")
+    ax.set_ylabel(r"k-correction model $F_{\mathrm{CO}_2}$ diagnostic (mol m$^{-2}$ d$^{-1}$)", fontsize=12)
+    ax.set_title("k-correction flux diagnostic versus k$_{eff}$/k$_{emp}$", fontweight="bold")
     ax.set_xscale("log")
     ax.grid(True, alpha=0.35, which="both")
     ax.legend(ncol=2, fontsize=10, framealpha=0.95)
@@ -218,19 +218,23 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     ax.set_ylabel(r"Holdout $C_{\mathrm{aq}}$ RMSE (mol m$^{-3}$)", fontsize=13)
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=13)
-    ax.set_title("Lower concentration RMSE with a collapsed flux diagnostic", fontweight="bold")
+    ax.set_title("Concentration RMSE and sample-summed flux diagnostic by closure", fontweight="bold")
     ax2 = ax.twinx()
-    ax2.plot(x + 0.18, flux, "D", color="#8e44ad", ms=14, label=r"$F_{\mathrm{CO}_2}$ total")
-    ax2.set_ylabel(r"Holdout $F_{\mathrm{CO}_2}$ total (mol m$^{-2}$ d$^{-1}$)", fontsize=13, color="#8e44ad")
+    ax2.plot(x + 0.18, flux, "D", color="#8e44ad", ms=14, label=r"Sample-summed $F_{\mathrm{CO}_2}$ diagnostic")
+    ax2.set_ylabel(r"Sample-summed model $F_{\mathrm{CO}_2}$ diagnostic (mol m$^{-2}$ d$^{-1}$)", fontsize=12, color="#8e44ad")
     ax2.tick_params(axis="y", labelcolor="#8e44ad")
+    ax2.set_ylim(0, max(flux) * 1.35)
     for i, v in enumerate(rmse):
-        ax.text(i - 0.18, v, f"{v:.3f}", ha="center", va="bottom", fontsize=11)
+        ax.text(i - 0.18, v, f"{v:.4f}", ha="center", va="bottom", fontsize=11)
+    for i, v in enumerate(flux):
+        ax2.annotate(f"{v:.2f}" if v >= 1 else f"{v:.3f}", (i + 0.18, v),
+                     textcoords="offset points", xytext=(14, -4), color="#8e44ad", fontsize=11)
     ax.grid(True, axis="y", alpha=0.35)
     h1, l1 = ax.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
     ax.legend(h1 + h2, l1 + l2, loc="upper left", fontsize=11, framealpha=0.95)
 
-    fig.suptitle("Concentration-flux trade-off under the same leave-one-reach-out protocol (n=120)", fontsize=15, fontweight="bold", y=1.02)
+    fig.suptitle("Concentration and flux diagnostics under leave-one-reach-out grouped evaluation (n=120)", fontsize=14, fontweight="bold", y=1.02)
     fig.tight_layout()
     fig.savefig(fig_dir / "identifiability_tradeoff.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)

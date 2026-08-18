@@ -261,13 +261,13 @@ def plot_conceptual(fig_dir: Path) -> None:
             Rectangle((i, -2.6), 1.0, 5.2, facecolor="#d6eaf8", edgecolor="#7f8c8d", lw=0.8, alpha=0.35, zorder=0)
         )
     ax.scatter([1.2, 3.4, 5.1, 7.6, 8.8], [0.4, 1.9, -1.1, 0.2, 1.5], s=140, c="#c0392b", zorder=4, edgecolors="white", linewidths=1.2)
-    ax.set_title("Fine grid (native NHD segments)", fontweight="bold")
+    ax.set_title("Fine representation: native NHDPlus HR segments", fontweight="bold")
     ax.set_xlabel("Along-channel distance  ~  small filter Δx")
     ax.set_xticks([])
     ax.set_yticks([])
     ax.set_xlim(-0.2, 10.2)
     ax.set_ylim(-2.8, 2.8)
-    ax.text(0.03, 0.95, "Samples on short CVs\nlocal advection resolvable", transform=ax.transAxes, va="top", fontsize=13,
+    ax.text(0.03, 0.95, "Samples in short control volumes\nlocal advection remains resolved", transform=ax.transAxes, va="top", fontsize=13,
             bbox=dict(boxstyle="round", facecolor="white", alpha=0.9, edgecolor="#ccc"))
 
     # Right: filtered
@@ -287,13 +287,13 @@ def plot_conceptual(fig_dir: Path) -> None:
         arrowprops=dict(arrowstyle="-|>", color="#c0392b", lw=2.0),
     )
     ax.scatter([1.2, 3.4, 5.1, 7.6, 8.8], [0.4, 0.15, -0.05, 0.1, 0.25], s=180, c="#c0392b", zorder=4, edgecolors="white", linewidths=1.2)
-    ax.set_title("Coarse grid (merged, filtered)", fontweight="bold")
+    ax.set_title("Coarse representation: merged filter cells", fontweight="bold")
     ax.set_xlabel("Along-channel distance  ~  large filter Δx")
     ax.set_xticks([])
     ax.set_yticks([])
     ax.set_xlim(-0.2, 10.2)
     ax.set_ylim(-2.8, 2.8)
-    ax.text(0.03, 0.95, "Many samples in one CV\nunresolved processes to closure", transform=ax.transAxes, va="top", fontsize=13,
+    ax.text(0.03, 0.95, "Multiple samples in one coarse control volume\nunresolved contribution enters the closure", transform=ax.transAxes, va="top", fontsize=13,
             bbox=dict(boxstyle="round", facecolor="white", alpha=0.9, edgecolor="#ccc"))
 
     fig.suptitle(r"Spatial filtering of the river CO$_2$ balance: S$_{sgs}$ defined at $\Delta$x", fontsize=17, fontweight="bold", y=1.02)
@@ -312,8 +312,8 @@ def plot_filter_scale(metrics: pd.DataFrame, detail: pd.DataFrame, fig_dir: Path
 
     axes[0].plot(dx, mean_abs, "-o", color="#1f4e79", ms=16, lw=2.6, markeredgecolor="white", markeredgewidth=1.3, zorder=3)
     for x, y, lab, nc in zip(dx, mean_abs, metrics["dx_label"], n_cell):
-        axes[0].annotate(f"{lab}\nn_cell={int(nc)}", (x, y), textcoords="offset points", xytext=(8, 8), fontsize=11)
-    axes[0].set_xlabel("Filter scale Δx (mean length of sampled units, m)", fontsize=14)
+        axes[0].annotate(f"{lab}\nsampled cells = {int(nc)}", (x, y), textcoords="offset points", xytext=(8, 8), fontsize=11)
+    axes[0].set_xlabel("Filter scale Δx, mean sampled-cell length (m)", fontsize=14)
     axes[0].set_ylabel(r"Mean $|S_{\mathrm{sgs}}|$ (mol m$^{-2}$ d$^{-1}$)", fontsize=14)
     axes[0].set_title("|S_sgs| magnitude vs filter scale", fontweight="bold")
     axes[0].grid(True, alpha=0.35)
@@ -321,7 +321,7 @@ def plot_filter_scale(metrics: pd.DataFrame, detail: pd.DataFrame, fig_dir: Path
     axes[1].plot(dx, var_s, "-s", color="#e67e22", ms=16, lw=2.6, markeredgecolor="white", markeredgewidth=1.3, zorder=3)
     for x, y, lab in zip(dx, var_s, metrics["dx_label"]):
         axes[1].annotate(lab, (x, y), textcoords="offset points", xytext=(8, 8), fontsize=11)
-    axes[1].set_xlabel("Filter scale Δx (m)", fontsize=14)
+    axes[1].set_xlabel("Filter scale Δx, mean sampled-cell length (m)", fontsize=14)
     axes[1].set_ylabel(r"$\mathrm{Var}(S_{\mathrm{sgs}})$  (mol$^2$ m$^{-4}$ d$^{-2}$)", fontsize=14)
     axes[1].set_title("|S_sgs| variance vs filter scale", fontweight="bold")
     axes[1].grid(True, alpha=0.35)
@@ -352,7 +352,7 @@ def plot_filter_scale(metrics: pd.DataFrame, detail: pd.DataFrame, fig_dir: Path
     )
     ax.set_xlabel("Filter scale", fontsize=15)
     ax.set_ylabel(r"$|S_{\mathrm{sgs}}|$  (mol m$^{-2}$ d$^{-1}$)", fontsize=15)
-    ax.set_title("|S_sgs| distribution at each filter scale (n=120 real samples)", fontweight="bold")
+    ax.set_title("|S_sgs| distribution at each filter scale (n=120 samples)", fontweight="bold")
     fig.tight_layout()
     fig.savefig(fig_dir / "filter_scale_sgs_box.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)
@@ -412,10 +412,10 @@ def main(config_path: str | None = None) -> None:
     lattice_source = getattr(native, "attrs", {}).get("source", "unknown")
 
     scales = [
-        ("native", 1, "Native NHD"),
+        ("native", 1, "Native NHDPlus HR"),
         ("merge_2x", 2, "~2× merge"),
         ("merge_4x", 4, "~4× merge"),
-        ("study_reach", 0, "Study reaches (8)"),
+        ("study_reach", 0, "Study-reach scale"),
     ]
 
     detail_parts = []

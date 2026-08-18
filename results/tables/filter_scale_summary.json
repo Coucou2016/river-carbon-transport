@@ -4,7 +4,7 @@
   "scales": [
     {
       "scale_id": "native",
-      "dx_label": "Native NHD",
+      "dx_label": "Native NHDPlus HR",
       "n_merge": 1,
       "n_cells_total": 536,
       "n_cells_with_samples": 39,
@@ -55,7 +55,7 @@
     },
     {
       "scale_id": "study_reach",
-      "dx_label": "Study reaches (8)",
+      "dx_label": "Study-reach scale",
       "n_merge": 0,
       "n_cells_total": 7,
       "n_cells_with_samples": 6,

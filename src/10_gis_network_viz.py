@@ -205,37 +205,14 @@ def _merge_model_flux(obs: pd.DataFrame, baseline: pd.DataFrame, ai: pd.DataFram
 
 
 def _terrain_background(ax, gdf: gpd.GeoDataFrame) -> None:
-    """Self-contained light terrain fill — no external tile CDN."""
+    """Neutral spatial-context background — no external tile CDN, no raster field."""
     bounds = gdf.total_bounds
     xmin, ymin, xmax, ymax = bounds
     pad_x = (xmax - xmin) * 0.08
     pad_y = (ymax - ymin) * 0.08
-    ax.set_facecolor("#f4f1ea")
+    ax.set_facecolor("#f2f4f6")
     ax.set_xlim(xmin - pad_x, xmax + pad_x)
     ax.set_ylim(ymin - pad_y, ymax + pad_y)
-    # Subtle hillshade-like gradient from segment density
-    nx, ny = 40, 40
-    xs = np.linspace(xmin - pad_x, xmax + pad_x, nx)
-    ys = np.linspace(ymin - pad_y, ymax + pad_y, ny)
-    xx, yy = np.meshgrid(xs, ys)
-    mids = gdf.set_geometry("midpoint")
-    cx = mids.geometry.x.values
-    cy = mids.geometry.y.values
-    zz = np.zeros_like(xx)
-    for i in range(nx):
-        for j in range(ny):
-            d = np.hypot(cx - xx[j, i], cy - yy[j, i])
-            zz[j, i] = np.sum(np.exp(-(d / 800.0) ** 2))
-    zz = (zz - zz.min()) / (zz.max() - zz.min() + 1e-9)
-    ax.imshow(
-        zz,
-        extent=[xmin - pad_x, xmax + pad_x, ymin - pad_y, ymax + pad_y],
-        origin="lower",
-        cmap="terrain",
-        alpha=0.35,
-        zorder=0,
-        aspect="auto",
-    )
 
 
 def _linewidth_from_series(val: float, series: pd.Series, lo: float = 0.8, hi: float = 5.5) -> float:
@@ -549,7 +526,7 @@ def plot_reach_assignment_map(gdf: gpd.GeoDataFrame, out_path: Path) -> None:
         if gdf["reach_id"].eq(r).any()
     ]
     ax.legend(handles=legend_handles, loc="upper left", fontsize=8, framealpha=0.9)
-    ax.set_title("NHD segments mapped to study reaches R001–R008 (GNIS name matching + nearest campaign sample)")
+    ax.set_title("NHDPlus HR segments mapped to logical reaches using GNIS name matching and proximity to campaign coordinates")
     ax.set_xlabel("Easting (m, UTM 13N)")
     ax.set_ylabel("Northing (m, UTM 13N)")
     ax.set_aspect("equal", adjustable="box")

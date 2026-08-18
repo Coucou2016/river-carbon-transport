@@ -136,59 +136,79 @@ SPARSE_EQ = (
 
 FIG_CAPTIONS: dict[str, str] = {
     "les_filter_conceptual.png": (
-        "<strong>Figure 1.</strong> Conceptual representation of the spatial filter. Fine NHD flowline "
-        "segments are merged into filter windows of width \u0394x, and the filtered mass balance on the "
-        "coarse control volume defines the subgrid residual term S<sub>sgs</sub>."
+        "<strong>Figure 1.</strong> Conceptual representation of spatial coarse-graining of the river "
+        "CO\u2082 balance. Left: native NHDPlus HR segments and sample locations within short control "
+        "volumes. Right: merged filter cells at larger \u0394x, for which unresolved contributions to "
+        "the filtered mass balance are represented by S<sub>sgs</sub>."
     ),
     "gis_reach_assignment_map.png": (
-        "<strong>Figure 2a.</strong> Study river network: correspondence between the eight logical "
-        "reaches (R001\u2013R008) and the NHD vector centerlines."
+        "<strong>Figure 2a.</strong> NHDPlus HR segments assigned to the logical study-reach labels. "
+        "Colors indicate reach assignment; the single-sample reach R001 receives no assigned segment "
+        "in this rendering. The background provides spatial context only and is not used in the "
+        "assignment."
     ),
     "gis_samples_on_network.png": (
-        "<strong>Figure 2b.</strong> The 120 campaign samples overlaid on the NHD river network. The "
-        "mainstem reach R008 contributes 58 samples."
+        "<strong>Figure 2b.</strong> Locations of the 120 campaign samples on the NHDPlus HR network. "
+        "Point colors denote logical reaches R001\u2013R008; R008 contains 58 samples. The background "
+        "provides spatial context only."
     ),
     "nested_cv_rmse_bar.png": (
         "<strong>Figure 3.</strong> Leave-one-reach-out grouped cross-validation with transport "
-        "coupling: held-out C<sub>aq</sub> RMSE for the Baseline, Residual-AI, and k-correction "
-        "closures (primary comparison)."
+        "coupling (n=120): held-out C<sub>aq</sub> RMSE for the Baseline, Residual-AI (MLP and random "
+        "forest), and k-correction closures (primary comparison)."
     ),
     "nested_cv_scatter_holdout.png": (
         "<strong>Figure 4.</strong> Observed versus transport-predicted held-out C<sub>aq</sub> for the "
-        "Residual-AI (MLP) closure under the leave-one-reach-out protocol."
+        "Residual-AI (MLP) closure under leave-one-reach-out grouped evaluation (n=120). Colors denote "
+        "logical reaches; the dashed line indicates 1:1 agreement."
     ),
     "identifiability_k_vs_sgs.png": (
-        "<strong>Figure 5.</strong> Closure-compensation diagnostics: effective gas-transfer velocity "
-        "k<sub>eff</sub>, the implied source adjustment S<sub>implied</sub>, and the Residual-AI "
-        "held-out source predictions."
+        "<strong>Figure 5.</strong> Closure-compensation diagnostics under leave-one-reach-out grouped "
+        "evaluation (n=120). (a) Implied source adjustment S<sub>implied</sub> versus the effective "
+        "gas-transfer velocity k<sub>eff</sub> for the k-correction. (b) S<sub>implied</sub> versus the "
+        "Residual-AI held-out source prediction; the dashed line indicates 1:1 agreement and the "
+        "annotated Spearman \u03c1 is \u22120.57."
     ),
     "filter_scale_sgs.png": (
-        "<strong>Figure 6.</strong> Filter-scale dependence: mean |S<sub>sgs</sub>| and variance of "
-        "S<sub>sgs</sub> as functions of filter width \u0394x."
+        "<strong>Figure 6.</strong> Filter-scale dependence of the diagnosed residual for the 120 "
+        "sample records. Left: mean |S<sub>sgs</sub>|. Right: variance of S<sub>sgs</sub>. Filter "
+        "width \u0394x is the mean length of sampled filter cells; the coarsest study-reach scale "
+        "contains six sampled cells."
     ),
     "dimensionless_coefficients.png": (
-        "<strong>Figure 7.</strong> Standardized LASSO coefficients of the sparse dimensionless "
-        "(\u03a0-group) closure."
+        "<strong>Figure 7.</strong> Standardized LASSO coefficients for the sparse dimensionless "
+        "closure. Nonzero coefficients are retained for Fr<sub>z</sub>, Slope<sub>z</sub>, and "
+        "(h/W)<sub>z</sub>; the displayed relation is S* \u2248 1.059 + 1.536 Fr<sub>z</sub> \u2212 "
+        "1.669 Slope<sub>z</sub> \u2212 2.179 (h/W)<sub>z</sub>. Leave-one-reach R\u00b2 for S* is "
+        "\u22122.743 (n=120)."
     ),
     "subgroup_rmse_r008_vs_trib.png": (
-        "<strong>Figure S1.</strong> Subgroup errors: R008 mainstem versus multi-sample tributaries and "
-        "single-sample schematic reaches."
+        "<strong>Figure S1.</strong> Subgroup C<sub>aq</sub> RMSE for the Baseline, Residual-AI (MLP), "
+        "and k-correction. R008 contains 58 samples; the multi-sample tributary group R002\u2013R005 "
+        "contains 59 samples; R001, R006, and R007 are single-sample logical reaches."
     ),
     "ablation_flux_comparison.png": (
-        "<strong>Figure S2.</strong> Sample-summed model F<sub>CO\u2082</sub> diagnostic and flux RMSE "
-        "for the three closures. Model diagnostic only; no chamber validation."
+        "<strong>Figure S2.</strong> Model F<sub>CO\u2082</sub> diagnostics for the Baseline, "
+        "Residual-AI (MLP), and k-correction. Left: sample-summed model flux diagnostic. Right: "
+        "flux-diagnostic RMSE relative to the empirical comparison proxy. These quantities are model "
+        "diagnostics and are not independently validated evasion measurements."
     ),
     "identifiability_tradeoff.png": (
-        "<strong>Figure S3.</strong> Concentration\u2013flux trade-off: k<sub>eff</sub>/k<sub>emp</sub> "
-        "against held-out RMSE and the sample-summed flux diagnostic."
+        "<strong>Figure S3.</strong> Concentration and flux diagnostics under leave-one-reach-out "
+        "grouped evaluation (n=120). Left: sample-level k<sub>eff</sub>/k<sub>emp</sub> versus the "
+        "k-correction model F<sub>CO\u2082</sub> diagnostic. Right: held-out C<sub>aq</sub> RMSE and "
+        "sample-summed model flux diagnostic for the Baseline, Residual-AI (MLP), and k-correction."
     ),
     "filter_scale_sgs_box.png": (
-        "<strong>Figure S4.</strong> Distributions of |S<sub>sgs</sub>| for the 120 samples at each "
-        "implemented filter scale."
+        "<strong>Figure S4.</strong> Distribution of |S<sub>sgs</sub>| across the 120 sample records "
+        "at each implemented filter scale. Boxes summarize the distributions and individual points "
+        "show sample-level values; the final category is the study-reach scale."
     ),
     "obs_vs_model_scatter_large.png": (
-        "<strong>Figure A1.</strong> In-sample observed-versus-predicted scatter (appendix only; "
-        "in-sample R\u00b2 \u2248 0.997 reflects overfitting and is not a skill metric)."
+        "<strong>Figure A1.</strong> In-sample observed versus predicted C<sub>aq</sub> for the "
+        "Baseline and Residual-AI (MLP) using the same 120 observations for fitting and evaluation. "
+        "Circles denote the Baseline and triangles denote Residual-AI. The in-sample R\u00b2 \u2248 "
+        "0.997 is reported only as an overfitting diagnostic and is not a held-out skill metric."
     ),
 }
 
