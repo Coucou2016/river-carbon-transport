@@ -109,7 +109,7 @@ def _display_name(name: str) -> str:
 
 def format_equation_math(names: list[str], coef: np.ndarray, intercept: float, y_math: str) -> str:
     """Mathtext equation for figures only (JSON tables keep the plain-text form)."""
-    parts = [f"{intercept:+.4g}"]
+    parts = [f"{intercept:.4g}"]
     for n, a in zip(names, coef):
         if abs(a) < 1e-12:
             continue

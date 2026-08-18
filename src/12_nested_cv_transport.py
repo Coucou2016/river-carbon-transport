@@ -463,7 +463,7 @@ def plot_subgroup_rmse(sub_df: pd.DataFrame, fig_dir: Path) -> None:
     schemes = ["baseline", "residual_ai", "k_correction"]
     scheme_lab = {"baseline": "Baseline", "residual_ai": "Residual-AI (MLP)", "k_correction": "k-correction"}
     sg_lab = {
-        "R008_only": "R008 mainstem\n(n≈58)",
+        "R008_only": "R008 mainstem\n(n=58)",
         "multi_sample_tributaries": "Multi-sample tributaries\nR002–R005",
         "one_sample_reaches_schematic": "Single-sample\nreaches",
     }
