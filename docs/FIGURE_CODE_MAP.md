@@ -12,19 +12,22 @@ fonts, `savefig.dpi` ≈ 300).
 
 | # | Paper figure | Generating script : function | Reads (data) | Must show (frozen facts) |
 |--:|---|---|---|---|
-| 1 | `les_filter_conceptual.png` (Fig 1) | `src/13_filter_scale_sgs.py` : `plot_conceptual` (L245–301) | synthetic illustrative curves (schematic, not data) | fine→coarse filter idea; no numbers claimed |
-| 2 | `gis_reach_assignment_map.png` (Fig 2a) | `src/10_gis_network_viz.py` : `plot_reach_assignment_map` (L533–557) | NHD centerlines via `load_reach_lines_gdf`, reach table | 8 logical reaches R001–R008 on real NHD lines |
-| 3 | `gis_samples_on_network.png` (Fig 2b) | `src/10_gis_network_viz.py` : `plot_samples_on_network` (L561–596) | campaign samples (`data_proc` merged table) | 120 samples; R008 = 58 samples visible as dense cluster |
-| 4 | `nested_cv_rmse_bar.png` (Fig 3) | `src/12_nested_cv_transport.py` : `plot_rmse_bar` (L328–378) | `results/tables/nested_cv_metrics.csv` (loo_reach) | Baseline 0.0284, MLP 0.0573, RF 0.0745, k-corr 0.0244, sparse 0.0506 |
-| 5 | `nested_cv_scatter_holdout.png` (Fig 4) | `src/12_nested_cv_transport.py` : `plot_holdout_scatter` (L382–437) | holdout predictions from stage 12 | 1:1 line; points colored by reach; MLP closure |
-| 6 | `identifiability_k_vs_sgs.png` (Fig 5) | `src/14_identifiability_ksgs.py` : `plot_identifiability` (L104–178) | `results/tables/identifiability_summary.json`, stage 14 tables | k_eff, S_implied, Residual-AI S_sgs preds; Spearman −0.57 annotated |
-| 7 | `filter_scale_sgs.png` (Fig 6) | `src/13_filter_scale_sgs.py` : `plot_filter_scale` (L306–331) | `results/tables/filter_scale_metrics.csv` | mean |S_sgs| 1.916 → 1.000 as Δx ≈ 838 m → study reach |
-| 8 | `dimensionless_coefficients.png` (Fig 7) | `src/15_dimensionless_sparse.py` : `plot_coefficients` (L117–147) | `results/tables/dimensionless_sparse_coefficients.csv` | +1.536 Fr_z, −1.669 Slope_z, −2.179 (h/W)_z, intercept 1.059 |
-| 9 | `subgroup_rmse_r008_vs_trib.png` (Fig S1) | `src/12_nested_cv_transport.py` : `plot_subgroup_rmse` (L441–478) | `results/tables/subgroup_metrics.csv` | R008 MLP 0.0121 / RF 0.0087 vs Baseline 0.0136; tributaries 0.0381/0.0808/0.1058 |
-| 10 | `ablation_flux_comparison.png` (Fig S2) | `src/12_nested_cv_transport.py` : `plot_ablation_flux` (L482–515) | stage 12 flux diagnostics | ΣF_CO₂ 3.24 → 0.031 for k-correction; model diagnostic label |
-| 11 | `identifiability_tradeoff.png` (Fig S3) | `src/14_identifiability_ksgs.py` : `plot_identifiability` trade-off panel (L180–235) | stage 14 tables | k_eff/k_emp vs RMSE and flux diagnostic |
-| 12 | `filter_scale_sgs_box.png` (Fig S4) | `src/13_filter_scale_sgs.py` : `plot_filter_scale` box panel (L333–357) | stage 13 sample-level table | |S_sgs| distributions at each implemented filter width |
-| 13 | `obs_vs_model_scatter_large.png` (Fig A1) | `src/08_validate_flux_budget.py` : `plot_obs_vs_model` large panel (L124–170) | stage 03/08 merged table | in-sample fit; appendix-only, R²≈0.997 is overfitting diagnostic |
+| 1 | `les_filter_conceptual.png` (Fig 1) | `src/13_filter_scale_sgs.py` : `plot_conceptual` | synthetic illustrative curves (schematic, not data) | fine→coarse filter idea; control-volume wording; no numbers claimed |
+| 2 | `figure2_reach_assignment_and_samples.png` (Fig 2, merged) | `src/10_gis_network_viz.py` : `plot_figure2_combined` (+ `_draw_reach_assignment` / `_draw_samples` helpers) | NHD centerlines via `load_reach_lines_gdf`, reach table, campaign samples | (a) 7 reaches assigned on real NHD lines (R001 absent by data); (b) 120 samples, R008 = 58; neutral background |
+| 3 | `nested_cv_rmse_bar.png` (Fig 3) | `src/12_nested_cv_transport.py` : `plot_rmse_bar` | `results/tables/nested_cv_metrics.csv` (loo_reach) | Baseline 0.0284, MLP 0.0573, RF 0.0745, k-corr 0.0244; title with (n=120); mathtext S_sgs=0 / k_eff labels |
+| 4 | `nested_cv_scatter_holdout.png` (Fig 4) | `src/12_nested_cv_transport.py` : `plot_holdout_scatter` | holdout predictions from stage 12 | 1:1 line; points colored by reach; legend outside axes; stats box upper-right |
+| 5 | `identifiability_k_vs_sgs.png` (Fig 5) | `src/14_identifiability_ksgs.py` : `plot_identifiability` | `data_proc/identifiability_sample_table.csv` | k_eff, S_implied, Residual-AI S_sgs preds; Spearman −0.57; panels (a)/(b) |
+| 6 | `filter_scale_sgs.png` (Fig 6) | `src/13_filter_scale_sgs.py` : `plot_filter_scale` | `results/tables/filter_scale_metrics.csv` | mean |S_sgs| 1.916 → 1.000 as Δx ≈ 838 m → study reach; sampled cells = 39/30/24/6 |
+| 7 | `dimensionless_coefficients.png` (Fig 7) | `src/15_dimensionless_sparse.py` : `plot_coefficients` (+ `format_equation_math`) | `results/tables/dimensionless_sparse_coefficients.csv` | +1.536 Fr_z, −1.669 Slope_z, −2.179 (h/W)_z, intercept 1.059; R² = −2.743 for S* |
+| 8 | `subgroup_rmse_r008_vs_trib.png` (Fig S1) | `src/12_nested_cv_transport.py` : `plot_subgroup_rmse` | `results/tables/subgroup_metrics.csv` | R008 MLP 0.012 vs Baseline 0.014; tributaries 0.081; single-sample reaches shown for completeness |
+| 9 | `supp_flux_diagnostics.png` (Fig S2, merged 3-panel) | `src/14_identifiability_ksgs.py` : `plot_flux_diagnostics_combined` | `results/tables/nested_cv_metrics.csv` + stage 14 sample table | (a) ΣF_CO₂ 3.24 / 69.5 / 0.031; (b) flux RMSE vs proxy; (c) sample-level k_eff/k_emp vs flux |
+| 10 | `filter_scale_sgs_box.png` (Fig S3, renumbered from S4) | `src/13_filter_scale_sgs.py` : `plot_filter_scale` box panel | stage 13 sample-level table | |S_sgs| distributions at each implemented filter width |
+| 11 | `obs_vs_model_scatter_large.png` (Fig A1) | `src/08_validate_flux_budget.py` : `plot_obs_vs_model` large panel | stage 03/08 merged table | in-sample fit; appendix-only, R²≈0.997 is overfitting diagnostic |
+
+**Retired in Round 19 (still generated for the report, no longer in the paper):**
+`gis_reach_assignment_map.png`, `gis_samples_on_network.png` (merged into Fig 2);
+`ablation_flux_comparison.png`, `identifiability_tradeoff.png` (merged into Fig S2; the dropped
+panel duplicated Fig 3 content).
 
 ## Audit questions per figure (both tracks answer each)
 
