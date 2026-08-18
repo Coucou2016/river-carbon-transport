@@ -44,9 +44,9 @@ The river-network representation combines three public sources. The HydroShare s
 
 Channel width is not measured along the corridor. For reaches containing at least two samples, the width proxy is the longitudinal sample-coordinate span converted to metres and divided by the number of samples, then clipped to 2–15 m; single-sample reaches are assigned W = 5 m. Water depth is estimated from the wide-channel Manning relation h = [Qn/(W S^0.5)]^0.6 with roughness n = 0.035, and bulk velocity is u = Q/(Wh). Width, depth, and velocity are therefore model-derived hydraulic inputs rather than measured cross-section properties, and the width enters water depth, flow velocity, k_600, and the water-surface area A_s = L·W. Sensitivity to this width proxy has not been quantified, so all hydraulic and gas-exchange results are conditional on the adopted width representation. Biogeochemical covariates are likewise incomplete: dissolved inorganic carbon (DIC) and dissolved organic carbon (DOC) are available for 41 of the 120 samples, and alkalinity, nitrogen, phosphorus, and photosynthetically active radiation were not available for this campaign. A same-day merge against the Water Quality Portal returned no matching samples (0 of 120), and the StreamPULSE database contains no East River sites. These gaps constrain the covariate set available to the closures. Figures 2a and 2b show the logical-reach assignment and the distribution of the 120 campaign samples on the river network.
 
-![Figure 2a. Study river network: correspondence between the eight logical reaches (R001–R008) and the NHD vector centerlines.](results/figures/gis_reach_assignment_map.png)
+![Figure 2a. NHDPlus HR segments assigned to the logical study-reach labels. Colors indicate reach assignment; the single-sample reach R001 receives no assigned segment in this rendering. The background provides spatial context only and is not used in the assignment.](results/figures/gis_reach_assignment_map.png)
 
-![Figure 2b. The 120 campaign samples overlaid on the NHD river network. The mainstem reach R008 contributes 58 samples.](results/figures/gis_samples_on_network.png)
+![Figure 2b. Locations of the 120 campaign samples on the NHDPlus HR network. Point colors denote logical reaches R001–R008; R008 contains 58 samples. The background provides spatial context only.](results/figures/gis_samples_on_network.png)
 
 
 ### 2.2 Quasi-steady CO₂ mass balance and gas exchange
@@ -92,7 +92,7 @@ At the operator level the construction parallels the coarse-graining used in lar
 
 S_sgs is a filter-induced closure residual. It can absorb measurement error, errors from the simplified transport representation, and genuinely unresolved processes. It is not a direct measurement of a single unresolved biogeochemical flux. Its magnitude, structure, and learnability are evaluated below as the aggregation scale changes.
 
-![Figure 1. Conceptual representation of the spatial filter. Fine NHD flowline segments are merged into filter windows of width Deltax, and the filtered mass balance on the coarse control volume defines the subgrid residual term S_sgs.](results/figures/les_filter_conceptual.png)
+![Figure 1. Conceptual representation of spatial coarse-graining of the river CO2 balance. Left: native NHDPlus HR segments and sample locations within short control volumes. Right: merged filter cells at larger Deltax, for which unresolved contributions to the filtered mass balance are represented by S_sgs.](results/figures/les_filter_conceptual.png)
 
 
 ### 2.4 Alternative unresolved-process closures
@@ -143,18 +143,18 @@ Under leave-one-reach-out transport-coupled evaluation, neither residual closure
 
 The subgroup decomposition locates the error (Table 5; Figures 4 and S1). On the mainstem reach R008, both residual closures are slightly better than the Baseline: RMSE is 0.0121 for the MLP and 0.0087 for the random forest against 0.0136 for the Baseline. On the multi-sample tributaries the pattern reverses: RMSE is 0.0381 for the Baseline, 0.0808 for the MLP, and 0.1058 for the random forest. Table 5 reports the primary MLP closure; the corresponding random-forest subgroup values are available with the archived evaluation outputs cited in Section 6. The pooled degradation is concentrated in the multi-sample tributaries R002–R005, where held-out errors are substantially larger than on the mainstem. The holdout scatter (Figure 4) shows the same structure: mainstem predictions cluster near the observations while tributary predictions spread widely.
 
-![Figure 3. Leave-one-reach-out grouped cross-validation with transport coupling: held-out C_aq RMSE for the Baseline, Residual-AI, and k-correction closures (primary comparison).](results/figures/nested_cv_rmse_bar.png)
+![Figure 3. Leave-one-reach-out grouped cross-validation with transport coupling (n=120): held-out C_aq RMSE for the Baseline, Residual-AI (MLP and random forest), and k-correction closures (primary comparison).](results/figures/nested_cv_rmse_bar.png)
 
-![Figure 4. Observed versus transport-predicted held-out C_aq for the Residual-AI (MLP) closure under the leave-one-reach-out protocol.](results/figures/nested_cv_scatter_holdout.png)
+![Figure 4. Observed versus transport-predicted held-out C_aq for the Residual-AI (MLP) closure under leave-one-reach-out grouped evaluation (n=120). Colors denote logical reaches; the dashed line indicates 1:1 agreement.](results/figures/nested_cv_scatter_holdout.png)
 
-![Figure S1. Subgroup errors: R008 mainstem versus multi-sample tributaries and single-sample schematic reaches.](results/figures/subgroup_rmse_r008_vs_trib.png)
+![Figure S1. Subgroup C_aq RMSE for the Baseline, Residual-AI (MLP), and k-correction. R008 contains 58 samples; the multi-sample tributary group R002–R005 contains 59 samples; R001, R006, and R007 are single-sample logical reaches.](results/figures/subgroup_rmse_r008_vs_trib.png)
 
 
 ### 3.2 A corrected gas-transfer velocity lowers concentration error
 
 The k-correction is the only configuration that reduces held-out concentration error below the Baseline. Its C_aq RMSE is 0.0244 mol m-3 against 0.0284 for the Baseline, and MAE falls from 0.0132 to 0.0046 (Tables 2 and 3). In this configuration, the learned correction acts only through the transfer velocity. The median effective velocity is 0.0329 m d-¹, compared with the median Raymond-type empirical value computed for the present samples, 98.1 m d-¹; the median ratio k_eff/k_emp is 3.35×10-⁴ (Table 7; Figure 5). Under this correction, the median effective transfer velocity is reduced by roughly three orders of magnitude relative to k_emp. This comparison remains conditional on the partially observed boundary construction and the pre-fold construction of k_need described in Sections 2.4 and 2.5; it is therefore not a fully target-blind out-of-sample estimate.
 
-![Figure 5. Closure-compensation diagnostics: effective gas-transfer velocity k_eff, the implied source adjustment S_implied, and the Residual-AI held-out source predictions.](results/figures/identifiability_k_vs_sgs.png)
+![Figure 5. Closure-compensation diagnostics under leave-one-reach-out grouped evaluation (n=120). (a) Implied source adjustment S_implied versus the effective gas-transfer velocity k_eff for the k-correction. (b) S_implied versus the Residual-AI held-out source prediction; the dashed line indicates 1:1 agreement and the annotated Spearman ρ is -0.57.](results/figures/identifiability_k_vs_sgs.png)
 
 The lower concentration error alone does not establish whether the altered process allocation remains plausible; the associated model flux diagnostic is examined next.
 
@@ -165,18 +165,18 @@ The flux diagnostic reveals substantially different process allocations among th
 
 No independent evasion observations are available for this campaign, so these values do not show that the Baseline flux is correct or that the corrected flux is wrong. They show that concentration performance alone can favor a markedly different allocation of the model balance. The implied-source diagnostic makes the compensation explicit. At fixed concentrations, the mean implied adjustment S_implied is 1.00 mol m-2 d-¹, the mean Residual-AI prediction is 0.56, and the two are anti-correlated across samples (Spearman -0.57; Figure 5). A positive source term and a reduced transfer velocity act on the concentration balance in compensating directions, and the held-out concentration metric provides limited discrimination between them. Figure S3 summarizes the corresponding concentration–flux trade-off.
 
-![Figure S2. Sample-summed model F_CO2 diagnostic and flux RMSE for the three closures. Model diagnostic only; no chamber validation.](results/figures/ablation_flux_comparison.png)
+![Figure S2. Model F_CO2 diagnostics for the Baseline, Residual-AI (MLP), and k-correction. Left: sample-summed model flux diagnostic. Right: flux-diagnostic RMSE relative to the empirical comparison proxy. These quantities are model diagnostics and are not independently validated evasion measurements.](results/figures/ablation_flux_comparison.png)
 
-![Figure S3. Concentration–flux trade-off: k_eff/k_emp against held-out RMSE and the sample-summed flux diagnostic.](results/figures/identifiability_tradeoff.png)
+![Figure S3. Concentration and flux diagnostics under leave-one-reach-out grouped evaluation (n=120). Left: sample-level k_eff/k_emp versus the k-correction model F_CO2 diagnostic. Right: held-out C_aq RMSE and sample-summed model flux diagnostic for the Baseline, Residual-AI (MLP), and k-correction.](results/figures/identifiability_tradeoff.png)
 
 
 ### 3.4 The diagnosed residual depends on filter scale
 
 The magnitude of the diagnosed residual varies systematically with the filter width (Table 6; Figure 6). Mean |S_sgs| is 1.916 mol m-2 d-¹ at the native NHD resolution (Deltax ≈ 838 m), decreases to 1.120 and 1.050 at successive merging levels, and reaches 1.000 at the study-reach scale (Deltax ≈ 26,086 m; 7 cells, of which 6 contain samples). The variance of S_sgs falls from 22.4 to 2.20 over the same range (Figure S4). The result indicates that the diagnosed closure residual depends on the spatial representation used to separate resolved from unresolved contributions. It is an empirical scale dependence for the implemented reach-local operator, not a universal scaling law.
 
-![Figure 6. Filter-scale dependence: mean |S_sgs| and variance of S_sgs as functions of filter width Deltax.](results/figures/filter_scale_sgs.png)
+![Figure 6. Filter-scale dependence of the diagnosed residual for the 120 sample records. Left: mean |S_sgs|. Right: variance of S_sgs. Filter width Deltax is the mean length of sampled filter cells; the coarsest study-reach scale contains six sampled cells.](results/figures/filter_scale_sgs.png)
 
-![Figure S4. Distributions of |S_sgs| for the 120 samples at each implemented filter scale.](results/figures/filter_scale_sgs_box.png)
+![Figure S4. Distribution of |S_sgs| across the 120 sample records at each implemented filter scale. Boxes summarize the distributions and individual points show sample-level values; the final category is the study-reach scale.](results/figures/filter_scale_sgs_box.png)
 
 
 ### 3.5 A sparse dimensionless closure is compact but not predictive
@@ -187,14 +187,14 @@ The full-data LASSO refit on the dimensionless response retains three of the fiv
 
 The fitted coefficients are positive for Froude number and negative for slope and relative depth. Because this relation is a descriptive full-data summary (Section 2.8), it is not itself scored as a held-out law; the leave-one-reach R2 for reconstructing the dimensionless response S* is -2.743. Under the same leave-one-reach-out transport-coupled protocol, in which the scaler and LASSO are refitted within each fold, the sparse closure gives a held-out C_aq RMSE of 0.0506 mol m-3, above the Baseline value of 0.0284 (Table 9). The sparse form is therefore useful as a compact diagnostic description of the residual but does not recover predictive skill on held-out reaches.
 
-![Figure 7. Standardized LASSO coefficients of the sparse dimensionless (Pi-group) closure.](results/figures/dimensionless_coefficients.png)
+![Figure 7. Standardized LASSO coefficients for the sparse dimensionless closure. Nonzero coefficients are retained for Fr_z, Slope_z, and (h/W)_z; the displayed relation is S* ≈ 1.059 + 1.536 Fr_z - 1.669 Slope_z - 2.179 (h/W)_z. Leave-one-reach R2 for S* is -2.743 (n=120).](results/figures/dimensionless_coefficients.png)
 
 
 ### 3.6 In-sample fit (appendix)
 
 The in-sample fit of the residual model is reported in the appendix (Table 4; Figure A1), with R2 ≈ 0.997 and RMSE 0.0013 mol m-3 computed on the same 120 rows used for training. This optimistic in-sample fit is reported only as an overfitting diagnostic and is not used as evidence of generalization.
 
-![Figure A1. In-sample observed-versus-predicted scatter (appendix only; in-sample R2 ≈ 0.997 reflects overfitting and is not a skill metric).](results/figures/obs_vs_model_scatter_large.png)
+![Figure A1. In-sample observed versus predicted C_aq for the Baseline and Residual-AI (MLP) using the same 120 observations for fitting and evaluation. Circles denote the Baseline and triangles denote Residual-AI. The in-sample R2 ≈ 0.997 is reported only as an overfitting diagnostic and is not a held-out skill metric.](results/figures/obs_vs_model_scatter_large.png)
 
 
 ## 4. Discussion
@@ -309,7 +309,7 @@ The East River water-chemistry and pCO2 data are publicly available through Hydr
 | Native NHDPlus HR | 838 | 536 | 39 | 120 | 1.916 | 22.405 |
 | ~2× merge | 1183 | 270 | 30 | 120 | 1.120 | 3.467 |
 | ~4× merge | 1949 | 137 | 24 | 120 | 1.050 | 2.894 |
-| Study reaches (8) | 26086 | 7 | 6 | 120 | 1.000 | 2.197 |
+| Study-reach scale | 26086 | 7 | 6 | 120 | 1.000 | 2.197 |
 
 **Table 7.** Practical-equifinality diagnostic: k and source-term compensation under the grouped protocol.
 
@@ -324,7 +324,7 @@ The East River water-chemistry and pCO2 data are publicly available through Hydr
 | Item | Result |
 |---|---|
 | Standardized-predictor form | S· ≈ 1.059 + 1.536·Fr_z - 1.669·Slope_z - 2.179·(h/W)_z |
-| Original-variable form | S_sgs* ≈ + 8.368 + 1.327*Fr − 38.8*Slope − 349*h_over_W |
+| Original-variable form | S_sgs* ≈ + 8.368 + 1.327*Fr_z − 38.8*Slope_z − 349*(h/W)_z |
 | Dominant terms | -2.18*h_over_W + -1.67*Slope + +1.54*Fr |
 | Leave-one-reach R2 for reconstructing S* | -2.743 (negative = does not generalize) |
 
