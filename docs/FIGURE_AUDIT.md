@@ -208,6 +208,10 @@ removed; a single boxed text block in the lower-left lists the four scales with 
 curve + title only. Regenerated, hash-synced to `results/figures/paper/`, paper rebuilt,
 `verify_paper.py` PASS (11 figures, all frozen counts intact). Pushed commit `e8ef7e0`.
 
+**Closure verdict (ChatGPT, viewing commit `e8ef7e0` render):** Q1 YES — Figure 6 passes (all four
+boxed lines readable, no collision with titles, curve, or markers; right panel clean). Q2 YES —
+"the complete 11-figure set is now submission-ready … I would close the visual audit."
+
 **Audit closed:** all 11 paper figures cleared by both tracks. Track A (code + frozen numbers) and
 Track B (ChatGPT visual reads at commit-pinned URLs) agree the figure set is submission-ready.
 
