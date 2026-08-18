@@ -23,6 +23,7 @@
 | 13 | Results/Discussion prose + claims audit | Done (2026-08-18) |
 | 14 | Full referee pass + consistency sweep | Done (2026-08-18) |
 | 15 | Re-review of final text (final polish merge) | Done (2026-08-18) |
+| 16 | Dual-track visual audit: track A (code/data) + ChatGPT reads images | In progress (2026-08-18) |
 
 **Round 7 context delivery:** https://github.com/Coucou2016/river-carbon-transport/tree/main/docs/chatgpt/  
 Files: `00_TASK_BRIEF.md`, `01_PAPER_CURRENT.md`, `02_REPORT_VS_PAPER_AUDIT.md`, `03_DATA_INTEGRITY_CHECKLIST.md`, `04_QUESTIONS_FOR_CHATGPT.md`.  

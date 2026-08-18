@@ -130,13 +130,13 @@ def plot_coefficients(
     fig, ax = plt.subplots(figsize=(11.8, 6.4))
     ax.barh(names_o, coef_o, color=colors, edgecolor="white", height=0.62)
     ax.axvline(0.0, color="#333", lw=1.2)
-    ax.set_xlabel("LASSO coeffs on standardized features (dimensionless)", fontsize=14)
-    ax.set_title("Sparse dimensionless Π-group closure coefficients", fontsize=17, fontweight="bold")
+    ax.set_xlabel("Standardized LASSO coefficients (dimensionless)", fontsize=14)
+    ax.set_title("Sparse dimensionless closure: standardized LASSO coefficients for S*", fontsize=16, fontweight="bold")
     ax.grid(True, axis="x", alpha=0.35)
     ax.text(
         0.02,
         -0.18,
-        f"{equation}\nHoldout (LOO-reach, on S_sgs) R² = {cv_r2:.3f}, n = {n}. Weak prediction does not preclude reporting the interpretable form.",
+        f"{equation}\nLeave-one-reach-out CV on S* (dimensionless response): R² = {cv_r2:.3f}, n = {n}.",
         transform=ax.transAxes,
         ha="left",
         va="top",

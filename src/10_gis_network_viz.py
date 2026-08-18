@@ -549,7 +549,7 @@ def plot_reach_assignment_map(gdf: gpd.GeoDataFrame, out_path: Path) -> None:
         if gdf["reach_id"].eq(r).any()
     ]
     ax.legend(handles=legend_handles, loc="upper left", fontsize=8, framealpha=0.9)
-    ax.set_title("NHD segments mapped to study reaches R001–R008 (GNIS + nearest centroid)")
+    ax.set_title("NHD segments mapped to study reaches R001–R008 (GNIS name matching + nearest campaign sample)")
     ax.set_xlabel("Easting (m, UTM 13N)")
     ax.set_ylabel("Northing (m, UTM 13N)")
     ax.set_aspect("equal", adjustable="box")

@@ -35,6 +35,41 @@ Verified-OK items (no fix needed):
 - Color scheme consistent: Baseline #7f8c8d, Residual-AI/MLP #2980b9, RF #1abc9c, k-correction #e67e22 across Figs 3/S1/S2/S3.
 - All 13 figures are generated under the shared `apply_plot_style` (SciencePlots `science` + no-latex, Times New Roman Latin glyphs).
 
+## Track A fixes applied (2026-08-18, verified)
+
+All wording/label defects above were fixed in the generating scripts, figures regenerated with the
+project `.venv` (SciencePlots style), and the result-table MD5 hashes were confirmed identical
+before and after regeneration (numbers did not move):
+
+| File | Before | After (identical) |
+|------|--------|-------------------|
+| `nested_cv_metrics.csv` | B4B862D9…CF88E0 | B4B862D9…CF88E0 |
+| `subgroup_metrics.csv` | 58460D49…4C360C | 58460D49…4C360C |
+| `filter_scale_metrics.csv` | A0C70794…C628C6 | A0C70794…C628C6 |
+| `dimensionless_sparse_coefficients.csv` | F44C9DCB…F86C62 | F44C9DCB…F86C62 |
+| `identifiability_summary.json` | EF328337…735463 | EF328337…735463 |
+
+Stage-12 re-run reproduced the frozen LOO-reach values exactly (0.028365 / 0.057317 / 0.074499 /
+0.024437), stage 13 reproduced the filter ladder (1.916 / 1.120 / 1.050 / 1.000), stage 14
+reproduced the compensation statistics (median ratio 3.3546e-4, Spearman −0.5664), and stage 15
+reproduced the sparse law (1.059, +1.536 Fr, −1.669 Slope, −2.179 h/W; CV R² on S* −2.743).
+
+Specific edits:
+- `src/12_nested_cv_transport.py`: Fig 3 title → "Leave-one-reach-out grouped CV..."; Fig 4 y-axis
+  and title reworded; Fig S1 title clarified + ylim headroom added for bar labels; Fig S2 relabeled
+  to the model F_CO₂ diagnostic wording with "not a measured evasion estimate".
+- `src/14_identifiability_ksgs.py`: Fig 5 titles neutralized to compensation/practical-equifinality
+  terminology (≡ removed); Fig S3 panel and suptitle titles de-colloquialized; "Nested-CV" axis
+  label replaced.
+- `src/13_filter_scale_sgs.py`: Fig 6 audit-prose suptitle replaced; Fig 1 suptitle de-emphasizes
+  the LES analogy ("Spatial filtering of the river CO₂ balance"); panel text "->" removed.
+- `src/15_dimensionless_sparse.py`: Fig 7 annotation corrected from "on S_sgs" to "on S*" and the
+  defensive trailing sentence removed; title/x-label reworded.
+- `src/10_gis_network_viz.py`: Fig 2a title corrected from "nearest centroid" to "nearest campaign
+  sample" (code-verified assignment method).
+- `src/08_validate_flux_budget.py`: Fig A1 title corrected from "Validation scatter" to "In-sample
+  fit (appendix only...)".
+
 ## Track B (ChatGPT visual audit)
 
 Round 16 brief: `docs/chatgpt/13_ROUND16_FIGURE_AUDIT.md`. ChatGPT receives, for each of the 13

@@ -122,9 +122,9 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
             label=f"{rid} (n={len(sub)})",
             zorder=3,
         )
-    ax.set_xlabel(r"Nested-CV $k_{\mathrm{eff}}$ (m d$^{-1}$)", fontsize=14)
+    ax.set_xlabel(r"Leave-one-reach-out $k_{\mathrm{eff}}$ (m d$^{-1}$)", fontsize=14)
     ax.set_ylabel(r"Implied $S_{\mathrm{sgs}}=(k_{\mathrm{emp}}-k_{\mathrm{eff}})(C-C_{\mathrm{eq}})$", fontsize=13)
-    ax.set_title("k-correction: lowering k ≡ increasing source", fontweight="bold")
+    ax.set_title("Lowering k compensates for a larger source term", fontweight="bold")
     ax.legend(loc="upper right", fontsize=10, ncol=2, framealpha=0.95)
     ax.grid(True, alpha=0.35)
     ax.text(
@@ -156,7 +156,7 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     ax.plot([lims[0] - pad, lims[1] + pad], [lims[0] - pad, lims[1] + pad], color="#333", ls="--", lw=2.0, zorder=1)
     ax.set_xlabel(r"Residual-AI holdout $S_{\mathrm{sgs}}$ (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
     ax.set_ylabel(r"k-corr. implied $S_{\mathrm{sgs}}$ (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
-    ax.set_title("Two closures absorb the same observation gap", fontweight="bold")
+    ax.set_title("Source adjustments implied by the two closures", fontweight="bold")
     ax.grid(True, alpha=0.35)
     # Spearman
     if df["S_sgs_ai"].std() > 0 and df["S_implied_from_k"].std() > 0:
@@ -173,7 +173,7 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
         bbox=dict(boxstyle="round", facecolor="white", alpha=0.92, edgecolor="#ccc"),
     )
 
-    fig.suptitle("Identifiability: equifinality of gas-exchange k and S_sgs", fontsize=17, fontweight="bold", y=1.02)
+    fig.suptitle("Closure compensation between gas-exchange k and S$_{sgs}$ (practical equifinality)", fontsize=16, fontweight="bold", y=1.02)
     fig.tight_layout()
     fig.savefig(fig_dir / "identifiability_k_vs_sgs.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)
@@ -199,7 +199,7 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     ax.axvline(1.0, color="#7f8c8d", ls=":", lw=1.6)
     ax.set_xlabel(r"$k_{\mathrm{eff}} / k_{\mathrm{emp}}$", fontsize=15)
     ax.set_ylabel(r"k-corr. holdout $F_{\mathrm{CO}_2}$ (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
-    ax.set_title("After k is suppressed, flux → 0", fontweight="bold")
+    ax.set_title("Suppressed k_eff coincides with a collapsed flux diagnostic", fontweight="bold")
     ax.set_xscale("log")
     ax.grid(True, alpha=0.35, which="both")
     ax.legend(ncol=2, fontsize=10, framealpha=0.95)
@@ -218,7 +218,7 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     ax.set_ylabel(r"Holdout $C_{\mathrm{aq}}$ RMSE (mol m$^{-3}$)", fontsize=13)
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=13)
-    ax.set_title("Slightly better C ≠ successful flux closure", fontweight="bold")
+    ax.set_title("Lower concentration RMSE with a collapsed flux diagnostic", fontweight="bold")
     ax2 = ax.twinx()
     ax2.plot(x + 0.18, flux, "D", color="#8e44ad", ms=14, label=r"$F_{\mathrm{CO}_2}$ total")
     ax2.set_ylabel(r"Holdout $F_{\mathrm{CO}_2}$ total (mol m$^{-2}$ d$^{-1}$)", fontsize=13, color="#8e44ad")
@@ -230,7 +230,7 @@ def plot_identifiability(df: pd.DataFrame, fig_dir) -> None:
     h2, l2 = ax2.get_legend_handles_labels()
     ax.legend(h1 + h2, l1 + l2, loc="upper left", fontsize=11, framealpha=0.95)
 
-    fig.suptitle("C–flux tradeoff under same holdout protocol (LOO-reach, n=120)", fontsize=16, fontweight="bold", y=1.02)
+    fig.suptitle("Concentration-flux trade-off under the same leave-one-reach-out protocol (n=120)", fontsize=15, fontweight="bold", y=1.02)
     fig.tight_layout()
     fig.savefig(fig_dir / "identifiability_tradeoff.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)

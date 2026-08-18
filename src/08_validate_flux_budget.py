@@ -158,7 +158,7 @@ def plot_obs_vs_model(baseline: pd.DataFrame, ai: pd.DataFrame, fig_dir, obs_met
     ax2.set_ylim(lim2)
     ax2.set_xlabel("Observed C$_{aq}$ (mol m$^{-3}$)", fontsize=16)
     ax2.set_ylabel("Predicted C$_{aq}$ (mol m$^{-3}$)", fontsize=16)
-    ax2.set_title("Validation scatter: circles=Baseline, triangles=AI (color=reach)", fontsize=17, fontweight="bold", pad=14)
+    ax2.set_title("In-sample fit (appendix only; circles=Baseline, triangles=Residual-AI, color=reach)", fontsize=15, fontweight="bold", pad=14)
     ax2.grid(True, alpha=0.35)
     legend_elems = [
         Line2D([0], [0], marker="o", color="w", markerfacecolor="gray", markersize=12, label="Baseline"),

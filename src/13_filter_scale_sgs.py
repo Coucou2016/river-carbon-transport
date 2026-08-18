@@ -293,10 +293,10 @@ def plot_conceptual(fig_dir: Path) -> None:
     ax.set_yticks([])
     ax.set_xlim(-0.2, 10.2)
     ax.set_ylim(-2.8, 2.8)
-    ax.text(0.03, 0.95, "Many samples in one CV\nunresolved -> closure", transform=ax.transAxes, va="top", fontsize=13,
+    ax.text(0.03, 0.95, "Many samples in one CV\nunresolved processes to closure", transform=ax.transAxes, va="top", fontsize=13,
             bbox=dict(boxstyle="round", facecolor="white", alpha=0.9, edgecolor="#ccc"))
 
-    fig.suptitle("LES-analog filtering for river CO2: S_sgs defined at Δx", fontsize=17, fontweight="bold", y=1.02)
+    fig.suptitle(r"Spatial filtering of the river CO$_2$ balance: S$_{sgs}$ defined at $\Delta$x", fontsize=17, fontweight="bold", y=1.02)
     fig.tight_layout()
     fig.savefig(fig_dir / "les_filter_conceptual.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)
@@ -326,7 +326,7 @@ def plot_filter_scale(metrics: pd.DataFrame, detail: pd.DataFrame, fig_dir: Path
     axes[1].set_title("|S_sgs| variance vs filter scale", fontweight="bold")
     axes[1].grid(True, alpha=0.35)
 
-    fig.suptitle("Mass-balance residual after snapping real samples (no synthetic obs.)", fontsize=16, fontweight="bold", y=1.02)
+    fig.suptitle("Subgrid residual magnitude across filter scales (120 samples)", fontsize=16, fontweight="bold", y=1.02)
     fig.tight_layout()
     fig.savefig(fig_dir / "filter_scale_sgs.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)

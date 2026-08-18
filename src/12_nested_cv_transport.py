@@ -368,7 +368,12 @@ def plot_rmse_bar(metrics: pd.DataFrame, fig_dir: Path) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels([labels.get(k, k) for k in order], fontsize=14)
     ax.set_ylabel("LOO-reach C$_{aq}$ RMSE (mol m$^{-3}$)", fontsize=15)
-    ax.set_title("Nested CV: held-out C_aq RMSE by closure", fontsize=17, fontweight="bold", pad=12)
+    ax.set_title(
+        "Leave-one-reach-out grouped CV: held-out C$_{aq}$ RMSE by closure",
+        fontsize=17,
+        fontweight="bold",
+        pad=12,
+    )
     ymax = max(vals) * 1.18 if vals else 1
     ax.set_ylim(0, ymax)
     for b, v in zip(bars, vals):
@@ -429,8 +434,13 @@ def plot_holdout_scatter(holdout: pd.DataFrame, fig_dir: Path) -> None:
     ax.set_xlim(lim)
     ax.set_ylim(lim)
     ax.set_xlabel("Observed C$_{aq}$ (mol m$^{-3}$)", fontsize=16)
-    ax.set_ylabel("Nested-CV predicted C$_{aq}$ (mol m$^{-3}$)", fontsize=16)
-    ax.set_title("Holdout: obs. vs pred. C_aq (Residual-AI, by reach)", fontsize=17, fontweight="bold", pad=12)
+    ax.set_ylabel("Transport-predicted C$_{aq}$ (mol m$^{-3}$)", fontsize=16)
+    ax.set_title(
+        "Leave-one-reach-out holdout: observed vs transport-predicted C$_{aq}$\n(Residual-AI MLP, colored by reach)",
+        fontsize=16,
+        fontweight="bold",
+        pad=12,
+    )
     ax.legend(loc="lower right", fontsize=11, ncol=2, framealpha=0.95)
     ax.grid(True, alpha=0.35)
     fig.tight_layout()
@@ -471,7 +481,13 @@ def plot_subgroup_rmse(sub_df: pd.DataFrame, fig_dir: Path) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels([sg_lab[s] for s in keep_sg], fontsize=13)
     ax.set_ylabel("LOO-reach C$_{aq}$ RMSE (mol m$^{-3}$)", fontsize=15)
-    ax.set_title("Subgroup RMSE: R008 vs tributaries (n=1 schematic)", fontsize=17, fontweight="bold", pad=12)
+    ax.set_ylim(0, max(ax.get_ylim()[1], 0.0) * 1.18 + 0.008)
+    ax.set_title(
+        "Subgroup held-out RMSE: R008 mainstem, multi-sample tributaries,\nand single-sample reaches (shown for completeness)",
+        fontsize=16,
+        fontweight="bold",
+        pad=12,
+    )
     ax.legend(fontsize=13, framealpha=0.95)
     ax.grid(True, axis="y", alpha=0.35)
     fig.tight_layout()
@@ -497,20 +513,20 @@ def plot_ablation_flux(metrics: pd.DataFrame, fig_dir: Path) -> None:
         tot.append(float(sub["flux_total_mol_m2d"].iloc[0]) if len(sub) else np.nan)
         rmse_f.append(float(sub["rmse_f"].iloc[0]) if len(sub) else np.nan)
     axes[0].bar(labs, tot, color=colors, edgecolor="white", width=0.7)
-    axes[0].set_ylabel("Held-out F$_{CO2}$ total (mol m$^{-2}$ d$^{-1}$)", fontsize=14)
-    axes[0].set_title("Evasion flux total", fontsize=16, fontweight="bold")
+    axes[0].set_ylabel("Sample-summed model F$_{CO2}$ diagnostic (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
+    axes[0].set_title("Model F$_{CO2}$ diagnostic (not a measured evasion estimate)", fontsize=14, fontweight="bold")
     for i, v in enumerate(tot):
         if np.isfinite(v):
             axes[0].text(i, v, f"{v:.1f}", ha="center", va="bottom", fontsize=13)
     axes[0].grid(True, axis="y", alpha=0.35)
     axes[1].bar(labs, rmse_f, color=colors, edgecolor="white", width=0.7)
-    axes[1].set_ylabel("F$_{CO2}$ RMSE vs empir. k×obs (mol m$^{-2}$ d$^{-1}$)", fontsize=14)
-    axes[1].set_title("Flux error (vs obs. proxy)", fontsize=16, fontweight="bold")
+    axes[1].set_ylabel("F$_{CO2}$ RMSE vs empirical-k proxy (mol m$^{-2}$ d$^{-1}$)", fontsize=13)
+    axes[1].set_title("Flux-diagnostic error (vs empirical-k × observed C)", fontsize=14, fontweight="bold")
     for i, v in enumerate(rmse_f):
         if np.isfinite(v):
             axes[1].text(i, v, f"{v:.3f}", ha="center", va="bottom", fontsize=13)
     axes[1].grid(True, axis="y", alpha=0.35)
-    fig.suptitle("Ablation: held-out CO2 evasion flux", fontsize=17, fontweight="bold", y=1.02)
+    fig.suptitle("Held-out model CO$_2$ flux diagnostic by closure", fontsize=17, fontweight="bold", y=1.02)
     fig.tight_layout()
     fig.savefig(fig_dir / "ablation_flux_comparison.png", dpi=FIG_DPI, bbox_inches="tight")
     plt.close(fig)
