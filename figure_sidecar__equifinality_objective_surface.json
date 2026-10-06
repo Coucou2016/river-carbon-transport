@@ -1,0 +1,21 @@
+{
+  "figure_id": "fig7_equifinality_surface",
+  "run_id": "20260919_remediation",
+  "generator": "src/16_equifinality_surface.py::plot_surface",
+  "selected_rows": {
+    "n": 120,
+    "grid": "alpha x S uniform grid"
+  },
+  "aggregation": "equal-weight 120-sample profile SSE with shared alpha and shared S",
+  "units": "objective in RMSE-equivalent C_aq units (mol m^-3)",
+  "n_definition": "n=120 samples; fixed observed upstream state; conditional model diagnostic",
+  "notes": "not a likelihood, not a confidence interval, not network rerouting",
+  "sidecar_version": 1,
+  "image": "equifinality_objective_surface.png",
+  "image_path": "results\\figures\\equifinality_objective_surface.png",
+  "source_table_sha256": {
+    "results/tables/equifinality_summary.json": "e441a758a477f64cb416ff9b00443655623dbd83026597c691c5c7efb5390fba",
+    "data_proc/nested_cv_holdout_predictions.csv": "93372931ce9172365d70b96e4975c8289b9eea3f2c35f6a131b93eafc8b59e0a"
+  },
+  "output_sha256": "d4511819481faeb34ad524c817097bfa9d0ad3310643e6e6c01ba67fe4d50368"
+}

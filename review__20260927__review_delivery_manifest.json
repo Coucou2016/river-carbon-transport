@@ -1,0 +1,191 @@
+{
+  "created_utc": "2026-09-26T17:07:20.004340+00:00",
+  "scope": "Review delivery, not a production scientific run manifest",
+  "files": [
+    {
+      "path": "audit_current.py",
+      "bytes": 8621,
+      "sha256": "3a7c716dac83356ce856afe5dad6a669c80626faf60b4fa41a0070e5314b54de"
+    },
+    {
+      "path": "build_revision.py",
+      "bytes": 7147,
+      "sha256": "c48c0316667581958bec01314b7d859ffea4216df08ca08a2516748776d22cdf"
+    },
+    {
+      "path": "evidence/audit_current.json",
+      "bytes": 19321,
+      "sha256": "3f33ced399ff8abaf499476ba425ba26a78a7bf61e54f9a020dcee68eb3b777f"
+    },
+    {
+      "path": "evidence/final_checks.json",
+      "bytes": 956,
+      "sha256": "aee0bbd93261315dffb0c36522a95feb3dcf951e2086dbd2c3e30ae650501870"
+    },
+    {
+      "path": "evidence/retrain_main.json",
+      "bytes": 881,
+      "sha256": "cec1bd321fb7cc29f361fe44951d3cfc46906f4ad41d357c59887d21592c62cd"
+    },
+    {
+      "path": "evidence/revised_pdf_text.txt",
+      "bytes": 64596,
+      "sha256": "8cc906a8401247f7dc85f78996d39ea6ddf26612315a1aaad1f2533c782b7d90"
+    },
+    {
+      "path": "evidence/revision_build.json",
+      "bytes": 2082,
+      "sha256": "10e510a25d0b7a353b556e10a638cabe26ff80d427d5da940a5e65fc64c06a8f"
+    },
+    {
+      "path": "evidence/supplement.json",
+      "bytes": 2030,
+      "sha256": "525030baf75eb9f10358a164e54ba2e274f081e2c769172466e3b70880f76ede"
+    },
+    {
+      "path": "evidence/verify_development.log",
+      "bytes": 178,
+      "sha256": "04698dab87e1a0fd3c31f2ec88610ec9fca6fb9c69080772cb063f2aa73ec346"
+    },
+    {
+      "path": "evidence/verify_submission.log",
+      "bytes": 203,
+      "sha256": "bb25cfc228f1d2dd00ce528fe6a0d2ddd826e483ad325e4535ef045da2c24dd7"
+    },
+    {
+      "path": "final_checks.py",
+      "bytes": 2595,
+      "sha256": "07097cb6a6bc9a3142d3ae5b36579b3c1636e8e3a4ac3a3d62a2d436cfdf1fa5"
+    },
+    {
+      "path": "pdf_qa.py",
+      "bytes": 576,
+      "sha256": "dc5045a59eb7d6c16e37623bade06cf7fe26ab6bff6c27a59a7e49526cd2faa8"
+    },
+    {
+      "path": "prepare_review.py",
+      "bytes": 1449,
+      "sha256": "757b4aa3b686d5dc21ce248864a3b1cf2b376dc0a8720332335ec8bb665b8588"
+    },
+    {
+      "path": "retrain_probe.py",
+      "bytes": 2848,
+      "sha256": "1d21449758d97eabef13a675e03414dd167570518fe19b47bb8216c12930a106"
+    },
+    {
+      "path": "Reviewer_1.md",
+      "bytes": 22962,
+      "sha256": "786055aeaea5936779f244ffeca09c8a22f2cf82a20a4d9c31f55179d82b3b94"
+    },
+    {
+      "path": "Reviewer_2.md",
+      "bytes": 19910,
+      "sha256": "d74ebeb4f3f38b6e9bab3934dc1a81af28aa7269f2ce44cff8676f8d64d2284e"
+    },
+    {
+      "path": "Reviewer_3.md",
+      "bytes": 21633,
+      "sha256": "43ac8710be66f4820c1f4f455eba4ed00f8b2e817266a60a696097f1f550cd64"
+    },
+    {
+      "path": "source_manifest.json",
+      "bytes": 47549,
+      "sha256": "49bc6b1f3c2d0b59ce1e8d815a8dea1caa7014e1270a3d08ace85d1090cdce19"
+    },
+    {
+      "path": "supplement_probe.py",
+      "bytes": 2338,
+      "sha256": "829c3d9bb97b273988d9a312fab209538f54573f9bd50dd00fe9b883617c9b00"
+    },
+    {
+      "path": "修订稿/paper_revised.html",
+      "bytes": 4041059,
+      "sha256": "d46b0f80c6e0f791053838f160c7ef35869a9057472541baa8fe61796953c7cd"
+    },
+    {
+      "path": "修订稿/paper_revised.md",
+      "bytes": 63747,
+      "sha256": "eb6b33862579b9ebc7a3df4c3ff67f9175c43327fca1dba75653147566ea9d5f"
+    },
+    {
+      "path": "修订稿/paper_revised_20260927.pdf",
+      "bytes": 3725116,
+      "sha256": "57d5eb5ed5cb370cb50112cea32fd737c61ac02edb76b307aee9070fb2ab359a"
+    },
+    {
+      "path": "修订稿/results/figures/dimensionless_coefficients.png",
+      "bytes": 153843,
+      "sha256": "ed3d8b51cebdcabaa2d9997a07e231c81b5a2890b03a6620fce86cff8e115195"
+    },
+    {
+      "path": "修订稿/results/figures/equifinality_objective_surface.png",
+      "bytes": 502066,
+      "sha256": "989bef1e43549707d50c7d0a31882f27d2e3586a1320564768e6b9070e7a9031"
+    },
+    {
+      "path": "修订稿/results/figures/figure2_reach_assignment_and_samples.png",
+      "bytes": 408636,
+      "sha256": "ee1e74f5ea1e50ab388fd1d8f7bf5816e7858b18796b47a2f6074e9946115f69"
+    },
+    {
+      "path": "修订稿/results/figures/filter_scale_sgs.png",
+      "bytes": 333182,
+      "sha256": "89fd9778f2d8a6376f33afa95e5a0c9d21a7457557f2e973c65ca2f70077c267"
+    },
+    {
+      "path": "修订稿/results/figures/filter_scale_sgs_box.png",
+      "bytes": 160694,
+      "sha256": "658f756746dfe27abda694c2d6f19a2f0bd762713ec24af3a3ed68314253c754"
+    },
+    {
+      "path": "修订稿/results/figures/les_filter_conceptual.png",
+      "bytes": 359683,
+      "sha256": "daf74d8f6b9d2b27bd1172ea93aa50796e69716328e1793adffacfbba1d111f3"
+    },
+    {
+      "path": "修订稿/results/figures/nested_cv_rmse_bar.png",
+      "bytes": 123290,
+      "sha256": "34711bd5e02b90e8b76afbe3c9369ffbbe8c2188cb421d825e7c3286fc783e00"
+    },
+    {
+      "path": "修订稿/results/figures/nested_cv_scatter_holdout.png",
+      "bytes": 299164,
+      "sha256": "b6b4bac0fccd4058d37171344aa072cf27cedd187f8f8798a0bcb54c9cee8112"
+    },
+    {
+      "path": "修订稿/results/figures/subgroup_rmse_r008_vs_trib.png",
+      "bytes": 160796,
+      "sha256": "181ab874afff4dcc7e4a3d037ec30e21eed115444b503b5c907c3e4db0adacd4"
+    },
+    {
+      "path": "修订稿/results/figures/supp_flux_diagnostics.png",
+      "bytes": 478990,
+      "sha256": "6f6273c513a10e424a75a0c0d07938bbbe86904f67271afa5fc05ff1eb9d8300"
+    },
+    {
+      "path": "修订稿/逐段修改对照.html",
+      "bytes": 356320,
+      "sha256": "2c97d64f76af7e8049ea3bb86a523bb8b229bf2b076cff7ba99d2fb85015d05c"
+    },
+    {
+      "path": "复审意见与最小整改方案.md",
+      "bytes": 21196,
+      "sha256": "27647e1ce7e591377dac00685e0f87b57652d46122c1f59b03b8830e84838364"
+    },
+    {
+      "path": "术语与修订约束.md",
+      "bytes": 1776,
+      "sha256": "2303ed200bb9e43b081181e199a8c2e28bd0e5f71bcec001714c92940aee7a80"
+    },
+    {
+      "path": "真实性准确性完整性证据.md",
+      "bytes": 10059,
+      "sha256": "67253075bf5c69ed19259b505d91430aa2727f0ffa6bb8776bca092219429dff"
+    },
+    {
+      "path": "阅读入口与修改说明.md",
+      "bytes": 3317,
+      "sha256": "6e64ddf8d6219b4df2e05f1092fe42eaeb1ae492eefb77c03acead61bfd26e89"
+    }
+  ]
+}

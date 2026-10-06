@@ -1,0 +1,570 @@
+{
+  "generated_at_utc": "2026-09-27T19:46:35.276137+00:00",
+  "command": [
+    "D:\\Projects\\20260611-river-carbon-transport\\.venv\\Scripts\\python.exe",
+    "D:\\Projects\\20260611-river-carbon-transport\\run_pipeline.py",
+    "--config",
+    "configs/east_river.yaml"
+  ],
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "git": {
+    "commit": "b1b397330e19209494e079e7434a3f9fc96eca3b",
+    "dirty": false,
+    "branch": "main"
+  },
+  "stages": [
+    {
+      "index": 1,
+      "name": "01_fetch_water_quality",
+      "description": "Fetch real East River data",
+      "mode": "ran",
+      "inputs": [],
+      "outputs": [
+        "data_proc/reach_daily_observations.csv"
+      ]
+    },
+    {
+      "index": 2,
+      "name": "02_build_network",
+      "description": "Build network",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/reach_daily_observations.csv"
+      ],
+      "outputs": [
+        "data_proc/reach_attributes.csv"
+      ]
+    },
+    {
+      "index": 3,
+      "name": "real_network",
+      "description": "Directed tree + segmented observations + corrected baseline",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/reach_daily_observations.csv"
+      ],
+      "outputs": [
+        "data_proc/reach_daily_observations_segmented.csv",
+        "data_proc/network_segments.csv",
+        "data_proc/baseline_model_output.csv",
+        "results/tables/length_conservation.csv"
+      ]
+    },
+    {
+      "index": 4,
+      "name": "03_baseline_transport",
+      "description": "Baseline transport (legacy serial; superseded by real_network)",
+      "skipped": true,
+      "reason": "legacy_default_skip_T10"
+    },
+    {
+      "index": 5,
+      "name": "04_estimate_k",
+      "description": "Estimate k",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/reach_daily_observations.csv"
+      ],
+      "outputs": [
+        "data_proc/k_estimates.csv"
+      ]
+    },
+    {
+      "index": 6,
+      "name": "05_compute_residual_sgs",
+      "description": "Compute S_sgs residual",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/reach_daily_observations.csv",
+        "data_proc/reach_daily_observations_segmented.csv",
+        "data_proc/network_segments.csv"
+      ],
+      "outputs": [
+        "data_proc/sgs_training_data.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "name": "06_train_sgs_model",
+      "description": "Train AI models",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/sgs_training_data.csv"
+      ],
+      "outputs": [
+        "data_proc/models/training_metrics.json"
+      ]
+    },
+    {
+      "index": 8,
+      "name": "07_coupled_prediction",
+      "description": "Coupled prediction",
+      "skipped": true,
+      "reason": "legacy_default_skip_T10"
+    },
+    {
+      "index": 9,
+      "name": "08_validate_flux_budget",
+      "description": "Validate & figures",
+      "mode": "ran",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "name": "09_spatial_temporal_viz",
+      "description": "Spatial & temporal viz",
+      "mode": "ran",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "name": "10_gis_network_viz",
+      "description": "GIS network line maps",
+      "mode": "ran",
+      "inputs": [],
+      "outputs": [
+        "results/figures/figure2_reach_assignment_and_samples.png",
+        "results/figures/gis_network_manifest.json",
+        "results/figures/figure2_basemap_manifest.json"
+      ]
+    },
+    {
+      "index": 12,
+      "name": "11_cross_section_2d_viz",
+      "description": "2D cross-section profiles",
+      "mode": "ran",
+      "inputs": [],
+      "outputs": [
+        "results/figures/cross_section_trapezoid_panel.png",
+        "results/figures/cross_section_u_field_panel.png",
+        "results/figures/cross_section_manifest.json"
+      ]
+    },
+    {
+      "index": 13,
+      "name": "12_nested_cv_transport",
+      "description": "Grouped leave-one-reach-out transport CV",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/reach_daily_observations.csv",
+        "data_proc/reach_daily_observations_segmented.csv",
+        "data_proc/network_segments.csv",
+        "data_proc/sgs_training_data.csv"
+      ],
+      "outputs": [
+        "data_proc/nested_cv_holdout_predictions.csv",
+        "results/tables/nested_cv_metrics.csv",
+        "results/tables/k_correction_saturation.json",
+        "results/figures/nested_cv_rmse_bar.png",
+        "results/tables/per_reach_cv_metrics.csv",
+        "results/tables/per_reach_paired_metrics.csv",
+        "results/tables/reach_sensitivity.json"
+      ]
+    },
+    {
+      "index": 14,
+      "name": "13_filter_scale_sgs",
+      "description": "Spatial rebinning sensitivity for S_sgs (not DAG mass filter)",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/reach_daily_observations.csv"
+      ],
+      "outputs": [
+        "results/tables/filter_scale_metrics.csv",
+        "results/tables/filter_scale_summary.json",
+        "results/figures/filter_scale_sgs.png",
+        "results/figures/filter_scale_sgs_box.png",
+        "results/figures/les_filter_conceptual.png"
+      ]
+    },
+    {
+      "index": 15,
+      "name": "14_identifiability_ksgs",
+      "description": "S_sgs vs k diagnostics",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/nested_cv_holdout_predictions.csv"
+      ],
+      "outputs": [
+        "results/figures/supp_flux_diagnostics.png"
+      ]
+    },
+    {
+      "index": 16,
+      "name": "15_dimensionless_sparse",
+      "description": "Dimensionless sparse closure",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/sgs_training_data.csv"
+      ],
+      "outputs": [
+        "results/tables/dimensionless_sparse_coefficients.csv",
+        "results/tables/dimensionless_sparse_summary.json",
+        "results/figures/dimensionless_coefficients.png"
+      ]
+    },
+    {
+      "index": 17,
+      "name": "16_equifinality_surface",
+      "description": "Model-free k-S objective surface",
+      "mode": "ran",
+      "inputs": [],
+      "outputs": [
+        "results/tables/equifinality_summary.json",
+        "results/figures/equifinality_objective_surface.png"
+      ]
+    },
+    {
+      "index": 18,
+      "name": "17_regenerate_holdout_figures",
+      "description": "Regenerate holdout figures",
+      "mode": "ran",
+      "inputs": [
+        "data_proc/nested_cv_holdout_predictions.csv"
+      ],
+      "outputs": [
+        "results/figures/nested_cv_scatter_holdout.png",
+        "results/figures/subgroup_rmse_r008_vs_trib.png"
+      ]
+    },
+    {
+      "index": 19,
+      "name": "scripts/build_figure_sidecars.py",
+      "description": "Figure sidecars + index + figures/paper mirror + archive manifest (provenance)",
+      "mode": "ran",
+      "inputs": [
+        "results\\figures\\ablation_flux_comparison.png",
+        "results\\figures\\carbon_heatmap_C_aq.png",
+        "results\\figures\\carbon_heatmap_DIC.png",
+        "results\\figures\\carbon_heatmap_DOC.png",
+        "results\\figures\\carbon_heatmap_F_CO2_ai.png",
+        "results\\figures\\carbon_heatmap_F_CO2_baseline.png",
+        "results\\figures\\carbon_heatmap_pCO2.png",
+        "results\\figures\\compare_C_aq_baseline_vs_ai.png",
+        "results\\figures\\compare_F_CO2_baseline_vs_ai.png",
+        "results\\figures\\cross_section_trapezoid_panel.png",
+        "results\\figures\\cross_section_u_field_panel.png",
+        "results\\figures\\difference_C_aq_ai_minus_baseline.png",
+        "results\\figures\\difference_F_CO2_ai_minus_baseline.png",
+        "results\\figures\\dimensionless_coefficients.png",
+        "results\\figures\\downstream_profile_carbon.png",
+        "results\\figures\\downstream_profile_hydrodynamics.png",
+        "results\\figures\\equifinality_objective_surface.png",
+        "results\\figures\\figure2_reach_assignment_and_samples.png",
+        "results\\figures\\filter_scale_sgs.png",
+        "results\\figures\\filter_scale_sgs_box.png",
+        "results\\figures\\flux_budget_stacked_by_reach.png",
+        "results\\figures\\flux_by_reach.png",
+        "results\\figures\\gis_flow_quiver_Q.png",
+        "results\\figures\\gis_flow_quiver_u.png",
+        "results\\figures\\gis_network_map_F_CO2_ai.png",
+        "results\\figures\\gis_network_map_F_CO2_baseline.png",
+        "results\\figures\\gis_network_map_F_CO2_comparison.png",
+        "results\\figures\\gis_network_map_Q.png",
+        "results\\figures\\gis_network_map_k600.png",
+        "results\\figures\\gis_network_map_pCO2.png",
+        "results\\figures\\gis_network_map_u.png",
+        "results\\figures\\gis_reach_assignment_map.png",
+        "results\\figures\\gis_samples_on_network.png",
+        "results\\figures\\gis_streamtube_QW_u.png",
+        "results\\figures\\hydro_histograms.png",
+        "results\\figures\\identifiability_k_vs_sgs.png",
+        "results\\figures\\identifiability_tradeoff.png",
+        "results\\figures\\k_correction_saturation_hist.png",
+        "results\\figures\\les_filter_conceptual.png",
+        "results\\figures\\longitudinal_profile_carbon.png",
+        "results\\figures\\longitudinal_profile_hydraulics.png",
+        "results\\figures\\longitudinal_schematic_2d.png",
+        "results\\figures\\nested_cv_rmse_bar.png",
+        "results\\figures\\nested_cv_scatter_holdout.png",
+        "results\\figures\\obs_vs_model_by_reach.png",
+        "results\\figures\\obs_vs_model_scatter.png",
+        "results\\figures\\obs_vs_model_scatter_large.png",
+        "results\\figures\\planview_velocity_network.png",
+        "results\\figures\\reach_bars_carbon.png",
+        "results\\figures\\reach_bars_hydraulics.png",
+        "results\\figures\\reach_bars_slope.png",
+        "results\\figures\\sample_chainage_map.png",
+        "results\\figures\\sample_snap_centerline.png",
+        "results\\figures\\seasonal_rmse.png",
+        "results\\figures\\sgs_residual_by_reach.png",
+        "results\\figures\\subgroup_rmse_r008_vs_trib.png",
+        "results\\figures\\supp_flux_diagnostics.png",
+        "results\\figures\\temporal_baseline_vs_ai_flux.png",
+        "results\\figures\\temporal_carbon.png",
+        "results\\figures\\temporal_hydraulics.png",
+        "results\\figures\\temporal_water_quality.png",
+        "paper.md",
+        "paper.html",
+        "report.md",
+        "report.html"
+      ],
+      "outputs": [
+        "results\\figures\\sidecars\\dimensionless_coefficients.json",
+        "results\\figures\\sidecars\\equifinality_objective_surface.json",
+        "results\\figures\\sidecars\\figure2_reach_assignment_and_samples.json",
+        "results\\figures\\sidecars\\filter_scale_sgs.json",
+        "results\\figures\\sidecars\\filter_scale_sgs_box.json",
+        "results\\figures\\sidecars\\les_filter_conceptual.json",
+        "results\\figures\\sidecars\\nested_cv_rmse_bar.json",
+        "results\\figures\\sidecars\\nested_cv_scatter_holdout.json",
+        "results\\figures\\sidecars\\subgroup_rmse_r008_vs_trib.json",
+        "results\\figures\\sidecars\\supp_flux_diagnostics.json",
+        "results/tables/figure_sidecar_index.json",
+        "results/tables/superseded_figures.json",
+        "results/figures/paper/derived_archive_manifest.json"
+      ]
+    },
+    {
+      "index": 20,
+      "name": "scripts/build_paper_tables.py",
+      "description": "Manuscript-facing summary tables + claim guard",
+      "mode": "ran",
+      "inputs": [],
+      "outputs": [
+        "results/tables/paper_main_results.csv",
+        "results/tables/subgroup_metrics.csv",
+        "results/tables/paper_filter_scale.csv",
+        "results/tables/paper_claim_guard.json"
+      ]
+    },
+    {
+      "index": 21,
+      "name": "scripts/paper_values.py",
+      "description": "Single numeric source of truth for the documents",
+      "mode": "ran",
+      "inputs": [],
+      "outputs": [
+        "results/tables/paper_values.json"
+      ]
+    }
+  ],
+  "artifacts": {
+    "data_proc/baseline_model_output.csv": {
+      "sha256": "7bfdc197ee7a6e1dfaf1c282374cd1336f69b46aa5cc2504f414b4b5083ff2ad",
+      "size_bytes": 43665
+    },
+    "data_proc/k_estimates.csv": {
+      "sha256": "7061a6899cc0173b3663e8195101e1bf6c842d1112bfc8e67924af5a18969bce",
+      "size_bytes": 72638
+    },
+    "data_proc/models/training_metrics.json": {
+      "sha256": "3cfad3064f0591e84a1cf0c4c20cae7a1b6dc2506eb24ec104e494c81c0139fd",
+      "size_bytes": 2635
+    },
+    "data_proc/nested_cv_holdout_predictions.csv": {
+      "sha256": "93372931ce9172365d70b96e4975c8289b9eea3f2c35f6a131b93eafc8b59e0a",
+      "size_bytes": 305013
+    },
+    "data_proc/network_segments.csv": {
+      "sha256": "17bea5f93831ca1d5e1548d6d5344cba41c188cd9dfa8e8476ff53db7d7f1a8a",
+      "size_bytes": 662
+    },
+    "data_proc/reach_attributes.csv": {
+      "sha256": "9c3aa31535c06b27088794f45d2ccb9eebd8ba576dbe6b782c1cb846079bbe1a",
+      "size_bytes": 656
+    },
+    "data_proc/reach_daily_observations.csv": {
+      "sha256": "4219d3033d49253cd9abe3d7b56630c228ac06bd28249b0c61bd0e3ef2d46c4c",
+      "size_bytes": 64583
+    },
+    "data_proc/reach_daily_observations_segmented.csv": {
+      "sha256": "3b2987186a110ab74582cd012a14c78489b3f983489912d5eb3bb48eff749f34",
+      "size_bytes": 79719
+    },
+    "data_proc/sgs_training_data.csv": {
+      "sha256": "cd9ee3481f41b516290a23770ac38f866eee5153f05c0d14cfc85ba230faf2d4",
+      "size_bytes": 42338
+    },
+    "results/figures/cross_section_manifest.json": {
+      "sha256": "feb61a16ca3ac62d830080f82bd4c79561dfcc8ff40beebf87751d46581ae71c",
+      "size_bytes": 799
+    },
+    "results/figures/cross_section_trapezoid_panel.png": {
+      "sha256": "f2087fa4ee35c897cc7f87be56bad3af025cf0b3351f54352bdaabbe053fd078",
+      "size_bytes": 83007
+    },
+    "results/figures/cross_section_u_field_panel.png": {
+      "sha256": "5628b22563b5eb9c3d193cd362716f27094f347d4b71756c6d44746199b8f868",
+      "size_bytes": 75528
+    },
+    "results/figures/dimensionless_coefficients.png": {
+      "sha256": "39c12ba360dd7bdb6c3bfd3c18923592ca2368c69864aa458f3600ad5b296443",
+      "size_bytes": 172422
+    },
+    "results/figures/equifinality_objective_surface.png": {
+      "sha256": "d4511819481faeb34ad524c817097bfa9d0ad3310643e6e6c01ba67fe4d50368",
+      "size_bytes": 617052
+    },
+    "results/figures/figure2_basemap_manifest.json": {
+      "sha256": "c53a1cd254a58c0d073ee4547f5cc3eab8078e91202bcf85c877c62b8692ece5",
+      "size_bytes": 94588
+    },
+    "results/figures/figure2_reach_assignment_and_samples.png": {
+      "sha256": "2562257ac073cd670d94e77519135c74379fdd6e3129bef72998b9242f25d202",
+      "size_bytes": 5811885
+    },
+    "results/figures/filter_scale_sgs.png": {
+      "sha256": "ae4abf418d34ef8fb064449dd5dbf7f5b5ac25c224cffd467ad0769330730ee7",
+      "size_bytes": 398097
+    },
+    "results/figures/filter_scale_sgs_box.png": {
+      "sha256": "baaf6e145ea3da4a7402c0f84dd1800643ddf814756232d80fbbdbbcc2d2d1a6",
+      "size_bytes": 246587
+    },
+    "results/figures/gis_network_manifest.json": {
+      "sha256": "93caeb2372f49b3b78c1e7dd1f4e15d77fd4963728be203cba9fffa1a7a94b05",
+      "size_bytes": 1241
+    },
+    "results/figures/les_filter_conceptual.png": {
+      "sha256": "b3adf6298bf7ae56c2a6322322dca21ba5bc7f3b5a98823ea9a1c2a19224e991",
+      "size_bytes": 297348
+    },
+    "results/figures/nested_cv_rmse_bar.png": {
+      "sha256": "23b11c1e28e92f35784e9aaa537c3752e93c5cac2b2b4ed9b721006a0f6f0e1d",
+      "size_bytes": 167569
+    },
+    "results/figures/nested_cv_scatter_holdout.png": {
+      "sha256": "f9eed2a5aa3f48d20a0ddc3b4d67d25da7ec43aadb3c024f41edb12523fba2d2",
+      "size_bytes": 240705
+    },
+    "results/figures/paper/derived_archive_manifest.json": {
+      "sha256": "7419295050967474299c437b45441a201a6ac41883cf6a511a68addfb9750a80",
+      "size_bytes": 30931
+    },
+    "results/figures/subgroup_rmse_r008_vs_trib.png": {
+      "sha256": "5a694e53a24d20009e3b58babc27bce464f4c04e2a1369982d21018e87d04a5f",
+      "size_bytes": 172664
+    },
+    "results/figures/supp_flux_diagnostics.png": {
+      "sha256": "c8aed615cde799e2ad2ddedbd303017da29cb95bcfb976e295e2c007affe7ec4",
+      "size_bytes": 379881
+    },
+    "results/tables/dimensionless_sparse_coefficients.csv": {
+      "sha256": "f28ff6d67c51983b75894bb7f58663ad9cecacd97bb79b4eeb756a7e01802ce3",
+      "size_bytes": 464
+    },
+    "results/tables/dimensionless_sparse_summary.json": {
+      "sha256": "57234971653f37f5fb434ee69515829b8371accceaff26e6146bdd7cf87ba331",
+      "size_bytes": 3158
+    },
+    "results/tables/equifinality_summary.json": {
+      "sha256": "e441a758a477f64cb416ff9b00443655623dbd83026597c691c5c7efb5390fba",
+      "size_bytes": 2323
+    },
+    "results/tables/figure_sidecar_index.json": {
+      "sha256": "21794e1e85097c7e2ae5bc3cf75dd2efa58ef95da99a88790e509d5031056f1d",
+      "size_bytes": 1314
+    },
+    "results/tables/filter_scale_metrics.csv": {
+      "sha256": "852ad3dc678bf24a0aa0a4a896a49a1f20564ed874bc86d293a41b6fbabe521c",
+      "size_bytes": 3139
+    },
+    "results/tables/filter_scale_summary.json": {
+      "sha256": "7e80e8bfc0c46d60002e99912c8e7d9598da0535f2c2eefa182e0d1114a79d78",
+      "size_bytes": 12148
+    },
+    "results/tables/k_correction_saturation.json": {
+      "sha256": "ee0e027a0f618fcbb7194af9e2d5b9d444fa7c226348932602e27f35c558eaaa",
+      "size_bytes": 2208
+    },
+    "results/tables/length_conservation.csv": {
+      "sha256": "a246a838d3367481f870de218730b60cdd5eabcbd870dc7ae1b38a94de33a7dd",
+      "size_bytes": 3514
+    },
+    "results/tables/nested_cv_metrics.csv": {
+      "sha256": "a787b6a3a095d89782c0fe3537877ac598f3f7c048c710f61a90c365b2a21a1a",
+      "size_bytes": 2743
+    },
+    "results/tables/nested_cv_summary.json": {
+      "sha256": "7a6caab3e4e0cf0df7eeb3c78b2df1acd62151cc8c549c58ba233c6278bec9ec",
+      "size_bytes": 837
+    },
+    "results/tables/paper_claim_guard.json": {
+      "sha256": "f41ed1d21601873ea7e083e3f63508368090dbe7d4c97b97320a7cbe06d8f0ca",
+      "size_bytes": 2072
+    },
+    "results/tables/paper_filter_scale.csv": {
+      "sha256": "4da9bc6a43fed702aad8845f5f09e3367117c1a64ce960013a642ced866494a2",
+      "size_bytes": 2582
+    },
+    "results/tables/paper_main_results.csv": {
+      "sha256": "f3ced38349621e14fb1f073636a194912cb81698bbd6069af41911c915c0f2fc",
+      "size_bytes": 1642
+    },
+    "results/tables/paper_values.json": {
+      "sha256": "3df1a8eb0069966828515c7a725e6704d155678ba25c4823262519e010b447c4",
+      "size_bytes": 41013
+    },
+    "results/tables/per_reach_cv_metrics.csv": {
+      "sha256": "0c1cf2a78a7a8a405d15ee97125e14e0e1536ba5ab7e785faebc58252723398f",
+      "size_bytes": 2944
+    },
+    "results/tables/per_reach_paired_metrics.csv": {
+      "sha256": "b313bfa99cb63e3f25642632834753ea8296097bf7cfe7c35cbe316080ef97fb",
+      "size_bytes": 3455
+    },
+    "results/tables/reach_sensitivity.json": {
+      "sha256": "1fc3608921854e1fc066c2274f977a00623deed8dc1390df77713b571d458962",
+      "size_bytes": 10380
+    },
+    "results/tables/subgroup_metrics.csv": {
+      "sha256": "336da37fdce293e888d65a2dfd5dd4c0ef637ada847b86ad81726ee37d097715",
+      "size_bytes": 2864
+    },
+    "results/tables/superseded_figures.json": {
+      "sha256": "ff6c7279742b7c4bcf97ae10920dc32043770d7ffee09e8ecfe8ff151691dc8c",
+      "size_bytes": 6941
+    },
+    "results\\figures\\sidecars\\dimensionless_coefficients.json": {
+      "sha256": "eb19fb25270e516077d7a2e3f5a14a5cc47212f8462710263fdb8e1acba28215",
+      "size_bytes": 1308
+    },
+    "results\\figures\\sidecars\\equifinality_objective_surface.json": {
+      "sha256": "72a16dd2ebd0c0a153734df0d97ec96701993f6f50173de398f97b75060498a1",
+      "size_bytes": 1069
+    },
+    "results\\figures\\sidecars\\figure2_reach_assignment_and_samples.json": {
+      "sha256": "f174a4c901c0dce29b154797c9d37501f839e6b480fdbd225e2ea4b35339859e",
+      "size_bytes": 1841
+    },
+    "results\\figures\\sidecars\\filter_scale_sgs.json": {
+      "sha256": "e6bae7a7393c3405e6322e32765934cc864a501e8dc3a55da2ca0b1706c7d524",
+      "size_bytes": 1062
+    },
+    "results\\figures\\sidecars\\filter_scale_sgs_box.json": {
+      "sha256": "24e5f420ecdfcf7216f50d973bcfb423102bc2a5c888d8ba9d82b1d42e4cfaec",
+      "size_bytes": 994
+    },
+    "results\\figures\\sidecars\\les_filter_conceptual.json": {
+      "sha256": "dffec58fa2f533be6e023f6fcb7e99ccd9cefc7cebcf24272866cabc2266ab33",
+      "size_bytes": 753
+    },
+    "results\\figures\\sidecars\\nested_cv_rmse_bar.json": {
+      "sha256": "5c1cc6f21be6a8720b890752c87ebfa1f1db2c333876bc3ada8b68d5a37bf45c",
+      "size_bytes": 1156
+    },
+    "results\\figures\\sidecars\\nested_cv_scatter_holdout.json": {
+      "sha256": "16248050ddfc8439c0fe23d6c7464af85a382b806baf2238eca2a88553527524",
+      "size_bytes": 1059
+    },
+    "results\\figures\\sidecars\\subgroup_rmse_r008_vs_trib.json": {
+      "sha256": "b97170effbe9e9854b44f32ddd5fe9374f7082331c6ce890f492b14ac5ed90c8",
+      "size_bytes": 1229
+    },
+    "results\\figures\\sidecars\\supp_flux_diagnostics.json": {
+      "sha256": "12977743c7604c1fcc94ac3f732974fbbc5ba5685e7af45b018842fdf3b12fc2",
+      "size_bytes": 1206
+    }
+  },
+  "note": "Post-fix development manifest. Headline scientific claims remain blocked until full recalculation after P0 closure.",
+  "regeneration": {
+    "run_id_printed_by_documents": "20260919_remediation",
+    "run_id_flag_is_not_that_id": "run_pipeline.py --run-id only tags runs/<run_id>/; the documents print the module constant RUN_ID in scripts/generate_report.py, scripts/build_paper_tables.py, scripts/build_figure_sidecars.py and the sidecars written by src/13_filter_scale_sgs.py. These are not derived from --run-id (see docs/PIPELINE_AND_REGENERATION.md).",
+    "full_sequence": ".\\.venv\\Scripts\\python.exe run_pipeline.py && .\\.venv\\Scripts\\python.exe scripts\\generate_paper.py && .\\.venv\\Scripts\\python.exe scripts\\generate_report.py && .\\.venv\\Scripts\\python.exe scripts\\verify_paper.py --mode development",
+    "documents_are_not_stages": "paper.md/paper.html/report.md/report.html are generated outside the stage graph by the two document generators."
+  }
+}

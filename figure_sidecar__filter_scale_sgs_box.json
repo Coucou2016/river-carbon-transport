@@ -1,0 +1,23 @@
+{
+  "figure_id": "fig9_filter_scale_box",
+  "run_id": "20260919_remediation",
+  "generator": "src/13_filter_scale_sgs.py::plot_filter_scale",
+  "selected_rows": {
+    "scales": 8,
+    "excluded_scales": [
+      "study_reach"
+    ]
+  },
+  "aggregation": "distribution over date-cell records per scale (fliers suppressed; all points drawn)",
+  "units": "|S_sgs| in mol m^-2 d^-1",
+  "n_definition": "date-cell records, not independent spatial replicates",
+  "notes": "diamonds are per-scale means",
+  "sidecar_version": 1,
+  "image": "filter_scale_sgs_box.png",
+  "image_path": "results\\figures\\filter_scale_sgs_box.png",
+  "source_table_sha256": {
+    "results/tables/filter_scale_metrics.csv": "852ad3dc678bf24a0aa0a4a896a49a1f20564ed874bc86d293a41b6fbabe521c",
+    "data_proc/filter_scale_cell_residuals.csv": "50716d0b16320c9fcf6359c6ac081825107246c73e025cd39ded223a51bc6be3"
+  },
+  "output_sha256": "baaf6e145ea3da4a7402c0f84dd1800643ddf814756232d80fbbdbbcc2d2d1a6"
+}

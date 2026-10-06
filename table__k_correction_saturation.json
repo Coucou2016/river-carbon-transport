@@ -1,0 +1,84 @@
+{
+  "K_FLOOR": -12.0,
+  "floor_ratio_exp": 6.14421235332821e-06,
+  "infeasible_policy": "exclude_from_training",
+  "n_predictions": 120,
+  "n_predictions_note": "One leave-one-reach-out held-out g_hat per sample (not fold\u00d7sample duplicates).",
+  "n_campaign": 120,
+  "n_feasible_full_data": 54,
+  "n_infeasible_full_data": 66,
+  "infeasible_frac_full_data": 0.55,
+  "frac_at_floor_oof": 0.0,
+  "g_hat_min": -5.741925239562988,
+  "g_hat_median": -2.359625816345215,
+  "fold_training_meta": {
+    "folds": [
+      {
+        "fold_id": 0,
+        "held_group": "R001",
+        "n_train": 119,
+        "n_train_with_cin": 119,
+        "n_train_feasible": 54,
+        "n_train_infeasible": 65
+      },
+      {
+        "fold_id": 1,
+        "held_group": "R002",
+        "n_train": 117,
+        "n_train_with_cin": 117,
+        "n_train_feasible": 53,
+        "n_train_infeasible": 64
+      },
+      {
+        "fold_id": 2,
+        "held_group": "R003",
+        "n_train": 105,
+        "n_train_with_cin": 105,
+        "n_train_feasible": 44,
+        "n_train_infeasible": 61
+      },
+      {
+        "fold_id": 3,
+        "held_group": "R004",
+        "n_train": 96,
+        "n_train_with_cin": 96,
+        "n_train_feasible": 46,
+        "n_train_infeasible": 50
+      },
+      {
+        "fold_id": 4,
+        "held_group": "R005",
+        "n_train": 103,
+        "n_train_with_cin": 103,
+        "n_train_feasible": 46,
+        "n_train_infeasible": 57
+      },
+      {
+        "fold_id": 5,
+        "held_group": "R006",
+        "n_train": 119,
+        "n_train_with_cin": 119,
+        "n_train_feasible": 54,
+        "n_train_infeasible": 65
+      },
+      {
+        "fold_id": 6,
+        "held_group": "R007",
+        "n_train": 119,
+        "n_train_with_cin": 119,
+        "n_train_feasible": 54,
+        "n_train_infeasible": 65
+      },
+      {
+        "fold_id": 7,
+        "held_group": "R008",
+        "n_train": 62,
+        "n_train_with_cin": 62,
+        "n_train_feasible": 27,
+        "n_train_infeasible": 35
+      }
+    ],
+    "infeasible_policy": "exclude_from_training",
+    "cv_type": "grouped_loo"
+  }
+}

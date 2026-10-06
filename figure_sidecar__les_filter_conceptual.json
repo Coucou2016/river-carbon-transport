@@ -1,0 +1,20 @@
+{
+  "figure_id": "fig1_cell_dag_rules_schematic",
+  "run_id": "20260919_remediation",
+  "generator": "src/13_filter_scale_sgs.py::plot_conceptual",
+  "selected_rows": {
+    "panels": [
+      "serial contraction",
+      "parallel confluence"
+    ]
+  },
+  "aggregation": "schematic only (no run data plotted)",
+  "units": "not applicable",
+  "n_definition": "no sample rows; draws the cell-DAG aggregation rules",
+  "notes": "schematic, not to scale; not evidence of conservation in any run",
+  "sidecar_version": 1,
+  "image": "les_filter_conceptual.png",
+  "image_path": "results\\figures\\les_filter_conceptual.png",
+  "source_table_sha256": {},
+  "output_sha256": "b3adf6298bf7ae56c2a6322322dca21ba5bc7f3b5a98823ea9a1c2a19224e991"
+}

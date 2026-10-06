@@ -1,0 +1,11 @@
+{
+  "timestamp_utc": "2026-09-19T15:35:04.895555+00:00",
+  "source_files_checked": 187,
+  "live_mismatches": [],
+  "packet_mismatches": [],
+  "raw_excel_matches_initial_hash": true,
+  "reviewer_reports": 3,
+  "missing_local_markdown_links": [],
+  "audit_script_syntax": "PASS",
+  "scope": "Only the 187 manifest files and the traced raw Excel are covered by original-file integrity checks."
+}

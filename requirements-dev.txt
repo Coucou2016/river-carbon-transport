@@ -1,0 +1,13 @@
+# Development / verification dependencies for the East River CO2 project.
+#
+# Pinned to the combination that was actually verified for this repository
+# (P2-09): CPython 3.12.10 on Windows 10 with the runtime pins in
+# `requirements.txt`.  Install with:
+#
+#   .\.venv\Scripts\python.exe -m pip install -r requirements.txt -r requirements-dev.txt
+#
+# The runtime pins in requirements.txt are authoritative for the pipeline; these
+# pins are authoritative for running `pytest` and `scripts/verify_paper.py`.
+
+# Verified: pytest 9.1.1 running the 60+ unit/integration tests in tests/.
+pytest==9.1.1

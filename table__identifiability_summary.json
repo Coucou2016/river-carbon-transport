@@ -1,0 +1,21 @@
+{
+  "n": 120,
+  "protocol": "loo_reach nested CV (held-out then physics)",
+  "k_emp_median": 194.00156247596155,
+  "k_eff_median": 5.373288361788708,
+  "k_ratio_median": 0.0944555603113767,
+  "S_implied_mean": 2.6122796789640095,
+  "S_ai_mean": 5.7371452709796795,
+  "spearman_S_ai_vs_S_implied": 0.708507535245503,
+  "rmse_c": {
+    "baseline": 0.04849941104734036,
+    "residual_ai": 0.0507041022060741,
+    "k_correction": 0.04847644952860099
+  },
+  "flux_total": {
+    "baseline": 796.3617225759147,
+    "residual_ai": 3264070.739917512,
+    "k_correction": -2055.0143162641075
+  },
+  "finding": "The k-correction does not improve on the Baseline: with S_sgs = 0, no positive transfer velocity can match most samples, and the retained correction saturates near zero (median k_eff/k_emp = 0.09446). Residual-AI keeps k_emp but does not beat the Baseline on C_aq and extrapolates to unphysical sources. S_sgs and k are not jointly identifiable from concentration alone."
+}

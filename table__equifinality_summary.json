@@ -1,0 +1,44 @@
+{
+  "n": 120,
+  "k_emp_median_m_d": 194.00156247596155,
+  "q_A_median_m_d": 73.76888621634585,
+  "q_A_source": "direct_86400_Q_routed_over_L_control_times_W (explicit keyed merge)",
+  "q_A_direct_vs_inverse_max_abs_diff_m_d": 8.810729923425242e-12,
+  "boundary_source": "fixed observed upstream routed state per sample",
+  "objective_name": "profile_SSE_not_likelihood",
+  "weights": "equal_weight_per_sample",
+  "shared_parameters": [
+    "alpha (uniform k-scale)",
+    "S (uniform source)"
+  ],
+  "profile_interval": "rmse <= 1.10 * rmse_min over the alpha grid",
+  "S_diag_median_mol_m2d": 1.714582078472673,
+  "dC_median_mol_m3": 0.01209782675670125,
+  "single_sample_zero_valley": true,
+  "single_sample_profile_flat": true,
+  "pooled_argmin_alpha": 0.17954225134915902,
+  "pooled_argmin_s": 0.1213905744705577,
+  "profile_flatness_span_decades": 6.120833333333334,
+  "profile_flatness_log10_range": [
+    -6.0,
+    0.1208333333333336
+  ],
+  "profile_rmse_min": 0.03427894961560303,
+  "profile_rmse_basin_range": [
+    0.03427894961560303,
+    0.03642394440758286
+  ],
+  "claims_scope": {
+    "single_sample": "algebraic under-determination of ONE equation with fixed C_in and two unknowns (k, S)",
+    "pooled": "equal-weight 120-sample SSE with a shared alpha and shared S and a fixed observed upstream state",
+    "explicitly_NOT": [
+      "network rerouting",
+      "profile likelihood",
+      "a confidence interval",
+      "a statistical identifiability test"
+    ],
+    "planar_markers": "model median parameters drawn for orientation only; they are descriptive markers, not fitted network operating points",
+    "sensitivity_thresholds": "10% RMSE inflation used for the reported interval; no 5%/20% sensitivity is claimed"
+  },
+  "finding": "A single concentration observation cannot identify (k, S) jointly: the per-sample objective has an exact zero valley S = S_diag + dC (k - k_emp), so the per-sample profile SSE is identically flat. This is an algebraic fact under fixed C_in, not a statistical likelihood. Pooling the samples with a uniform k-scale and source leaves the profile shallow: RMSE changes only from 0.0343 to 0.0364 mol/m3 across the k-scale interval [0.01, 1]. Markers on the pooled plane are descriptive medians, not network operating points."
+}

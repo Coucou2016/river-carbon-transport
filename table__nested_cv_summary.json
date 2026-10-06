@@ -1,0 +1,20 @@
+{
+  "n_campaign": 120,
+  "cv_design": "grouped_leave_one_reach_out_no_inner_loop",
+  "k_needed_infeasible_frac": 0.55,
+  "k_infeasible_policy": "exclude_from_training",
+  "flux_estimand": "sample_level_diagnostic_not_study_area_total",
+  "loo_reach_rmse_c": {
+    "baseline": 0.048499411047340346,
+    "residual_ai_mlp": 0.05070410220607411,
+    "residual_ai_rf": 0.05566118993446099,
+    "k_correction": 0.04847644952860096
+  },
+  "post_fix_development_numbers": true,
+  "mlp_beats_baseline_loo_reach": false,
+  "kcorr_beats_baseline_loo_reach": true,
+  "kcorr_overlapping_sample_area_flux_mol_d": -2055.0143162641134,
+  "baseline_overlapping_sample_area_flux_mol_d": 796.361722575913,
+  "kcorr_date_mean_unique_cell_flux_mol_d": -205.50143162641135,
+  "baseline_date_mean_unique_cell_flux_mol_d": 79.63617225759124
+}

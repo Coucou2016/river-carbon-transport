@@ -1,0 +1,85 @@
+{
+  "pysindy": "not installed",
+  "features": [
+    "Fr",
+    "Slope",
+    "h_over_W",
+    "log10_Re",
+    "log10_Da"
+  ],
+  "n": 120,
+  "model_story": "ONE story: the transport model trains on the DIMENSIONAL S_sgs target using fold-local targets shared with the main branch (src/fold_targets.py). The standardized S* equation is descriptive only and is not the object that is routed; S* is never multiplied by k_emp*C_eq in the reported nested-CV transport metric.",
+  "cv_design": "grouped_leave_one_reach_out_fold_local_targets",
+  "target_source": "fold_local_diagnosis_no_full_data_labels",
+  "imputation_source": "train_fold_median_only",
+  "equation_standardized_Sstar": "S* \u2248 1.386 \u2212 4.777\u00b7Fr_z \u2212 0.6142\u00b7Slope_z \u2212 2.295\u00b7(h/W)_z \u2212 2.75\u00b7log10(Da)_z",
+  "equation_original_Sstar": "S_sgs* \u2248 25.99 \u2212 129.5\u00b7Fr \u2212 14.28\u00b7Slope \u2212 175.8\u00b7h/W \u2212 6.284\u00b7log10(Da)",
+  "equation_Ssgs": "S_sgs \u2248 41.4 \u2212 171.9\u00b7Fr \u2212 21.7\u00b7Slope \u2212 319.5\u00b7h/W \u2212 11.66\u00b7log10(Da)",
+  "dominant_standardized": "\u2212 4.78\u00b7Fr_z \u2212 2.75\u00b7log10(Da)_z \u2212 2.29\u00b7(h/W)_z",
+  "loo_reach_Sstar_rmse": 9.081789161112727,
+  "loo_reach_Sstar_r2": -2.583342018759422,
+  "loo_reach_Ssgs_rmse": 11.275964811528063,
+  "loo_reach_Ssgs_r2": -0.6007114484291389,
+  "nested_cv_transport_rmse_c": 0.09386614116410902,
+  "nested_cv_transport_r2_c": -3.8765236578872644,
+  "nested_cv_transport_rmse_f": 8.473328726906116,
+  "folds": [
+    {
+      "fold_id": 0,
+      "held_group": "R001",
+      "n_train_targets": 119,
+      "n_features_kept": 5,
+      "target_source": "fold_local_diagnosis"
+    },
+    {
+      "fold_id": 1,
+      "held_group": "R002",
+      "n_train_targets": 117,
+      "n_features_kept": 5,
+      "target_source": "fold_local_diagnosis"
+    },
+    {
+      "fold_id": 2,
+      "held_group": "R003",
+      "n_train_targets": 105,
+      "n_features_kept": 5,
+      "target_source": "fold_local_diagnosis"
+    },
+    {
+      "fold_id": 3,
+      "held_group": "R004",
+      "n_train_targets": 96,
+      "n_features_kept": 5,
+      "target_source": "fold_local_diagnosis"
+    },
+    {
+      "fold_id": 4,
+      "held_group": "R005",
+      "n_train_targets": 103,
+      "n_features_kept": 5,
+      "target_source": "fold_local_diagnosis"
+    },
+    {
+      "fold_id": 5,
+      "held_group": "R006",
+      "n_train_targets": 119,
+      "n_features_kept": 5,
+      "target_source": "fold_local_diagnosis"
+    },
+    {
+      "fold_id": 6,
+      "held_group": "R007",
+      "n_train_targets": 119,
+      "n_features_kept": 5,
+      "target_source": "fold_local_diagnosis"
+    },
+    {
+      "fold_id": 7,
+      "held_group": "R008",
+      "n_train_targets": 62,
+      "n_features_kept": 5,
+      "target_source": "fold_local_diagnosis"
+    }
+  ],
+  "honest_note": "Sparse Pi-group form is reported for interpretability under fold-local targets (P1-04). Nested CV on coupled C_aq is not claimed to beat Baseline; the sparse transport branch remains provisional."
+}

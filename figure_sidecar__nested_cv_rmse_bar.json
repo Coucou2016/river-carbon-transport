@@ -1,0 +1,28 @@
+{
+  "figure_id": "fig3_nested_cv_rmse_bar",
+  "run_id": "20260919_remediation",
+  "generator": "src/12_nested_cv_transport.py::_plot_rmse_bar",
+  "selected_rows": {
+    "cv_protocol": "loo_reach",
+    "subgroup": "all_120",
+    "schemes": [
+      "baseline",
+      "residual_ai(mlp)",
+      "residual_ai(random_forest)",
+      "k_correction"
+    ],
+    "n_groups": 8
+  },
+  "aggregation": "pooled sample-weighted RMSE with per-reach open markers on the whiskers",
+  "units": "C_aq RMSE in mol m^-3",
+  "n_definition": "n=120 held-out samples over 8 leave-one-reach-out groups",
+  "notes": "no closure lowers the pooled RMSE below the zero-residual Baseline",
+  "sidecar_version": 1,
+  "image": "nested_cv_rmse_bar.png",
+  "image_path": "results\\figures\\nested_cv_rmse_bar.png",
+  "source_table_sha256": {
+    "results/tables/nested_cv_metrics.csv": "a787b6a3a095d89782c0fe3537877ac598f3f7c048c710f61a90c365b2a21a1a",
+    "data_proc/nested_cv_holdout_predictions.csv": "93372931ce9172365d70b96e4975c8289b9eea3f2c35f6a131b93eafc8b59e0a"
+  },
+  "output_sha256": "23b11c1e28e92f35784e9aaa537c3752e93c5cac2b2b4ed9b721006a0f6f0e1d"
+}

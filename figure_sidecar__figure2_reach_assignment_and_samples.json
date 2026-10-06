@@ -1,0 +1,41 @@
+{
+  "figure_id": "fig2_network_satellite_map",
+  "run_id": "20260919_remediation",
+  "generator": "src/10_gis_network_viz.py::plot_figure2_combined",
+  "selected_rows": {
+    "campaign_samples": 120,
+    "assigned_nhd_flowlines_by_reach": {
+      "R002": 15,
+      "R003": 29,
+      "R004": 140,
+      "R005": 6,
+      "R006": 8,
+      "R007": 2,
+      "R008": 193
+    },
+    "sample_group_counts": {
+      "R001": 1,
+      "R002": 3,
+      "R003": 15,
+      "R004": 24,
+      "R005": 17,
+      "R006": 1,
+      "R007": 1,
+      "R008": 58
+    }
+  },
+  "aggregation": "one marker per campaign sample; one polyline per assigned NHD flowline",
+  "units": "Web Mercator (EPSG:3857); scale bar in m; coordinates WGS84 input",
+  "n_definition": "n=120 campaign samples (CSV keys date/reach_id/sample_id); mapping counts are assigned NHD flowlines per logical reach, a different estimand",
+  "notes": "basemap tiles cached locally with SHA-256 provenance in figure2_basemap_manifest.json; arrows show digitized flow direction only, so the map is not a flow-validity test",
+  "sidecar_version": 1,
+  "image": "figure2_reach_assignment_and_samples.png",
+  "image_path": "results\\figures\\figure2_reach_assignment_and_samples.png",
+  "source_table_sha256": {
+    "data_proc/gis_reach_line_mapping.csv": "447d3b234bd68821fdcb38f170e592e3f61c2d58e8a5107feb3fa3e19e2c0a87",
+    "data_proc/reach_daily_observations.csv": "4219d3033d49253cd9abe3d7b56630c228ac06bd28249b0c61bd0e3ef2d46c4c",
+    "data_proc/sample_snap_centerline.csv": "c012becdfc6b28e1d14f179fa3bfc40c008f4a1810240122f28d9b793c13c117",
+    "results/figures/figure2_basemap_manifest.json": "c53a1cd254a58c0d073ee4547f5cc3eab8078e91202bcf85c877c62b8692ece5"
+  },
+  "output_sha256": "2562257ac073cd670d94e77519135c74379fdd6e3129bef72998b9242f25d202"
+}

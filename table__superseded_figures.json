@@ -1,0 +1,95 @@
+{
+  "run_id": "20260919_remediation",
+  "note": "Superseded results/figures/paper PNG renders replaced by the 2026-09-27 archive mirror. Not deleted: each remains in git history; recover it with the documented command against 3b47b24.",
+  "count": 11,
+  "figures": {
+    "dimensionless_coefficients.png": {
+      "archived_path": "results/figures/paper/dimensionless_coefficients.png",
+      "superseded_png_sha256": "4601193fb1cdd250fdd8d2e13089d70994cc7cdd3b0c8b8aa1e2347a590c9c59",
+      "superseded_size_bytes": 150549,
+      "sha256_prefix_checked_at_capture": "4601193fb1cdd250",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/dimensionless_coefficients.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "figure2_reach_assignment_and_samples.png": {
+      "archived_path": "results/figures/paper/figure2_reach_assignment_and_samples.png",
+      "superseded_png_sha256": "f2242173b77d1af25c37c5a7e3e8ef0659bcd3f81f58d1c9785972e4417b2bdc",
+      "superseded_size_bytes": 408483,
+      "sha256_prefix_checked_at_capture": "f2242173b77d1af2",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/figure2_reach_assignment_and_samples.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "filter_scale_sgs.png": {
+      "archived_path": "results/figures/paper/filter_scale_sgs.png",
+      "superseded_png_sha256": "aaeb78f251ab63babbbd5b40fc8cb75961d57d3014cd7e67be6a9c568bf7cd59",
+      "superseded_size_bytes": 271252,
+      "sha256_prefix_checked_at_capture": "aaeb78f251ab63ba",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/filter_scale_sgs.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "filter_scale_sgs_box.png": {
+      "archived_path": "results/figures/paper/filter_scale_sgs_box.png",
+      "superseded_png_sha256": "d714fab68eb9238749a66ac7053ac113f5d6dbaadda7bd2f31635782199317eb",
+      "superseded_size_bytes": 261574,
+      "sha256_prefix_checked_at_capture": "d714fab68eb92387",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/filter_scale_sgs_box.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "identifiability_k_vs_sgs.png": {
+      "archived_path": "results/figures/paper/identifiability_k_vs_sgs.png",
+      "superseded_png_sha256": "c61576faf8fcd059e38621422936576cff05ed4bc89e76ebb66ddfe02264f1c3",
+      "superseded_size_bytes": 509320,
+      "sha256_prefix_checked_at_capture": "c61576faf8fcd059",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/identifiability_k_vs_sgs.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "les_filter_conceptual.png": {
+      "archived_path": "results/figures/paper/les_filter_conceptual.png",
+      "superseded_png_sha256": "daf74d8f6b9d2b27bd1172ea93aa50796e69716328e1793adffacfbba1d111f3",
+      "superseded_size_bytes": 359683,
+      "sha256_prefix_checked_at_capture": "daf74d8f6b9d2b27",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/les_filter_conceptual.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "nested_cv_rmse_bar.png": {
+      "archived_path": "results/figures/paper/nested_cv_rmse_bar.png",
+      "superseded_png_sha256": "e102df6f4612ca0c98451be6f83c5557c165ca83f3669fce6bc6fb4ee301613c",
+      "superseded_size_bytes": 152806,
+      "sha256_prefix_checked_at_capture": "e102df6f4612ca0c",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/nested_cv_rmse_bar.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "nested_cv_scatter_holdout.png": {
+      "archived_path": "results/figures/paper/nested_cv_scatter_holdout.png",
+      "superseded_png_sha256": "a46a58842a95b0a3f0ce838d84c8c6e3d42a7cae4719fa660223b87dcdb712cc",
+      "superseded_size_bytes": 396798,
+      "sha256_prefix_checked_at_capture": "a46a58842a95b0a3",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/nested_cv_scatter_holdout.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "obs_vs_model_scatter_large.png": {
+      "archived_path": "results/figures/paper/obs_vs_model_scatter_large.png",
+      "superseded_png_sha256": "dded6252ebb902f044647c07b1d99ea5b925367ca97692fabb3cc528a48d9647",
+      "superseded_size_bytes": 258245,
+      "sha256_prefix_checked_at_capture": "dded6252ebb902f0",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/obs_vs_model_scatter_large.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "subgroup_rmse_r008_vs_trib.png": {
+      "archived_path": "results/figures/paper/subgroup_rmse_r008_vs_trib.png",
+      "superseded_png_sha256": "9d6479e0072696412f0d9dfcf147eb3fdc02c310f66fe7d094229b45e7ac153f",
+      "superseded_size_bytes": 203403,
+      "sha256_prefix_checked_at_capture": "9d6479e007269641",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/subgroup_rmse_r008_vs_trib.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    },
+    "supp_flux_diagnostics.png": {
+      "archived_path": "results/figures/paper/supp_flux_diagnostics.png",
+      "superseded_png_sha256": "6c375138d4d365349d615f4a8a24ac2a87c8d3727b6637115d7c585beb317df3",
+      "superseded_size_bytes": 408595,
+      "sha256_prefix_checked_at_capture": "6c375138d4d36534",
+      "recoverable_from": "git show 3b47b241900a9f89292c65e0c8170c3e346d6241:results/figures/paper/supp_flux_diagnostics.png",
+      "reason": "pre-2026-09-27 render; the published documents embed the live figure bytes, so paper/ was refreshed to match (2026-09-27 mirror)"
+    }
+  }
+}

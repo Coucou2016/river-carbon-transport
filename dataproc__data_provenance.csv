@@ -1,0 +1,8 @@
+component,source,label,synthetic_fallback,n_rows,date_min,date_max
+observations,hydroshare:9f907b46baa848e180c49339d605bf31,"Saccardi_and_Winnick_Data.xlsx (120 campaign samples, no forward-fill)",False,120.0,2019-08-02,2019-08-11
+network,hydroshare_supplement:2a213299 + NHD stream_reach.csv,8-reach tributary chain; length/slope from NHD+slopetable,False,8.0,,
+discharge_east_river,usgs:09112500,East River at Almont daily Q on sample dates (dataretrieval),False,,,
+discharge_tributaries,supplement:Q_elevation_regression_synoptic,Published synoptic tributary Q (Q elivation regreshion.csv); no daily gage,False,,,
+gas_transfer_k,ulseth_2019 + raymond_2012_sensitivity,k600 primary from Ulseth et al. (2019) eD piecewise (Nat. Geosci. 12:259-263); sensitivity from Raymond et al. (2012) LOFE 2:41-53 Model 4,False,,,
+nhdplus_lines,D:\Projects\20260611-river-carbon-transport\data_raw\nhdplus\east_river_flowlines_simplified.csv,East_River_Lines.shp from Dataset_3.zip (393 segments in R code),False,,,
+wqp,wqp_site_results_20190801_20190815.csv + USGS Samples API,Per-site WQP Aug 2019 + USGS 09112500/09111250; exact site-day merge: 0/120 samples enriched,False,316.0,,

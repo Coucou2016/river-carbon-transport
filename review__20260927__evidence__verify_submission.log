@@ -1,0 +1,5 @@
+FAIL: submission mode: working tree is dirty (git dirty=true)
+FAIL: paper.html still contains claim phrase: 'independent cells'
+
+Claim guard FAILED with 2 error(s), 0 warning(s) [mode=submission].
+

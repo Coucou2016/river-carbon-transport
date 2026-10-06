@@ -1,0 +1,1026 @@
+Author-review draft | 27 September 2026 | methodological qualifications retained
+1
+Transport-coupled evaluation of river-network
+CO₂ closures: Conditional process-allocation
+diagnostics from East River concentration
+observations
+Author-review version, 27 September 2026. This revision reconciles the manuscript with the archived
+numerical results and distinguishes verified calculations from unresolved methodological issues. It is not
+a submission-ready validation of the spatial support or sparse-closure evaluation. The original
+observations and production outputs have not been altered.
+Authors: To be completed (pending)
+Affiliations: To be completed (pending)
+Key Points
+• Public East River observations (Saccardi and Winnick) were reanalysed using a logical routing tree
+and a separate NHDPlus HR mapping and filtering network; the main residual learners use fold-local
+targets.
+• Under grouped leave-one-reach-out transport CV, the Residual-AI MLP RMSE is 0.0372 mol m⁻³
+versus Baseline 0.0486, but the random forest is worse (0.1011) and flux diagnostics remain unstable
+sample-support quantities.
+• A local mass balance admits source–exchange compensation; a conditional profile SSE describes this
+trade-off under fixed upstream concentrations, not general network identifiability.
+Plain Language Summary
+River-carbon models represent downstream transport, carbon inputs and exchange with the
+atmosphere. A concentration measurement constrains their combined effect, but does not necessarily
+separate those effects. We reanalysed 120 selected samples from the publicly archived East River
+campaign of Saccardi and Winnick (2021). The measurements were collected by that study, not by the
+present authors. Our calculations compare a baseline transport model with rules that supply a learned
+source term or adjust the gas-exchange rate. A simplified routing tree carries the forward calculation; a
+separate public hydrographic network supplies mapping and spatial-filtering information. For the main
+learners, training targets were rebuilt without the concentrations in the held-out reach. The multilayer
+perceptron gave a lower sample-weighted concentration error than the baseline, whereas the random
+forest did not. The gain was uneven across reaches, and the calculated flux diagnostics differed greatly.
+Those diagnostics overlap in spatial support and are not watershed totals or independently measured
+fluxes. A separate error-profile calculation shows compensation between a source term and gas
+exchange when upstream concentrations are fixed. This is a conditional explanation of the model
+balance, not proof that all concentration datasets fail to distinguish processes. Unresolved spatial
+support and numerical clipping still limit the empirical comparison. The case therefore motivates
+checking how a model obtains a good concentration fit, alongside checking the fit itself.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+2
+Abstract
+River-carbon models combine transport, unresolved sources and sinks, and air–water gas exchange.
+Concentration error measures their combined prediction, not the validity of each process allocation. We
+reanalysed 120 publicly archived East River observations (Saccardi and Winnick, 2021), grouped into
+eight logical reaches. Forward transport uses a simplified routing tree, USGS outlet discharge and
+published synoptic tributary discharge; a separate NHDPlus HR network supports mapping and
+filtering. We compare a zero-residual Baseline, learned residual source–sink closures, and a
+multiplicative gas-transfer correction. The main learners rebuild residual or transfer-velocity targets
+within each reach-held-out fold. Sample-weighted concentration RMSE was 0.0486 mol m⁻³ for the
+Baseline, 0.0372 for the multilayer perceptron (MLP), and 0.1011 for the random forest. The MLP gain
+was concentrated in one three-sample reach, and three held-out MLP concentrations were clipped to
+zero. Overlapping sample-area flux diagnostics were 1.21×10³, 1.94×10⁶ and 7.28×10⁵ mol d⁻¹,
+respectively; they are not watershed totals. The gas-transfer correction did not lower RMSE, and 60% of
+full-data inverse targets lacked a positive transfer-only solution. A conditional deterministic profile SSE,
+holding diagnosed upstream concentrations fixed and sharing one transfer scale and source across
+samples, gave RMSE 0.0360–0.0396 mol m⁻³ over transfer scales 0.01–1. Its single-sample zero valley is
+an algebraic property, not a network identifiability proof. Resolved filter-scale results remain
+sampling-conditional, while spatial-support inconsistencies and the separate sparse branch require
+correction. The archived experiment illustrates why concentration skill and process-allocation
+diagnostics should be reported separately; it does not establish a validated transferable closure.
+Keywords: river carbon cycling; environmental model evaluation; subgrid closure; gas-transfer velocity;
+grouped cross-validation; practical equifinality
+1. Introduction
+Rivers link terrestrial, aquatic, and atmospheric carbon cycling by transporting dissolved carbon,
+transforming it through biological and biogeochemical processes, and exchanging CO₂ with the
+atmosphere. Riverine CO₂ evasion is a substantial component of inland-water carbon budgets, but both
+the magnitude and dominant controls of that flux vary across river networks and over time (Hotchkiss et
+al., 2015; Gómez-Gener et al., 2021; Battin et al., 2023). Predictive models must therefore represent
+several processes that operate simultaneously: downstream advection, lateral and internal carbon
+inputs, in-stream transformation, and air-water gas exchange. At the reach scale, however, observations
+and model states average over spatial heterogeneity that may occur over much shorter distances. A
+reach-scale model can consequently reproduce concentration while compensating for unresolved source
+or sink processes through another term in the mass balance. This possibility matters whenever model
+performance is judged mainly from concentration observations.
+The East River watershed provides a useful setting in which to examine this problem because a
+process-based stream-network CO₂ model has already been developed for the system. Saccardi and
+Winnick (2021) represented downstream transport together with CO₂ sources and atmospheric
+exchange to predict spatial variation in stream CO₂ concentrations and fluxes. Their work illustrates
+how several process terms jointly determine the same downstream concentration state. Gas exchange is
+commonly represented through an empirical transfer velocity, and Raymond et al. (2012) related
+gas-transfer velocity to hydraulic properties of streams and small rivers. Such parameterizations make
+gas exchange operational at network scale, but they do not remove uncertainty in the other terms of the
+carbon balance. Groundwater inputs, lateral inflows, metabolic heterogeneity, and other sub-reach
+processes may remain incompletely observed or resolved. Errors in these processes and errors in gas
+exchange can therefore enter the same concentration equation and potentially offset one another.
+This compensation complicates model evaluation because different process allocations can produce
+similar concentration responses. Bennett et al. (2013) argued that environmental-model performance
+should be characterized using evidence appropriate to model purpose rather than a single
+goodness-of-fit statistic. Vilas et al. (2023) likewise treated model-data discrepancy as information that
+may arise from the model, the observations, or their interaction, while Markovich et al. (2022) evaluated
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+3
+alternative methods explicitly in the presence of model error. For river-carbon transport, these
+considerations imply that a lower concentration error is not necessarily sufficient to identify which
+process representation is better supported. If an unresolved source-sink correction and the gas-transfer
+velocity can both alter the same predicted concentration, optimizing either term may reduce residual
+error. The relevant test is whether their effects remain distinguishable when each candidate closure is
+coupled back to the transport model and evaluated under reach-grouped transport coupling, subject to
+the boundary-conditioning and target-construction limitations described below.
+Machine learning provides one possible representation of unresolved process terms. In climate
+modeling, for example, spatial coarse-graining has been used to define unresolved tendencies and to
+train data-driven subgrid parameterizations, including models tested across resolutions (Yuval &
+O’Gorman, 2020). Related work on data-driven closure of river-carbon transport is also in preparation
+(Gao et al., manuscript in preparation). The central difficulty is not whether a flexible model can fit a
+diagnosed residual in the data used for training, but whether that residual representation remains
+useful after transfer to a new spatial group and reinsertion into the governing balance. A residual may
+encode repeatable unresolved dynamics, but it may also absorb errors in hydraulic representation,
+boundary conditions, observations, or other model components. Strong in-sample fit therefore provides
+limited evidence for a closure unless its effect is evaluated through the coupled model under held-out
+conditions.
+Here we examine this question with 120 public East River observations assigned to eight logical
+reaches. Three parts of the analysis serve different purposes. First, predictions from residual and
+gas-transfer closures are reinserted into the quasi-steady balance before held-out concentration is
+scored. Second, spatial filtering on an NHDPlus HR representation describes how a diagnosed
+source–sink residual, S_sgs, changes with aggregation. Third, an algebraic objective surface separates
+local source–exchange compensation from the predictive comparison. A sparse representation provides
+an additional descriptive experiment, but its archived evaluation does not yet meet the main protocol's
+fold-local target requirement. Our contribution is this explicit separation of prediction, residual
+diagnosis and conditional process allocation in a public-data case study. We do not claim that the
+balance equation, empirical transfer relation, public observations or algebraic non-uniqueness were
+newly discovered here. Unequal sampling, empirical geometry, unresolved spatial support and the
+absence of independent evasion measurements bound the conclusions.
+2. Methods
+2.1 Study data and river-network representation
+The study reuses public observations from the upper East River watershed near Almont, Colorado
+(hydrologic unit code 14020001). The analysis selects 120 dated, model-included samples from the
+archived campaign table of Saccardi and Winnick (2021), collected between 2 and 11 August 2019. This
+number describes our selected analysis set, not necessarily the entire original campaign. Logical
+reaches R001–R008 contain 1, 3, 15, 24, 17, 1, 1 and 58 samples, respectively (Table 1). The three
+single-sample reaches enter the routing bookkeeping but provide limited evidence for transfer. These
+eight labels define evaluation groups; they are not eight statistically independent replicates of a
+catchment-scale experiment. The production routing tree contains seven tributary nodes and six
+mainstem segments, R008_S1–S6. Mainstem order and tributary attachment follow confluence-northing
+thresholds. This is a simplified logical tree, not a verified path-compressed representation of the fine
+NHD directed graph.
+Three public sources supply distinct inputs. The HydroShare supplement provides campaign chemistry
+and synoptic tributary discharge. NHDPlus HR flowlines for HUC 14020001 provide a separate mapping
+and filtering network, whose directed topology uses endpoint matching and the flow-direction attribute.
+That fine network must not be substituted verbally for the logical tree used in forward transport.
+Mainstem outlet discharge comes from USGS gage 09112500 on the sample dates; tributary discharges
+use the published synoptic values without gage-ratio scaling. Sample identifiers join chemistry to logical
+reaches, projected locations assign samples to mainstem segments, and fine-flowline mappings support
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+4
+maps and filter-cell membership. A geographical match establishes location, not automatically a
+connected, correctly oriented physical transport path. The archived implementation still uses
+flowline-local projected chainage and unbounded sample-midpoint support for its production control
+volumes. A common cumulative path coordinate and a fixed bounded domain therefore remain
+prerequisites for interpreting the comparison as a geographically verified transport experiment.
+Channel width and depth are not measured along the corridor, so both are estimated from the
+hydraulic-geometry relations of Raymond et al. (2012), fitted to 1026 paired measurements in streams
+and small rivers: width W = 12.88·Q^0.42 (m), depth h = 0.4·Q^0.29 (m), and bulk velocity u =
+0.19·Q^0.29 (m s⁻¹), with discharge Q in m³ s⁻¹. These are model-derived hydraulic inputs rather than
+measured cross-section properties, and the width enters velocity, k_600, and the water-surface area A_s
+= L·W. All hydraulic and gas-exchange quantities are conditional on this adopted geometry; no
+independent cross-section survey is available for this corridor. Biogeochemical covariates are likewise
+incomplete: dissolved inorganic carbon (DIC) and dissolved organic carbon (DOC) are available for 41 of
+the 120 samples, and alkalinity, nitrogen, phosphorus, and photosynthetically active radiation were not
+available for this campaign. A same-day merge against the Water Quality Portal returned no matching
+samples (0 of 120), and the StreamPULSE database contains no East River sites. These gaps constrain
+the covariate set available to the closures. Figure 2 shows the logical-reach assignment and the
+distribution of the 120 campaign samples on the river network.
+Figure 2. (a) Logical reach assignment on the NHDPlus HR network: segments were assigned to the logical study-reach
+labels by GNIS name matching and proximity to campaign coordinates; colors indicate reach assignment, and the
+single-sample reach R001 receives no assigned segment in this rendering. (b) Locations of the 120 campaign samples;
+point colors denote logical reaches R001–R008 and R008 contains 58 samples. The background provides spatial context
+only and is not used in the assignment.
+2.2 Quasi-steady CO₂ mass balance and gas exchange
+Each sample is associated with a model support length L and computed width W. In the archived
+production calculation, L comes from within-segment sample-midpoint spacing, with a 100 m fallback
+for a single sample, rather than a bounded tessellation of a verified reach domain. The resulting support
+is a current limitation, not a measured reach length. Carbon balance is evaluated quasi-steadily for each
+sampling date; this is not a time-integrated daily simulation. With equal inflow and outflow discharge
+within a control volume and no separate lateral term, advection, unresolved sources and atmospheric
+exchange satisfy
+Eq. (1): Q(C_in - C) + (A_s/tau_d)[S_sgs - k(C - C_eq)] = 0
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+5
+where Q is discharge (m³ s⁻¹), C_in and C are upstream and control-volume concentrations (mol m⁻³), k
+is transfer velocity (m d⁻¹), and S_sgs is the areal source–sink term (mol m⁻² d⁻¹). C_eq is
+atmospheric-equilibrium concentration, A_s = L·W is water-surface planform area (m²), and tau_d =
+86400 s d⁻¹ converts daily areal flux to mol s⁻¹. Planform area is distinct from hydraulic cross-section
+area. The archived hydraulic inputs use the three empirical relations in Section 2.1: their product uWh
+= 0.97888Q is close to, but not exactly, Q. We therefore do not claim that the stored empirical u is
+exactly Q/(Wh); changing to a continuity-derived velocity would require updating k and the derived
+predictors. For residual diagnosis, C is observed and S_sgs is inferred. For forward simulation, the
+closure supplies S_sgs and C is solved. Dividing Eq. (1) by A_s/tau_d gives the daily areal form
+Eq. (2): q_A(C_in - C) + S_sgs - k(C - C_eq) = 0
+in which q_A = tau_d·Q/A_s (m d⁻¹) is a daily area-normalized discharge and every term has units mol
+m⁻² d⁻¹.
+All closures are inserted into this same balance: a closure configuration is defined entirely by how it
+supplies S_sgs and k, and every configuration is scored after the identical transport calculation is
+re-solved. Because the transport numerics are held fixed, differences among configurations arise from
+their closure specification and the resulting allocation of model discrepancy.
+Gas exchange is summarized by the model flux density
+Eq. (3): F_CO2 = k(C - C_eq)
+The flux diagnostic sums F_CO₂ times the assigned water-surface area A_s, giving units mol d⁻¹.
+Samples can revisit or overlap spatial support, and the sum combines observations from different dates.
+It is therefore neither a watershed flux at one time nor a time-integrated campaign emission. It
+compares model allocations under the archived sample support; it is not an independently observed
+evasion quantity.
+The empirical transfer velocity follows the energy-dissipation parameterization of Ulseth et al. (2019),
+which was the formulation used by the original East River model (Saccardi & Winnick, 2021) and which
+accounts for the high turbulence of steep mountain streams. The Schmidt-600-normalized velocity
+k_600 is estimated from the stream energy-dissipation rate e_D = g·S·u, and the CO₂-specific velocity is
+obtained by Schmidt-number scaling:
+ln k600 = 1.18 ln eD + 6.43 (eD >= 0.02 m2 s-3); eD = g S u; k_emp = k600 (Sc/600)^-0.5
+We distinguish the Schmidt-600-normalized velocity k_600 from the CO₂-specific empirical velocity
+k_emp. The high-energy branch (e_D ≥ 0.02 m² s⁻³) applies throughout the study corridor; the Schmidt
+number Sc is evaluated at the sample water temperature. Because the choice of k_600 parameterization
+affects every gas-exchange result, Raymond et al. (2012) Model-4 k_600 values are retained as a
+sensitivity column in the processed observation table (median k_600 ≈ 98 m d⁻¹ versus ≈ 268 m d⁻¹ for
+Ulseth); the primary evaluation below uses Ulseth throughout. The equilibrium concentration C_eq is
+computed from Henry’s law with a temperature-dependent solubility constant. The constant follows the
+NIST/Sander compilation for CO₂ in water, k^°_H(298.15 K) = 0.035 mol kg⁻¹ bar⁻¹ with a van ’t Hoff
+temperature dependence d(ln k_H)/d(1/T) = 2400 K, so C_eq = k_H(T)·pCO₂·ρ_water with the
+atmospheric pCO₂ fixed at 400 µatm. Colder water dissolves more CO₂, so C_eq now varies with each
+sample’s temperature rather than being held at a single constant.
+The routed headwater boundary uses atmospheric equilibrium evaluated at the mean temperature of
+the supplied observation set; local exchange uses sample-specific equilibrium. During fold-local
+diagnosis that supplied set excludes the held-out rows. This boundary assumption differs from a
+measured upstream CO₂ concentration and should not be interpreted as one. Cross-section
+visualizations are idealized trapezoids, and the vertical velocity profile is a schematic parabola rather
+than an ADCP measurement. These display products do not add observational constraints to the
+metrics.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+6
+For a source S and fixed local forcing, the explicit solution is C = [q_A C_in + S + k C_eq]/(q_A + k). A
+negative numerator is incompatible with a nonnegative concentration in this steady balance. The
+current routing wrapper catches that infeasibility and clips C to zero, which can leave a nonzero balance
+residual. Three archived held-out MLP predictions are affected. We retain those archived predictions for
+traceability, but do not treat clipping as a physically conservative solution or their RMSE as a
+constraint-validated performance result.
+2.3 Spatial filtering and diagnosis of the subgrid residual
+Reach-scale transport formulations average over heterogeneity within each reach, and the unresolved
+contributions appear formally as a residual source-sink term. Studying that term requires an operable
+definition of the filter width Deltax rather than a qualitative notion of subgrid structure.
+We perform spatial coarse-graining on the directed NHDPlus HR flowlines. Flowlines are first ordered
+by their directed topology (upstream to downstream, from endpoint matching and the NHD
+flow-direction attribute), then grouped into filter cells as individual flowlines, consecutive pairs, or
+consecutive groups of four (native, ~2×, and ~4× merges). A whole-reach (study_reach) contraction
+that preserves all cross-group fine edges produces a cyclic cell DAG and is therefore excluded from
+formal filter claims (no singleton fallback). Each campaign observation is snapped to its nearest cell at
+each resolved scale. The reported Deltax is the mean length of the unique spatial cells that contain
+samples at that scale, giving Deltax ≈ 587 m for the native operator. Figure 1 summarizes the filtering
+construction.
+For each date and filter scale, the headwater boundary is atmospheric equilibrium; sampled upstream
+states inform downstream diagnostic boundaries along directed paths. Excluding a sample's own
+concentration from its upstream boundary prevents self-conditioning, but does not by itself prevent
+dependence on another held-out sample. That separate requirement is addressed by fold-local target
+reconstruction for the main learners. Filter summaries first use available cell-date diagnostics and then
+aggregate by spatial cell. There are 39, 32 and 27 sampled spatial cells at the three scales, with 43, 36
+and 32 sampled cell-date combinations, respectively. These are distinct supports, not statistically
+independent replicates: cells share network connections and dates. Sparse synchronous coverage
+means that a cell-mean summary is not a fully observed instantaneous filtered carbon budget.
+At the operator level the construction parallels the coarse-graining used in large-eddy simulation and in
+learned subgrid parameterization studies (Yuval & O’Gorman, 2020); the analogy is limited to spatial
+filtering, and S_sgs denotes the residual of the filtered river CO₂ balance at the chosen scale. Once
+resolved transport and gas exchange are recomputed on the filtered balance, the residual implied by the
+observations is
+Eq. (4): S_sgs = k(C - C_eq) - q_A(C_in - C)
+S_sgs is a filter-induced closure residual. It can absorb measurement error, errors from the simplified
+transport representation, and genuinely unresolved processes. It is not a direct measurement of a single
+unresolved biogeochemical flux. Its magnitude, structure, and learnability are evaluated below as the
+aggregation scale changes.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+7
+Figure 1. Conceptual representation of spatial coarse-graining of the river CO₂ balance. Left: native NHDPlus HR
+segments and sample locations within short control volumes. Right: merged filter cells at larger Deltax, for which
+unresolved contributions to the filtered mass balance are represented by S_sgs.
+2.4 Alternative unresolved-process closures
+Three closure configurations are compared. They differ only in how S_sgs and k are supplied to Eq. (1).
+The Baseline retains the transport and hydraulic formulation of the other configurations while setting
+S_sgs = 0 and using the energy-dissipation empirical velocity k_emp (Ulseth et al., 2019). It serves as
+the zero-residual reference for comparison with the alternative closure formulations.
+The Residual-AI configuration learns S_sgs from hydraulic and water-quality covariates. Two learners
+are trained with a fixed seed (42): a multilayer perceptron and a random forest. The candidate predictor
+pool comprises discharge, velocity, depth, width, slope, temperature, the available carbon chemistry
+(dissolved organic carbon for 41 of the 120 samples), and the derived dimensionless quantities; fields
+that are entirely absent from the campaign table are excluded, and missing retained predictors are
+imputed with medians calculated from the training reaches of each fold. The multilayer perceptron uses
+hidden layers of 64, 32, and 16 units with learning rate 0.001, early stopping, and fold-specific predictor
+standardization, and its predicted residual is signed, allowing both source and sink values. The random
+forest uses 200 trees with maximum depth 12 and no predictor standardization. The training target is
+the dimensionally consistent residual of Eq. (4), diagnosed from the observed concentrations routed
+through the directed network (Section 2.3).
+The k-correction leaves S_sgs at zero and supplies k_eff = k_emp·exp(g_θ(X)). XGBoost predicts the
+dimensionless log correction using 300 trees, maximum depth 6, learning rate 0.05 and seed 42. Within
+each fold, the diagnostic balance gives k_need = q_A(C_in − C_obs)/(C_obs − C_eq), where a finite
+positive value is required. The training response is log(k_need/k_emp); infeasible inverse targets are
+excluded rather than replaced by a small positive velocity. In the full-data diagnostic, 72 of 120 targets
+are infeasible (60%). This fraction describes that diagnostic set, not every training fold or the forward
+model's domain. The fitted correction still predicts a positive velocity for every held-out sample. None of
+the 120 archived reach-held-out predictions reaches the log lower bound g = −12. We report the
+median of the paired ratios k_eff/k_emp, which is not generally the ratio of the two marginal medians.
+The diagnosed residual is positive for all 120 samples (a subgrid source; Section 3), yet the Residual-AI
+learners are left unbounded in prediction. The consequence of this signed, unbounded prediction is
+examined under held-out evaluation in Section 3.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+8
+2.5 Leave-one-reach-out transport-coupled evaluation
+The main closure comparison leaves one of the eight logical reaches out at a time. Within each fold,
+predictor medians and any standardization are fitted on the training reaches; standardization applies to
+the MLP, but not the tree learners. The fitted closure supplies values for the full network state required
+by transport. The quasi-steady network is then re-solved, and only predictions for the held-out reach are
+scored against observed C_aq. The sparse branch is a separate experiment with the limitations in
+Section 2.8 and should not be assumed to satisfy this complete protocol. No inner
+hyperparameter-selection loop is used, so the procedure is grouped cross-validation rather than nested
+cross-validation.
+For the main MLP, random-forest and k-correction branches, all concentration labels in the held-out
+group are removed before training-target diagnosis. Training targets are then joined back by date,
+reach and sample identifier. Missing predictors are imputed from the training fold, and the fitted
+closure supplies the full forward network state; only the held-out keys enter scoring. Each key must
+occur once in the pooled predictions. A held-out-label perturbation check tests whether training targets
+remain unchanged. Forward headwaters use atmospheric equilibrium, not a fallback to the
+concentration being scored. Predictor and discharge information remain conditioned on the observed
+campaign, so this is a closure-transfer experiment rather than an ungauged-basin or future-forcing
+forecast. Fixed hyperparameters avoid an inner selection step; the MLP's internal early-stopping split is
+not an additional reach-grouped validation experiment.
+R008 contributes 58 samples, whereas three reaches contribute one each. Pooled errors therefore
+describe the selected samples, not an equally weighted population of reaches. We retain subgroup
+results (Table 5), distinguish point differences from statistical superiority, and examine the influence of
+R002. The date-grouped baseline and k-correction runs are time-sensitivity diagnostics, not an inner
+level of the reach split. The sparse branch retains a different archived target-construction procedure,
+described explicitly in Section 2.8.
+2.6 Metrics and flux diagnostic
+The primary metric is the held-out C_aq RMSE in mol m⁻³. The secondary diagnostic is the
+area-weighted model flux Σ(F_CO₂·A_s) in mol d⁻¹, computed from Eq. (3) with the transport-predicted
+concentration and the transfer velocity of each configuration (k_emp for the Baseline and Residual-AI,
+k_eff for the k-correction), summed as an overlapping sample-area diagnostic (not a study-area total).
+An observation-based proxy uses k_emp with observed concentrations. Differences in this area-weighted
+total across closures indicate how each configuration allocates the balance between sources and gas
+exchange; the totals are model diagnostics, not independently validated evasion measurements.
+2.7 Practical equifinality diagnostic
+To characterize compensation between source terms and gas exchange, we define the implied source
+adjustment
+Eq. (5): S_implied = (k_emp - k_eff)(C - C_eq)
+At fixed concentration and resolved transport state, S_implied is the source-sink adjustment that makes
+a model retaining k_emp locally equivalent to a model that uses k_eff and no additional source term. In
+Eq. (5), C is the observed aqueous concentration at the sample, so the two process allocations are
+compared at a common observed concentration rather than at their respective forward-model
+concentrations. A large S_implied together with a small change in concentration error indicates that the
+observations provide limited discrimination between the two allocations; we refer to this compensating
+closure behaviour as practical equifinality.
+We also calculate a deterministic objective without fitting a learned closure. For a single sample with
+C_in, q_A and C_eq fixed, J(k,S) = [C_obs − C_model(k,S)]² is zero on S = S_diag + (C_obs − C_eq)(k −
+k_emp). One local concentration equation with two freely varying parameters is therefore
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+9
+underdetermined. This algebraic result does not establish non-identifiability of an entire routed network
+or of a restricted closure family. For the pooled diagnostic, all 120 samples share one transfer scale α =
+k/k_emp and one source S. The objective is an equally sample-weighted SSE, and J_prof(α) = min_S
+J(α,S) selects the best common source at each α. Diagnosed observational upstream concentrations
+remain fixed as α and S vary; the network is not rerouted at each grid point.
+The profile describes sensitivity under that parameterization. It is neither held-out prediction nor a
+likelihood, and the code's 10% increase above minimum RMSE is a descriptive display threshold, not a
+confidence boundary. Model-specific median parameters shown on the surface are reference summaries
+of heterogeneous predictions, not operating points that reproduce each model's network RMSE. The
+current loader reconstructs q_A through a residual identity because merged physical columns receive
+suffixes; this agrees numerically with direct routed Q/A_s for the archived data, but should be replaced
+by an explicit keyed physical-column join before release.
+2.8 Sparse dimensionless closure
+A final experiment asks whether the diagnosed residual has a compact dimensionless description. The
+response is S* = S_sgs/(k_emp C_eq), and candidates are Fr, slope, h/W, log10(Re) and log10(Da). The
+current implementation defines Da = (k_emp/86400)τ/h, with τ = L/u in seconds, so its time bases are
+consistent. The older statement that Da lacked this conversion and was discarded is not applicable to
+the archived results. LASSO with fixed penalty 0.05 provides sparse coefficients, following the
+descriptive use of dimensionless candidates motivated by Xie et al. (2022).
+Two fits must be distinguished. A full-data fit to S* supplies the displayed standardized and
+original-variable equations; it is descriptive, not a held-out physical law. A separate grouped transport
+experiment fits the dimensional S_sgs target and reinserts its predictions into the transport balance.
+The archived sparse branch, unlike the main learners, builds residual targets and predictor medians
+before splitting the data. Although its scaler and LASSO are refitted by fold, training targets can retain
+routed dependence on held-out concentrations and preprocessing uses held-out predictor information.
+Its reported reconstruction R² and transport RMSE are therefore provisional diagnostics, not strict
+leakage-controlled validation. They are retained to document the existing experiment, pending fold-local
+target reconstruction and imputation. Compactness alone supplies no evidence of predictive utility.
+3. Results
+3.1 Lower pooled MLP error does not establish stable closure transfer
+The archived leave-one-reach-out predictions give a lower pooled point RMSE for the MLP than for the
+Baseline, but a higher RMSE for the random forest (Tables 2 and 3; Figure 3). Concentration RMSE is
+0.0486, 0.0372 and 0.1011 mol m⁻³, respectively. Corresponding MAE values are 0.0236, 0.0214 and
+0.0512 mol m⁻³, and biases are −0.0236, −0.0055 and +0.0342 mol m⁻³. Thus the MLP reduces the
+pooled negative bias, whereas the random forest has a positive bias. These are descriptive out-of-fold
+metrics, not in-sample fit scores or evidence of a statistically established performance advantage. The
+baseline date-grouped calculation gives the same 0.0486 mol m⁻³ RMSE because no baseline closure is
+learned from a split.
+Subgroup results distinguish the learners (Table 5; Figures 4 and S1). On R008, RMSE is 0.0278 mol
+m⁻³ for the Baseline, 0.0248 for the MLP and 0.0239 for the random forest. Across R002–R005, it is
+0.0635, 0.0470 and 0.1421 mol m⁻³, respectively. The MLP therefore has a lower pooled error in both
+groups; the random forest improves on R008 but deteriorates across the multi-sample tributaries. R002
+contains three strongly supersaturated samples (pCO₂ approximately 5455–6066 µatm) and contributes
+93.8% of the total squared-error reduction from Baseline to MLP. Removing those three rows from the
+archived predictions gives RMSE 0.0268 versus 0.0256 mol m⁻³. This is a scoring sensitivity, not a
+retraining experiment. Taking the square root of mean reach-specific MSE gives 0.0932 versus 0.0640
+mol m⁻³; equal reach weighting does not remove R002's influence. MLP errors increase on R001, R004
+and R007. The scatter therefore documents uneven transfer rather than a uniformly better closure.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+10
+The concentration comparison must be read with the process diagnostics. MLP and random-forest flux
+sums are 1.94×10⁶ and 7.28×10⁵ mol d⁻¹, compared with 1.21×10³ for the Baseline (Table 2). Their
+magnitude alone does not prove physical impossibility because independent evasion measurements and
+non-overlapping support are absent. A separate numerical failure is directly observable: three held-out
+MLP states on R005—GC-1 on 3 August, and GC-14 and GC-2 on 6 August—are clipped to zero after an
+infeasible negative solution. Clipping changes the solved balance. The lower MLP point RMSE is
+consequently retained as an archived calculation, not a physically validated success. Spatial-support
+correction and an explicit feasibility treatment must precede a stronger transfer claim.
+Figure 3. Sample-weighted leave-one-reach-out concentration RMSE for 120 archived predictions. The MLP point
+RMSE is lower than the Baseline; the random forest and k-correction do not improve it. The MLP result includes three
+clipped held-out states, and all results remain conditional on the archived spatial support. Bars are point metrics, not
+uncertainty intervals.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+11
+Figure 4. Observed versus transport-predicted held-out C_aq for the Residual-AI (MLP) closure under
+leave-one-reach-out grouped evaluation (n=120). Colors denote logical reaches; the dashed line indicates 1:1
+agreement.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+12
+Figure S1. Subgroup C_aq RMSE for the Baseline, Residual-AI (MLP), and k-correction. R008 contains 58 samples; the
+multi-sample tributary group R002–R005 contains 59 samples; R001, R006, and R007 are single-sample logical
+reaches.
+3.2 A corrected gas-transfer velocity does not improve concentration error
+The k-correction gives RMSE 0.048589 mol m⁻³, compared with 0.048574 for the Baseline; both round
+to 0.0486 (Tables 2 and 3). It therefore does not improve the archived concentration point metric. The
+full-data inverse diagnostic lacks a positive k-only solution for 72 samples, but the learned forward
+correction remains defined for all 120 held-out rows. No held-out log correction reaches the imposed
+lower bound. Median k_eff is 123.3 m d⁻¹, compared with median k_emp of 194.0 m d⁻¹, and the median
+paired ratio is 0.540 (Table 7). These results indicate reduced transfer velocities without the near-zero
+saturation asserted in earlier text. Target infeasibility restricts the information available to training; it
+does not, by itself, prove why the learned correction fails to reduce error.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+13
+Figure 5. Conditional deterministic source–exchange diagnostic. (a) Single-sample objective with fixed upstream
+concentration; the line marks the analytic zero valley. (b) Equally sample-weighted pooled SSE for one shared transfer
+scale and one shared source. Model symbols are median-parameter reference summaries, not equivalent network
+operating points. (c) Profile SSE after optimizing the shared source at each scale; RMSE spans 0.0360–0.0396 mol m⁻³
+over α=0.01–1. The plot also displays smaller scales outside that reporting interval. This is neither a likelihood nor an
+uncertainty interval, and upstream concentrations are not rerouted over the surface.
+That concentration error does not discriminate the k-correction from the Baseline motivates the
+model-free objective surface examined in Section 3.6 and Figure 5.
+3.3 Similar concentration errors coexist with different flux diagnostics
+The overlapping sample-area flux diagnostic is 1.21×10³ mol d⁻¹ for the Baseline and 1.26×10³ for the
+k-correction. Thus the correction slightly increases this diagnostic despite reducing the median transfer
+velocity: the predicted concentration gradient also changes. The MLP and random forest give 1.94×10⁶
+and 7.28×10⁵ mol d⁻¹ (Table 2). These differences document model-dependent allocations under the
+assigned support, not measured differences in watershed evasion. Without independent evasion
+observations, their ranking does not determine which allocation is physically correct.
+At the common observed concentration, the mean implied adjustment S_implied is 1.013 mol m⁻² d⁻¹
+and the mean MLP source prediction is 4.035 mol m⁻² d⁻¹. Their descriptive Spearman correlation is
++0.213; no independence-based significance claim is made. Positive source adjustment and reduced
+transfer velocity can compensate in the local balance, but their differing magnitudes and weak rank
+association do not make the two fitted closures interchangeable. Table 7 records their transfer and
+concentration summaries, and Figure S2(c) shows the sample-level relation between the paired transfer
+ratio and the k-correction flux diagnostic.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+14
+Figure S2. Archived flux-density diagnostics for 120 reach-held-out predictions. (a) Unweighted sum of sample flux
+densities, approximately −0.743, 399.7 and −0.884 mol m⁻² d⁻¹ for Baseline, MLP and k-correction. This is not the
+area-weighted diagnostic in Tables 2, 3 and 7; summing densities over samples has no spatial-total interpretation. (b)
+Flux-density RMSE against an empirical observation-based proxy, not independent flux measurements. (c) Paired
+transfer ratio versus predicted flux density. Negative density indicates uptake under the model sign convention.
+3.4 Filter-scale residual on resolved coarsenings
+On the resolved path-connected coarsenings (native, ~2×, ~4×), cell-mean |S_sgs| remains near
+3.31–3.57 mol m⁻² d⁻¹ (Deltax ≈ 587–1010 m; Table 6; Figure 6). Cell-level variance stays of the same
+order (about 17–20). A study-reach whole-reach merge is excluded: preserving all cross-group fine
+edges yields a cyclic contracted DAG, so the reach assignment is not a verified DAG compression of the
+fine NHD graph and cannot support a formal scale-invariance claim through that aggregation. Within
+the resolved scales the near-stability of |S| under sparse synchronous coverage is a sampling-conditional
+sensitivity of the conserved operator, not a universal scaling law.
+Figure 6. Filter-scale dependence of the diagnosed residual on resolved scales only (native, ~2×, ~4×; study_reach
+excluded for contraction cycle). Left: cell-mean |S_sgs|. Right: cell-level variance of S_sgs. Cell-mean |S| stays near
+3.3–3.6 mol m⁻² d⁻¹ under sparse synchronous coverage; this is a sampling-conditional sensitivity, not a claim of
+scale-invariance through the study-reach aggregation.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+15
+Figure S3. Distribution of |S_sgs| across sampled cell-date records at resolved scales, with 43, 36 and 32 records. This
+differs from the unique-spatial-cell summary in Figure 6 and Table 6. Connected cells and repeated dates are not
+statistically independent replicates. Study-reach aggregation is excluded because preserving all cross-group edges
+produces a cyclic contraction.
+3.5 A compact sparse description has not passed strict held-out validation
+The full-data LASSO refit retains three of five candidate terms (Table 8; Figure 7). With subscript z
+denoting standardization by full-data mean and standard deviation, its descriptive equation is
+S* ≈ 1.063 − 0.08591·Fr_z − 0.3123·Slope_z + 0.3457·log10(Da)_z
+Froude number and slope have negative coefficients, while log10(Da) has a positive coefficient; relative
+depth and log10(Re) shrink to zero. The archived grouped S* reconstruction gives R² = −0.448. The
+distinct dimensional-target transport LASSO gives concentration RMSE 0.0529 mol m⁻³, compared with
+Baseline 0.0486 (Table 9). Neither number establishes a validated sparse closure: the target and
+imputation leakage described in Section 2.8 must first be removed. The full-data equation is a compact
+summary of the current diagnosis, not an independently identified process law or the single coefficient
+vector used in every held-out transport fold.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+16
+Figure 7. Full-data standardized LASSO coefficients for S*. The retained terms are Fr_z, Slope_z and log10(Da)_z. The
+displayed grouped reconstruction R² of −0.448 is provisional because targets and imputation are not fully fold-local in
+this branch; the plot is retained as an archived descriptive result, not a validated law.
+3.6 Conditional objective surface and profile SSE
+The single-sample surface reproduces the analytic zero valley of the fixed-boundary equation (Figure 5).
+Its flat profile follows from allowing a separate source value at every transfer velocity; it is not an
+empirical discovery about all possible concentration measurements. Pooling the 120 samples with a
+common α and source gives a non-flat profile. RMSE ranges from 0.0360 to 0.0396 mol m⁻³ over α =
+0.01–1, with the archived minimum near α = 0.05843 and S = 0.1277 mol m⁻² d⁻¹. This describes
+limited change in the selected deterministic error metric across that interval. Its interpretation depends
+on fixed observational upstream boundaries, sample weighting, shared parameters and the current
+spatial support. It cannot be compared directly with held-out network RMSE as if it were another
+validated predictive model.
+4. Discussion
+4.1 Concentration skill and physical validity answer different questions
+With fold-local targets, the MLP lowers the archived sample-weighted concentration RMSE; the random
+forest does not. The MLP gain is concentrated in R002 rather than shared uniformly across reaches, and
+three held-out states require clipping. These observations separate numerical concentration fit from a
+physically admissible and stable closure. This distinction follows the purpose-dependent evaluation
+advocated by Bennett et al. (2013) and the treatment of discrepancy in Vilas et al. (2023). The subgroup
+pattern is also model-specific: the MLP improves pooled errors on both R008 and R002–R005, whereas
+the random forest deteriorates on the tributary group. A single statement that residual learning either
+succeeds or fails would conceal that difference.
+Two checks are needed before interpreting the MLP comparison more strongly. First, support lengths
+and routing must correspond to a declared physical domain. In the archived length diagnostic, R002's
+assigned control lengths total 837.76 m against a recorded NHD support of 170.22 m. That discrepancy
+is especially consequential because R002 dominates the error reduction; neither recorded number
+should be accepted as the true domain without path verification. Second, source predictions must yield
+admissible states without hiding conservation errors. A feasibility-aware bound or constrained solve
+should be defined from the current routed state, not selected to improve the held-out score. Reporting
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+17
+source predictions, raw concentrations, applied corrections and balance residuals would make this
+check auditable. These repairs change the computation, so their eventual metrics cannot be anticipated
+by editing the current prose.
+The Baseline is a reference configuration, not a demonstrated physical truth. A learned closure can
+improve concentration error while assigning an unsupported process contribution; conversely, a poor
+closure does not prove that unresolved sources are absent. The conditional surface in Figure 5 explains
+local compensation, but does not show that concentration data can never distinguish processes.
+4.2 Process allocation and practical equifinality
+For 60% of full-data diagnostic samples, no positive k_need matches the observed concentration with
+zero residual source under the assigned boundary and transport state. This is an inverse-target
+feasibility statement. It does not make the learned forward model undefined: positive k_eff predictions
+exist for every held-out sample, and none reaches the lower bound. Their failure to improve RMSE
+should therefore be reported separately from target infeasibility. The balance nevertheless explains why
+an added source and reduced gas exchange can offset one another at fixed concentration. That
+compensation motivates a diagnostic of process allocation, rather than a causal explanation inferred
+from a small change in aggregate error.
+Here, practical equifinality is used narrowly for source–exchange compensation under the stated
+conditional calculation. The single-sample zero valley is an analytic benchmark; the pooled profile adds
+a data-dependent sensitivity under one shared parameterization. Neither is a formal
+structural-identifiability analysis or an error-model-based likelihood assessment. The large differences
+in learned-model flux diagnostics are also not, by themselves, evidence of equifinality. They show that
+changing the closure changes the inferred process allocation. Reach weighting, the assumed common
+source, and spatial-support repair may change the pooled profile; until those sensitivities are checked,
+the reported RMSE interval should remain descriptive. Independent gas-transfer or source constraints
+would address a different question from reducing concentration error alone.
+This process-allocation ambiguity concerns the closure form; the filtering experiment addresses a
+related but distinct source of variability in the diagnosed residual.
+4.3 What filtering and sparse representation reveal about the residual
+On resolved filter scales only, cell-mean |S_sgs| stays near 3.3–3.6 mol m⁻² d⁻¹ from native NHDPlus HR
+resolution through ~4× merges. Study-reach aggregation is excluded after an unresolved contraction
+cycle, so the manuscript does not claim scale-invariance through that coarser operator. Within the
+resolved range the result is a sampling-conditional sensitivity under sparse synchronous coverage,
+bounded by the implemented flow-directed operator (Yuval & O’Gorman, 2020, analogy limited to
+spatial filtering).
+The sparse description retains Froude number, slope and log10(Da), not a two-term relation. Its
+archived reconstruction R² is negative, and its dimensional transport error exceeds the Baseline.
+However, incomplete fold isolation prevents using these results as a definitive test of sparse closure
+transfer. Repairing the target construction and imputation is necessary even for a negative result:
+leakage does not become acceptable because a model performs poorly. The full-data coefficients can
+still document associations in the diagnosed residual, provided that coefficient scaling, response
+definition and validation status are stated explicitly.
+4.4 Implications for environmental-model evaluation
+This case separates three questions: whether concentrations are predicted more accurately, whether
+the numerical states satisfy the specified balance, and whether the allocated processes have
+independent observational support. A lower RMSE answers only the first. The comparison should
+therefore retain concentration errors, feasibility and conservation checks, and process diagnostics as
+separate outputs rather than combine them into a single claim of physical improvement.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+18
+The present conclusions are bounded by strongly unequal reach support, the hydraulic-geometry
+representation of channel width and depth, incomplete covariates (alkalinity, nitrogen, phosphorus,
+photosynthetically active radiation), and the absence of independent evasion measurements. The Water
+Quality Portal merge and the StreamPULSE search returned no usable additional constraints for this
+campaign. These limitations restrict inference to the East River experiment, and they also identify the
+observations that would most help to discriminate closures: more balanced reach sampling,
+better-resolved channel geometry, and independent constraints on gas exchange. The central
+implication is that lower concentration error alone is insufficient to determine which allocation of
+unresolved processes is better supported.
+5. Conclusions
+The archived reach-held-out calculation gives MLP concentration RMSE 0.0372 mol m⁻³, compared with
+0.0486 for the Baseline and 0.1011 for the random forest. The MLP point reduction is concentrated in
+R002 and includes three clipped states; it is not a validated generalization advantage. The k-correction
+also rounds to 0.0486 and does not improve the point metric. Separately, 60% of the full-data inverse
+targets lack a positive k-only solution. A fixed-boundary single-sample balance admits exact
+source–exchange compensation, while the pooled deterministic profile describes a conditional,
+parameterization-dependent sensitivity. These findings do not establish general network
+non-identifiability. Filter-scale interpretation is restricted to the resolved coarsenings, and the sparse
+branch remains provisional until its targets and preprocessing are made fold-local.
+The analysis combines spatial filtering, transport-coupled grouped prediction and a conditional
+objective-surface diagnostic without treating them as interchangeable evidence. Public measurements
+provide the observations; the present code supplies the model predictions and residual calculations. The
+immediate contribution is an auditable East River comparison and a clear boundary between
+concentration skill and process attribution. Correcting spatial support, numerical feasibility and
+sparse-fold isolation is necessary before a final empirical interpretation. No watershed evasion total,
+independent flux validation, universal filter law or transfer to another basin is established by the current
+results.
+6. Data availability
+The water-chemistry and pCO₂ observations are public data from Saccardi and Winnick (2021), archived
+in HydroShare resource 9f907b46baa848e180c49339d605bf31. The DIC supplement, network
+shapefiles and hydraulic tables are associated with resource 2a2132999fb84214aad0596783812db2.
+Outlet discharge is from USGS gage 09112500, and hydrographic geometry uses NHDPlus HR for HUC
+14020001. These inputs are third-party observations and published relations; they are not claimed as
+new measurements by the present authors. Model predictions, diagnosed residuals, evaluation metrics
+and plots are derived calculations. The code location provided for this project is
+https://github.com/Coucou2016/river-carbon-transport; this local review does not certify that the remote
+repository contains the current working-tree version. A version-specific release, dependency record,
+raw-input hashes, selection log and complete artifact manifest are required at submission. The local
+review package records the inspected snapshot and the scope of successful recomputation, rather than
+claiming a complete fresh raw-to-publication pipeline run.
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+19
+Tables
+Table 1. East River study network: logical reaches and mainstem confluences (logical reporting /
+y-threshold simplified tree, not a verified NHD directed compression).
+Reach
+Stream name
+Role
+Joins
+mainstem
+Legacy
+length
+(km)
+Mapped
+NHD lines
+Samples
+Note
+R001
+Bradley Creek
+Tributary
+R008_S4
+12.6
+0
+1
+Tributary headwater; n = 1,
+schematic only
+R002
+Bradley Meadow
+Tributary
+R008_S4
+12.5
+15
+3
+Physical support unresolved
+R003
+Rock Creek
+Tributary
+R008_S3
+6.1
+29
+15
+Multi-sample tributary
+R004
+Copper Creek
+Tributary
+R008_S2
+9.9
+140
+24
+Mapping is not path
+validation
+R005
+Gothic Creek
+Tributary
+R008_S3
+4.8
+6
+17
+Multi-sample tributary
+R006
+Quigley Creek
+Tributary
+R008_S6
+2.8
+8
+1
+Single sample; schematic
+R007
+Rustlers Gulch
+Tributary
+R008_S5
+23.5
+2
+1
+Single sample; schematic
+R008
+East River mainstem
+Mainstem
+(S1–S6)
+outlet
+20.2
+193
+58
+Six logical routing segments
+Mapped counts come from gis_reach_line_mapping.csv (393 assigned lines); they are not logical-node
+counts or proof of valid transport paths. Legacy lengths are retained from the original reporting table to
+preserve its information, but are not certified control-volume domains and must not be used to
+reconstruct area. For example, the R002 legacy length, the 170.22 m NHD support record and the
+837.76 m control-length sum describe inconsistent supports. A verified path-domain table must replace
+this legacy-length field before submission.
+Table 2. Archived reach-held-out point metrics. C RMSE is in mol m⁻³; F diagnostic is the overlapping
+sample-area sum in mol d⁻¹; the transfer ratio is the median of paired ratios. Sparse-LASSO validation is
+provisional, and the MLP includes three clipped states. “Yes” refers only to lower archived point RMSE.
+Scheme / model
+C RMSE
+F diagnostic
+k_eff/k_emp
+Lower point RMSE?
+Baseline
+0.0486
+1.21×10³
+1.00
+—
+k-correction / XGBoost
+0.0486
+1.26×10³
+0.540
+No
+Residual-AI / MLP
+0.0372
+1.94×10⁶
+1.00
+Yes
+Residual-AI / random forest
+0.1011
+7.28×10⁵
+1.00
+No
+Sparse-Π / LASSO
+0.0529
+1.57×10⁶
+—
+No
+Table 3. Primary concentration metrics and secondary flux diagnostics. C errors have units mol m⁻³; F
+RMSE and bias have units mol m⁻² d⁻¹ against an empirical proxy; F total denotes the overlapping
+sample-area diagnostic in mol d⁻¹, not watershed flux. R² is dimensionless. Values describe archived
+predictions, subject to the limitations in Section 3.1.
+Scheme / model
+C RMSE
+C MAE
+C Bias
+C R2
+F RMSE
+F Bias
+F total
+n
+Baseline
+0.0486
+0.0236
+-0.0236
+-0.306
+5.238
+-3.205
+1.21×10³
+120
+k-correction / XGBoost
+0.0486
+0.0236
+-0.0236
+-0.307
+5.226
+-3.207
+1.26×10³
+120
+Residual-AI / MLP
+0.0372
+0.0214
+-0.0055
+0.234
+4.784
+0.131
+1.94×10⁶
+120
+Residual-AI / random forest
+0.1011
+0.0512
+0.0342
+-4.654
+5.935
+0.017
+7.28×10⁵
+120
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+20
+Table 4. Evaluation-status summary; in-sample concentration metrics are not used as predictive
+evidence.
+Branch
+Archived evidence
+Remaining qualification
+Main MLP / random
+forest
+Fold-local residual targets; 120 OOF keys each
+Spatial support unresolved; MLP has 3 clipped OOF states
+k-correction
+Fold-local feasible inverse targets; 120 OOF keys
+72 full-data targets infeasible; no OOF floor saturation
+Sparse LASSO
+Full-data coefficient description and grouped
+diagnostic
+Target reconstruction and imputation not fully fold-local
+Profile SSE
+Fixed-boundary deterministic sensitivity
+No network rerouting, likelihood or confidence interval
+Table 5. Subgroup point metrics under reach-held-out evaluation. Residual-AI denotes the MLP in this
+table. C RMSE has units mol m⁻³; evidence-weight labels identify reporting strata, not formal statistical
+weights.
+Scheme
+Subgroup
+Evidence weight
+C RMSE
+C R2
+n
+Baseline
+All 120 samples
+all
+0.0486
+-0.306
+120
+Baseline
+R008 East River mainstem
+mainstem
+0.0278
+-0.751
+58
+Baseline
+Multi-sample tribs R002-R005
+tributary
+0.0635
+-0.271
+59
+Baseline
+One-sample reaches (schematic)
+R001/R006/R007
+schematic
+0.0071
+—
+3
+k-correction
+All 120 samples
+all
+0.0486
+-0.307
+120
+k-correction
+R008 East River mainstem
+mainstem
+0.0280
+-0.770
+58
+k-correction
+Multi-sample tribs R002-R005
+tributary
+0.0635
+-0.269
+59
+k-correction
+One-sample reaches (schematic)
+R001/R006/R007
+schematic
+0.0071
+—
+3
+Residual-AI
+All 120 samples
+all
+0.0372
+0.234
+120
+Residual-AI
+R008 East River mainstem
+mainstem
+0.0248
+-0.389
+58
+Residual-AI
+Multi-sample tribs R002-R005
+tributary
+0.0470
+0.305
+59
+Residual-AI
+One-sample reaches (schematic)
+R001/R006/R007
+schematic
+0.0068
+—
+3
+Table 6. Filter-scale diagnostics after mapping 120 observations to coarsened NHDPlus HR cells.
+Sampled cells are unique spatial supports, not independent replicates. Mean |S_sgs| has units mol m⁻²
+d⁻¹ and variance has squared units. The corresponding cell-date counts are 43, 36 and 32.
+Scale
+Δx (m)
+Cells
+Sampled cells
+Samples
+Cell-mean |S_sgs|
+Cell Var(S_sgs)
+Native NHDPlus
+HR
+587
+536
+39
+120
+3.541
+18.015
+~2× merge
+764
+502
+32
+120
+3.311
+17.494
+~4× merge
+1010
+486
+27
+120
+3.573
+19.831
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+21
+Table 7. Transfer and concentration summaries from the reach-grouped protocol. C RMSE is in mol
+m⁻³, median k in m d⁻¹, and F total is the overlapping sample-area diagnostic in mol d⁻¹. The ratio
+column uses paired ratios, not marginal-median division. Residual-AI denotes MLP.
+Scheme
+C RMSE
+F total
+Median k
+k_eff/k_emp
+Baseline
+0.0486
+1.21×10³
+194.0
+1.00
+Residual-AI
+0.0372
+1.94×10⁶
+194.0
+1.00
+k-correction
+0.0486
+1.26×10³
+123.3
+0.540
+Table 8. Sparse dimensionless closure (Pi-group LASSO).
+Item
+Result
+Standardized-predictor form
+S* ≈ 1.063 − 0.08591·Fr_z − 0.3123·Slope_z + 0.3457·log10(Da)_z
+Original-variable form
+S* ≈ 2.559 − 2.329·Fr − 7.262·Slope + 0.7527·log10(Da)
+Dominant terms
+0.346·log10(Da)_z − 0.312·Slope_z − 0.0859·Fr_z
+Archived grouped R2 for S*
+-0.448; provisional, not leakage-controlled validation
+Table 9. Archived dimensional-target sparse transport diagnostic, pending fold-local target and
+imputation repair. This is not strict validation of the full-data S* equation. C RMSE is in mol m⁻³; F
+RMSE is in mol m⁻² d⁻¹ against an empirical proxy. Baseline C RMSE is 0.0486.
+Scheme
+C RMSE
+C R2
+F RMSE
+n
+Sparse-Π / LASSO (leave-one-reach)
+0.0529
+-0.546
+4.641
+120
+
+Author-review draft | 27 September 2026 | methodological qualifications retained
+22
+References
+1. Battin, T. J., et al. (2023). River ecosystem metabolism and carbon biogeochemistry in a changing
+world. Nature, 614, 676–687. https://doi.org/10.1038/s41586-022-05500-8
+2. Bennett, N. D., et al. (2013). Characterising performance of environmental models. Environmental
+Modelling & Software, 40, 1–20. https://doi.org/10.1016/j.envsoft.2012.09.011
+3. Gao, Y., et al. AI cross-fusion approach for river carbon transport. Unpublished manuscript in
+preparation; bibliographic details and availability require author confirmation. Not used to establish
+published priority.
+4. Gómez-Gener, L., Rocher-Ros, G., et al. (2021). Global carbon dioxide efflux from rivers enhanced by
+high nocturnal emissions. Nature Geoscience, 14, 647–653. https://doi.org/10.1038/s41561-021-00722-3
+5. Hotchkiss, E. R., et al. (2015). Sources of and processes controlling CO₂ emissions change with the
+size of streams and rivers. Nature Geoscience, 8, 696–699. https://doi.org/10.1038/ngeo2507
+6. Markovich, K. H., White, J. T., & Knowling, M. J. (2022). Sequential and batch data assimilation
+approaches to cope with groundwater model error: An empirical evaluation. Environmental Modelling &
+Software, 156, 105498. https://doi.org/10.1016/j.envsoft.2022.105498
+7. Raymond, P. A., et al. (2012). Scaling the gas transfer velocity and hydraulic geometry in streams and
+small rivers. Limnology and Oceanography: Fluids and Environments, 2, 41–53.
+https://doi.org/10.1215/21573689-1597669
+8. Saccardi, B., & Winnick, M. J. (2021). Improving predictions of stream CO₂ concentrations and fluxes
+using a stream network model: A case study in the East River Watershed, CO, USA. Global
+Biogeochemical Cycles, 35, e2021GB006972. https://doi.org/10.1029/2021GB006972
+9. Vilas, M. P., et al. (2023). TALKS: A systematic framework for resolving model-data discrepancies.
+Environmental Modelling & Software, 163, 105668. https://doi.org/10.1016/j.envsoft.2023.105668
+10. Xie, X., Samaei, A., Guo, J., Liu, W. K., & Gan, Z. (2022). Data-driven discovery of dimensionless
+numbers and governing laws from scarce measurements. Nature Communications, 13, 7562.
+https://doi.org/10.1038/s41467-022-35084-w
+11. Yuval, J., & O’Gorman, P. A. (2020). Stable machine-learning parameterization of subgrid processes
+for climate modeling at a range of resolutions. Nature Communications, 11, 3295.
+https://doi.org/10.1038/s41467-020-17142-3
+12. Ulseth, A. J., Hall, R. O., Jr., Boix Canadell, M., Madinger, H. L., Niayifar, A., & Battin, T. J. (2019).
+Distinct air–water gas exchange regimes in low- and high-energy streams. Nature Geoscience, 12,
+259–263. https://doi.org/10.1038/s41561-019-0324-8

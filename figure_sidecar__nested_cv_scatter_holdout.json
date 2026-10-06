@@ -1,0 +1,23 @@
+{
+  "figure_id": "fig4_holdout_scatter_mlp",
+  "run_id": "20260919_remediation",
+  "generator": "src/17_regenerate_holdout_figures.py::_plot_scatter",
+  "selected_rows": {
+    "scheme": "residual_ai",
+    "model": "mlp",
+    "cv_protocol": "loo_reach",
+    "n": 120
+  },
+  "aggregation": "one marker per held-out sample; RMSE/MAE/R2 from the plotted points",
+  "units": "C_aq in mol m^-3",
+  "n_definition": "n=120 held-out samples; extreme points retained; inset for C < 0.09",
+  "notes": "lower-bound / zero-prediction rows are marked, not deleted",
+  "sidecar_version": 1,
+  "image": "nested_cv_scatter_holdout.png",
+  "image_path": "results\\figures\\nested_cv_scatter_holdout.png",
+  "source_table_sha256": {
+    "data_proc/nested_cv_holdout_predictions.csv": "93372931ce9172365d70b96e4975c8289b9eea3f2c35f6a131b93eafc8b59e0a",
+    "results/tables/nested_cv_summary.json": "7a6caab3e4e0cf0df7eeb3c78b2df1acd62151cc8c549c58ba233c6278bec9ec"
+  },
+  "output_sha256": "f9eed2a5aa3f48d20a0ddc3b4d67d25da7ec43aadb3c024f41edb12523fba2d2"
+}

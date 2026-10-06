@@ -1,0 +1,624 @@
+{
+  "date_utc": "2026-09-26T16:38:35.184303+00:00",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "scope": "Frozen code probes and partial independent recomputation, not full raw-to-paper rerun.",
+  "changed_since_previous_review": [
+    "data_proc/baseline_model_output.csv",
+    "data_proc/filter_scale_cell_residuals.csv",
+    "data_proc/filter_scale_residuals.csv",
+    "data_proc/identifiability_sample_table.csv",
+    "data_proc/k_estimates.csv",
+    "data_proc/models/elasticnet_sgs.joblib",
+    "data_proc/models/lasso_sgs.joblib",
+    "data_proc/models/mlp_sgs.joblib",
+    "data_proc/models/random_forest_sgs.joblib",
+    "data_proc/models/training_metrics.json",
+    "data_proc/models/xgboost_sgs.joblib",
+    "data_proc/nested_cv_holdout_predictions.csv",
+    "data_proc/reach_daily_observations.csv",
+    "data_proc/reach_daily_observations_segmented.csv",
+    "data_proc/sgs_training_data.csv",
+    "data_proc/sparse_pi_holdout_predictions.csv",
+    "paper.html",
+    "paper.md",
+    "results/figures/carbon_heatmap_C_aq.png",
+    "results/figures/carbon_heatmap_F_CO2_baseline.png",
+    "results/figures/compare_C_aq_baseline_vs_ai.png",
+    "results/figures/compare_F_CO2_baseline_vs_ai.png",
+    "results/figures/cross_section_trapezoid_panel.png",
+    "results/figures/cross_section_u_field_panel.png",
+    "results/figures/difference_C_aq_ai_minus_baseline.png",
+    "results/figures/difference_F_CO2_ai_minus_baseline.png",
+    "results/figures/dimensionless_coefficients.png",
+    "results/figures/downstream_profile_carbon.png",
+    "results/figures/downstream_profile_hydrodynamics.png",
+    "results/figures/equifinality_objective_surface.png",
+    "results/figures/figure2_reach_assignment_and_samples.png",
+    "results/figures/filter_scale_sgs.png",
+    "results/figures/filter_scale_sgs_box.png",
+    "results/figures/flux_budget_stacked_by_reach.png",
+    "results/figures/flux_by_reach.png",
+    "results/figures/gis_flow_quiver_Q.png",
+    "results/figures/gis_flow_quiver_u.png",
+    "results/figures/gis_network_map_F_CO2_ai.png",
+    "results/figures/gis_network_map_F_CO2_baseline.png",
+    "results/figures/gis_network_map_F_CO2_comparison.png",
+    "results/figures/gis_network_map_k600.png",
+    "results/figures/gis_network_map_pCO2.png",
+    "results/figures/gis_network_map_Q.png",
+    "results/figures/gis_network_map_u.png",
+    "results/figures/gis_reach_assignment_map.png",
+    "results/figures/gis_samples_on_network.png",
+    "results/figures/gis_streamtube_QW_u.png",
+    "results/figures/hydro_histograms.png",
+    "results/figures/identifiability_k_vs_sgs.png",
+    "results/figures/identifiability_tradeoff.png",
+    "results/figures/longitudinal_profile_carbon.png",
+    "results/figures/longitudinal_profile_hydraulics.png",
+    "results/figures/longitudinal_schematic_2d.png",
+    "results/figures/nested_cv_rmse_bar.png",
+    "results/figures/nested_cv_scatter_holdout.png",
+    "results/figures/obs_vs_model_by_reach.png",
+    "results/figures/obs_vs_model_scatter.png",
+    "results/figures/obs_vs_model_scatter_large.png",
+    "results/figures/planview_velocity_network.png",
+    "results/figures/reach_bars_carbon.png",
+    "results/figures/reach_bars_hydraulics.png",
+    "results/figures/reach_bars_slope.png",
+    "results/figures/sample_chainage_map.png",
+    "results/figures/sample_snap_centerline.png",
+    "results/figures/seasonal_rmse.png",
+    "results/figures/sgs_residual_by_reach.png",
+    "results/figures/subgroup_rmse_r008_vs_trib.png",
+    "results/figures/supp_flux_diagnostics.png",
+    "results/figures/temporal_baseline_vs_ai_flux.png",
+    "results/figures/temporal_carbon.png",
+    "results/figures/temporal_hydraulics.png",
+    "results/tables/artifact_manifest.json",
+    "results/tables/dimensionless_sparse_coefficients.csv",
+    "results/tables/dimensionless_sparse_summary.json",
+    "results/tables/equifinality_summary.json",
+    "results/tables/filter_scale_metrics.csv",
+    "results/tables/filter_scale_summary.json",
+    "results/tables/identifiability_metrics.csv",
+    "results/tables/identifiability_summary.json",
+    "results/tables/k_correction_saturation.json",
+    "results/tables/lasso_selected_features.csv",
+    "results/tables/length_conservation.csv",
+    "results/tables/model_training_metrics.csv",
+    "results/tables/nested_cv_metrics.csv",
+    "results/tables/nested_cv_summary.json",
+    "results/tables/paper_claim_guard.json",
+    "results/tables/paper_filter_scale.csv",
+    "results/tables/paper_main_results.csv",
+    "results/tables/per_reach_cv_metrics.csv",
+    "results/tables/sparse_pi_nested_cv.csv",
+    "results/tables/subgroup_metrics.csv",
+    "results/tables/validation_metrics.csv",
+    "results/tables/validation_summary.json",
+    "run_pipeline.py",
+    "scripts/_build_fig_explain.py",
+    "scripts/build_paper_tables.py",
+    "scripts/figure_explanations.py",
+    "scripts/generate_paper.py",
+    "scripts/generate_report.py",
+    "scripts/report_content.py",
+    "scripts/report_shared.py",
+    "scripts/verify_paper.py",
+    "src/05_compute_residual_sgs.py",
+    "src/12_nested_cv_transport.py",
+    "src/13_filter_scale_sgs.py",
+    "src/16_equifinality_surface.py",
+    "src/cell_dag_filter.py",
+    "src/network_topology.py",
+    "src/real_network.py",
+    "src/utils.py",
+    "tests/test_cell_dag_filter.py",
+    "tests/test_network_p0_fixes.py"
+  ],
+  "tests": [
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_duplicate_date_cell_records_do_not_inflate_scale_curve",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_illegal_cycle_raises",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_merge_scale_conserves_q_qc_area",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_mix_inflow_incomplete_sync_does_not_fabricate",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_multi_confluence_network",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_passthrough_unsampled_does_not_diagnose",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_serial_cells_propagate_observed_outlet",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_serial_outlet_merge_conserves_area_and_sigma_qc",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_single_reach_headwater_uses_c_eq",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_two_tributary_confluence_q_weighted_mix",
+      "status": "PASS"
+    },
+    {
+      "file": "test_cell_dag_filter.py",
+      "test": "test_unknown_upstream_id_raises",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_assign_control_volume_lengths_and_conservation_table",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_control_lengths_do_not_scale_with_sample_count_via_shape_length",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_k_correction_excludes_infeasible_not_floor_clip",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_list_str_bug_is_not_used_by_upstream_map",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_mainstem_q_is_cumulative",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_parse_upstream_list_accepts_json_and_python_literal",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_parse_upstream_list_rejects_character_tokens",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_score_transport_flux_estimand_not_study_area",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_shape_length_rename_is_catchment_perimeter_not_reach_length",
+      "status": "PASS"
+    },
+    {
+      "file": "test_network_p0_fixes.py",
+      "test": "test_single_sample_uses_diagnostic_length_not_shape_length",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_chainage_across_two_flowlines",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_damkohler_seconds_days",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_doc_over_dic_units",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_fixed_domain_length_invariance",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_flowdir_one_follows_digitized",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_flowdir_zero_is_unknown",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_invert_k_needed_matches_prior_formula",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_l_control_merge_without_xy",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_missing_ancestor_propagation",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_oof_one_to_one_coverage_contract",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_r005_label_perturbation_invariance_for_train_targets",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_serial_vs_parallel_qc",
+      "status": "PASS"
+    },
+    {
+      "file": "test_remediation_20260919.py",
+      "test": "test_steady_concentration_mass_balance",
+      "status": "PASS"
+    }
+  ],
+  "partial_reproduction": {
+    "baseline_n": 120,
+    "baseline_maxdiff": 9.020562075079397e-17,
+    "sgs_maxdiff": 3.552713678800501e-15
+  },
+  "fold_label_test": {
+    "train_maxdiff": 0.0,
+    "test_labels_all_missing": true,
+    "full_data_train_targets_changed": 1
+  },
+  "fold_k": {
+    "finite_train": 103,
+    "finite_test": 0,
+    "meta": {
+      "n_train": 103,
+      "n_train_with_cin": 103,
+      "n_train_feasible": 40,
+      "n_train_infeasible": 63
+    }
+  },
+  "metrics": [
+    {
+      "scheme": "baseline",
+      "model": "none",
+      "protocol": "loo_date",
+      "n": 120,
+      "duplicates": 0,
+      "rmse": 0.0485743771609662,
+      "mae": 0.023553548337662492,
+      "bias": -0.023553548337662492,
+      "n_zero_c": 0,
+      "k_ratio_median": 1.0,
+      "k_median": 194.00156247596155,
+      "flux_area_sum": 1213.8481675742246,
+      "n_mass_balance_residual_gt_1e_8": 0,
+      "max_mass_balance_residual": 4.082183809733797e-15
+    },
+    {
+      "scheme": "baseline",
+      "model": "none",
+      "protocol": "loo_reach",
+      "n": 120,
+      "duplicates": 0,
+      "rmse": 0.0485743771609662,
+      "mae": 0.02355354833766249,
+      "bias": -0.02355354833766249,
+      "n_zero_c": 0,
+      "k_ratio_median": 1.0,
+      "k_median": 194.00156247596155,
+      "flux_area_sum": 1213.848167574225,
+      "n_mass_balance_residual_gt_1e_8": 0,
+      "max_mass_balance_residual": 4.082183809733797e-15
+    },
+    {
+      "scheme": "k_correction",
+      "model": "xgboost",
+      "protocol": "loo_date",
+      "n": 120,
+      "duplicates": 0,
+      "rmse": 0.04858609679047097,
+      "mae": 0.023520425303732294,
+      "bias": -0.023520425303732294,
+      "n_zero_c": 0,
+      "k_ratio_median": 0.4599096322030001,
+      "k_median": 92.87984811727327,
+      "flux_area_sum": 1541.7838179579653,
+      "n_mass_balance_residual_gt_1e_8": 0,
+      "max_mass_balance_residual": 2.7243832190215755e-15
+    },
+    {
+      "scheme": "k_correction",
+      "model": "xgboost",
+      "protocol": "loo_reach",
+      "n": 120,
+      "duplicates": 0,
+      "rmse": 0.048588630347400984,
+      "mae": 0.023564434601948094,
+      "bias": -0.023564434601948094,
+      "n_zero_c": 0,
+      "k_ratio_median": 0.5399906833903203,
+      "k_median": 123.32932087287095,
+      "flux_area_sum": 1256.1961273131706,
+      "n_mass_balance_residual_gt_1e_8": 0,
+      "max_mass_balance_residual": 3.1129612776403803e-15
+    },
+    {
+      "scheme": "residual_ai",
+      "model": "mlp",
+      "protocol": "loo_reach",
+      "n": 120,
+      "duplicates": 0,
+      "rmse": 0.03719578959484861,
+      "mae": 0.021386879745123114,
+      "bias": -0.005544096748076893,
+      "n_zero_c": 3,
+      "k_ratio_median": 1.0,
+      "k_median": 194.00156247596155,
+      "flux_area_sum": 1942979.6349563936,
+      "n_mass_balance_residual_gt_1e_8": 3,
+      "max_mass_balance_residual": 0.0009338803503677454
+    },
+    {
+      "scheme": "residual_ai",
+      "model": "random_forest",
+      "protocol": "loo_reach",
+      "n": 120,
+      "duplicates": 0,
+      "rmse": 0.10107000097041763,
+      "mae": 0.05117606868673853,
+      "bias": 0.034229798112636385,
+      "n_zero_c": 0,
+      "k_ratio_median": 1.0,
+      "k_median": 194.00156247596155,
+      "flux_area_sum": 728408.1978067189,
+      "n_mass_balance_residual_gt_1e_8": 0,
+      "max_mass_balance_residual": 5.2735593669694936e-15
+    }
+  ],
+  "subgroups": [
+    {
+      "scheme": "baseline",
+      "model": "none",
+      "group": "mainstem",
+      "n": 58,
+      "rmse": 0.02784771223456045
+    },
+    {
+      "scheme": "baseline",
+      "model": "none",
+      "group": "tributary",
+      "n": 59,
+      "rmse": 0.06351383843787188
+    },
+    {
+      "scheme": "k_correction",
+      "model": "xgboost",
+      "group": "mainstem",
+      "n": 58,
+      "rmse": 0.027999294214868336
+    },
+    {
+      "scheme": "k_correction",
+      "model": "xgboost",
+      "group": "tributary",
+      "n": 59,
+      "rmse": 0.06347054385217737
+    },
+    {
+      "scheme": "residual_ai",
+      "model": "mlp",
+      "group": "mainstem",
+      "n": 58,
+      "rmse": 0.024799600578390903
+    },
+    {
+      "scheme": "residual_ai",
+      "model": "mlp",
+      "group": "tributary",
+      "n": 59,
+      "rmse": 0.046979078796072216
+    },
+    {
+      "scheme": "residual_ai",
+      "model": "random_forest",
+      "group": "mainstem",
+      "n": 58,
+      "rmse": 0.023851856436077543
+    },
+    {
+      "scheme": "residual_ai",
+      "model": "random_forest",
+      "group": "tributary",
+      "n": 59,
+      "rmse": 0.142104257377747
+    }
+  ],
+  "objective": {
+    "flatness_span_decades": 5.958333333333334,
+    "flatness_lo": -6.0,
+    "flatness_hi": -0.04166666666666609,
+    "argmin_alpha": 0.05843414133735175,
+    "argmin_s": 0.12767480529036354,
+    "rmse_min": 0.03602945138458507,
+    "rmse_basin_min": 0.03602945138458507,
+    "rmse_basin_max": 0.039624294844340886,
+    "objective_name": "profile_SSE",
+    "q_A_median_m_d": 134.67424445805517,
+    "merged_columns": [
+      "date",
+      "reach_id",
+      "sample_id",
+      "S_sgs_residual_mol_m2d",
+      "C_in_obs_mol_m3",
+      "Q_m3s_x",
+      "u_ms",
+      "h_m",
+      "W_m_x",
+      "T_C",
+      "DOC_mgL",
+      "DO_mgL",
+      "pH",
+      "Alk_ueqL",
+      "Slope",
+      "PAR_umolm2s",
+      "N_uM",
+      "P_uM",
+      "forest_frac",
+      "wetland_frac",
+      "meadow_frac",
+      "Fr",
+      "Re",
+      "Pe",
+      "Da",
+      "k_tau_h",
+      "h_over_W",
+      "DOC_over_DIC",
+      "C_aq_obs_mol_m3",
+      "C_eq_mol_m3",
+      "k_CO2_m_d",
+      "Q_m3s_y",
+      "L_m",
+      "W_m_y",
+      "dC_mol_m3",
+      "q_A_m_d",
+      "S_diag_mol_m2d"
+    ],
+    "n_qa_disagree": 0,
+    "qa_maxdiff": 6.139089236967266e-12,
+    "reconstruct_c_maxdiff": 5.551115123125783e-17,
+    "representative_key": {
+      "date": "2019-08-10 00:00:00",
+      "reach_id": "R004",
+      "sample_id": "CC-14"
+    },
+    "representative_sdiag": 2.240111939551164,
+    "representative_consistent_s": 2.240111939551164
+  },
+  "raw_trace": {
+    "path": "D:\\Projects\\20260611-river-carbon-transport\\data_raw\\east_river\\east_river\\Saccardi_and_Winnick_Data.xlsx",
+    "sha256": "d739341a6fe163d6fe56c2b91783e6279e2b8d76eb2638ea186d223cdc6f714a",
+    "n_raw_loaded": 120,
+    "n_matched": 120,
+    "checks": {
+      "T_C": {
+        "nonmissing_pairs": 120,
+        "maxdiff": 0.0
+      },
+      "DOC_mgL": {
+        "nonmissing_pairs": 41,
+        "maxdiff": 0.0
+      },
+      "DIC_mmolL": {
+        "nonmissing_pairs": 41,
+        "maxdiff": 0.0
+      },
+      "DO_mgL": {
+        "nonmissing_pairs": 120,
+        "maxdiff": 0.0
+      }
+    }
+  },
+  "figures": [
+    {
+      "path": "results/figures/figure2_reach_assignment_and_samples.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/les_filter_conceptual.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/nested_cv_rmse_bar.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/nested_cv_scatter_holdout.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/subgroup_rmse_r008_vs_trib.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/equifinality_objective_surface.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/supp_flux_diagnostics.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/filter_scale_sgs.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/filter_scale_sgs_box.png",
+      "exists": true,
+      "matches_html": true
+    },
+    {
+      "path": "results/figures/dimensionless_coefficients.png",
+      "exists": true,
+      "matches_html": true
+    }
+  ],
+  "commands": [
+    {
+      "cmd": [
+        "D:\\Projects\\20260611-river-carbon-transport\\.venv\\Scripts\\python.exe",
+        "D:\\Projects\\20260611-river-carbon-transport\\tmp\\review_20260927\\packet\\scripts\\verify_paper.py",
+        "--mode",
+        "development"
+      ],
+      "exit_code": 0
+    },
+    {
+      "cmd": [
+        "D:\\Projects\\20260611-river-carbon-transport\\.venv\\Scripts\\python.exe",
+        "D:\\Projects\\20260611-river-carbon-transport\\tmp\\review_20260927\\packet\\scripts\\verify_paper.py",
+        "--mode",
+        "submission"
+      ],
+      "exit_code": 1
+    }
+  ]
+}

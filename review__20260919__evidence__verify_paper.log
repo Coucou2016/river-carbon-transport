@@ -1,0 +1,13 @@
+WARN: post-fix RMSE drift residual_ai/mlp: table=0.0368 vs frozen guard=0.0602
+WARN: post-fix RMSE drift residual_ai/random_forest: table=0.105 vs frozen guard=0.075
+WARN: paper.md still contains claim phrase: 'independent cells' (paper rewrite still open)
+WARN: paper.md still contains claim phrase: 'genuine unresolved process' (paper rewrite still open)
+WARN: paper.md still contains claim phrase: 'summed over the study area' (paper rewrite still open)
+WARN: paper.md still contains claim phrase: 'nested cross-validation' (paper rewrite still open)
+WARN: paper.html still contains claim phrase: 'independent cells' (paper rewrite still open)
+WARN: paper.html still contains claim phrase: 'genuine unresolved process' (paper rewrite still open)
+WARN: paper.html still contains claim phrase: 'summed over the study area' (paper rewrite still open)
+WARN: paper.html still contains claim phrase: 'nested cross-validation' (paper rewrite still open)
+
+Claim guard PASS (10 warning(s)).
+

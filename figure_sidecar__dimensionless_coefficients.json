@@ -1,0 +1,31 @@
+{
+  "figure_id": "fig10_dimensionless_coefficients",
+  "run_id": "20260919_remediation",
+  "generator": "src/15_dimensionless_sparse.py::plot_coefficients",
+  "selected_rows": {
+    "features": [
+      "Fr",
+      "Slope",
+      "h_over_W",
+      "log10_Re",
+      "log10_Da"
+    ],
+    "zeroed_by_lasso": [
+      "log10_Re"
+    ],
+    "n": 120
+  },
+  "aggregation": "LASSO(alpha=0.05) on standardized dimensionless Pi features, fold-local targets",
+  "units": "dimensionless (standardized coefficients)",
+  "n_definition": "n=120 samples over 8 reach groups; equation is descriptive on S*",
+  "notes": "zeroed terms are drawn explicitly as dropped, not omitted",
+  "sidecar_version": 1,
+  "image": "dimensionless_coefficients.png",
+  "image_path": "results\\figures\\dimensionless_coefficients.png",
+  "source_table_sha256": {
+    "results/tables/dimensionless_sparse_coefficients.csv": "f28ff6d67c51983b75894bb7f58663ad9cecacd97bb79b4eeb756a7e01802ce3",
+    "results/tables/dimensionless_sparse_summary.json": "57234971653f37f5fb434ee69515829b8371accceaff26e6146bdd7cf87ba331",
+    "data_proc/sgs_training_data.csv": "cd9ee3481f41b516290a23770ac38f866eee5153f05c0d14cfc85ba230faf2d4"
+  },
+  "output_sha256": "39c12ba360dd7bdb6c3bfd3c18923592ca2368c69864aa458f3600ad5b296443"
+}

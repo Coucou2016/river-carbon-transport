@@ -1,0 +1,29 @@
+{
+  "figure_id": "fig5_subgroup_rmse",
+  "run_id": "20260919_remediation",
+  "generator": "src/17_regenerate_holdout_figures.py::_plot_subgroup",
+  "selected_rows": {
+    "subgroups": [
+      "R008 mainstem",
+      "multi-sample tributaries R002-R005",
+      "single-sample reaches R001/R006/R007"
+    ],
+    "subgroup_n": {
+      "R008": 58,
+      "tributaries": 59,
+      "single_sample": 3
+    }
+  },
+  "aggregation": "RMSE within each subgroup, equal weight per held-out sample",
+  "units": "C_aq RMSE in mol m^-3",
+  "n_definition": "subgroup sample counts printed on the axis; unequal evidence weight is visible",
+  "notes": "single-sample reaches have no held-out spread and are shown for completeness only",
+  "sidecar_version": 1,
+  "image": "subgroup_rmse_r008_vs_trib.png",
+  "image_path": "results\\figures\\subgroup_rmse_r008_vs_trib.png",
+  "source_table_sha256": {
+    "results/tables/subgroup_metrics.csv": "336da37fdce293e888d65a2dfd5dd4c0ef637ada847b86ad81726ee37d097715",
+    "data_proc/nested_cv_holdout_predictions.csv": "93372931ce9172365d70b96e4975c8289b9eea3f2c35f6a131b93eafc8b59e0a"
+  },
+  "output_sha256": "5a694e53a24d20009e3b58babc27bce464f4c04e2a1369982d21018e87d04a5f"
+}

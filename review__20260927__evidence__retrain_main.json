@@ -1,0 +1,42 @@
+[
+  {
+    "scheme": "residual_ai",
+    "model": "mlp",
+    "n": 120,
+    "max_C_absdiff": 9.71445146547012e-17,
+    "rmse": 0.0371957895948486,
+    "zero_C_keys": [
+      {
+        "date": "2019-08-03",
+        "reach_id": "R005",
+        "sample_id": "GC-1"
+      },
+      {
+        "date": "2019-08-06",
+        "reach_id": "R005",
+        "sample_id": "GC-14"
+      },
+      {
+        "date": "2019-08-06",
+        "reach_id": "R005",
+        "sample_id": "GC-2"
+      }
+    ]
+  },
+  {
+    "scheme": "residual_ai",
+    "model": "random_forest",
+    "n": 120,
+    "max_C_absdiff": 9.71445146547012e-17,
+    "rmse": 0.10107000097041764,
+    "zero_C_keys": []
+  },
+  {
+    "scheme": "k_correction",
+    "model": "xgboost",
+    "n": 120,
+    "max_C_absdiff": 9.71445146547012e-17,
+    "rmse": 0.04858863034740096,
+    "zero_C_keys": []
+  }
+]

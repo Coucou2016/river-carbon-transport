@@ -1,0 +1,59 @@
+{
+  "pages": 22,
+  "original_words_whitespace": 7930,
+  "revised_words_whitespace": 9042,
+  "figures": 10,
+  "figure_hashes": [
+    {
+      "source": "results/figures/figure2_reach_assignment_and_samples.png",
+      "sha256": "ee1e74f5ea1e50ab388fd1d8f7bf5816e7858b18796b47a2f6074e9946115f69"
+    },
+    {
+      "source": "results/figures/les_filter_conceptual.png",
+      "sha256": "daf74d8f6b9d2b27bd1172ea93aa50796e69716328e1793adffacfbba1d111f3"
+    },
+    {
+      "source": "results/figures/nested_cv_rmse_bar.png",
+      "sha256": "34711bd5e02b90e8b76afbe3c9369ffbbe8c2188cb421d825e7c3286fc783e00"
+    },
+    {
+      "source": "results/figures/nested_cv_scatter_holdout.png",
+      "sha256": "b6b4bac0fccd4058d37171344aa072cf27cedd187f8f8798a0bcb54c9cee8112"
+    },
+    {
+      "source": "results/figures/subgroup_rmse_r008_vs_trib.png",
+      "sha256": "181ab874afff4dcc7e4a3d037ec30e21eed115444b503b5c907c3e4db0adacd4"
+    },
+    {
+      "source": "results/figures/equifinality_objective_surface.png",
+      "sha256": "989bef1e43549707d50c7d0a31882f27d2e3586a1320564768e6b9070e7a9031"
+    },
+    {
+      "source": "results/figures/supp_flux_diagnostics.png",
+      "sha256": "6f6273c513a10e424a75a0c0d07938bbbe86904f67271afa5fc05ff1eb9d8300"
+    },
+    {
+      "source": "results/figures/filter_scale_sgs.png",
+      "sha256": "89fd9778f2d8a6376f33afa95e5a0c9d21a7457557f2e973c65ca2f70077c267"
+    },
+    {
+      "source": "results/figures/filter_scale_sgs_box.png",
+      "sha256": "658f756746dfe27abda694c2d6f19a2f0bd762713ec24af3a3ed68314253c754"
+    },
+    {
+      "source": "results/figures/dimensionless_coefficients.png",
+      "sha256": "ed3d8b51cebdcabaa2d9997a07e231c81b5a2890b03a6620fce86cff8e115195"
+    }
+  ],
+  "pdf_sha256": "57d5eb5ed5cb370cb50112cea32fd737c61ac02edb76b307aee9070fb2ab359a",
+  "replacement_character": false,
+  "required_numbers_present": {
+    "0.0372": true,
+    "0.0486": true,
+    "0.1011": true,
+    "0.540": true,
+    "93.8%": true,
+    "0.1277": true,
+    "0.05843": true
+  }
+}

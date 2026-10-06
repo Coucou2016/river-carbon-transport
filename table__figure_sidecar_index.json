@@ -1,0 +1,32 @@
+{
+  "les_filter_conceptual.png": {
+    "image_sha256": "b3adf6298bf7ae56c2a6322322dca21ba5bc7f3b5a98823ea9a1c2a19224e991"
+  },
+  "figure2_reach_assignment_and_samples.png": {
+    "image_sha256": "2562257ac073cd670d94e77519135c74379fdd6e3129bef72998b9242f25d202"
+  },
+  "nested_cv_rmse_bar.png": {
+    "image_sha256": "23b11c1e28e92f35784e9aaa537c3752e93c5cac2b2b4ed9b721006a0f6f0e1d"
+  },
+  "nested_cv_scatter_holdout.png": {
+    "image_sha256": "f9eed2a5aa3f48d20a0ddc3b4d67d25da7ec43aadb3c024f41edb12523fba2d2"
+  },
+  "subgroup_rmse_r008_vs_trib.png": {
+    "image_sha256": "5a694e53a24d20009e3b58babc27bce464f4c04e2a1369982d21018e87d04a5f"
+  },
+  "supp_flux_diagnostics.png": {
+    "image_sha256": "c8aed615cde799e2ad2ddedbd303017da29cb95bcfb976e295e2c007affe7ec4"
+  },
+  "equifinality_objective_surface.png": {
+    "image_sha256": "d4511819481faeb34ad524c817097bfa9d0ad3310643e6e6c01ba67fe4d50368"
+  },
+  "filter_scale_sgs.png": {
+    "image_sha256": "ae4abf418d34ef8fb064449dd5dbf7f5b5ac25c224cffd467ad0769330730ee7"
+  },
+  "filter_scale_sgs_box.png": {
+    "image_sha256": "baaf6e145ea3da4a7402c0f84dd1800643ddf814756232d80fbbdbbcc2d2d1a6"
+  },
+  "dimensionless_coefficients.png": {
+    "image_sha256": "39c12ba360dd7bdb6c3bfd3c18923592ca2368c69864aa458f3600ad5b296443"
+  }
+}

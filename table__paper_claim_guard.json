@@ -1,0 +1,41 @@
+{
+  "frozen_loo_reach_rmse_c": {
+    "baseline": 0.0485,
+    "residual_ai_mlp": 0.0507,
+    "residual_ai_rf": 0.0557,
+    "k_correction_xgboost": 0.0485,
+    "sparse_pi_lasso": 0.0939
+  },
+  "frozen_flux_area_sum_mol_d": {
+    "baseline": 796.4,
+    "residual_ai_mlp": 3264070.7,
+    "residual_ai_rf": 1636409.2,
+    "k_correction": -2055.0
+  },
+  "frozen_flux_sample_sum_mol_m2d": {
+    "baseline": -0.7425,
+    "residual_ai_mlp": 578.0424,
+    "k_correction": -0.7973
+  },
+  "k_ratio_median_k_correction": 0.0944555603113767,
+  "do_not_claim": [
+    "Residual-AI beats Baseline on held-out C_aq",
+    "sparse Pi closure improves prediction",
+    "in-sample R2=0.997 as skill",
+    "k-correction improves C RMSE",
+    "baseline or corrected F_CO2 independently validated by chamber/eddy flux",
+    "formal structural non-identifiability proven",
+    "universal SGS scaling law",
+    "CONUS generalization",
+    "CH4 / StreamPULSE / WQP enrichment / SINDy results",
+    "study-area total flux from sample-summed F·A",
+    "date-cell records as independent cells / genuine unresolved process from filter curve",
+    "nested CV with inner hyperparameter loop"
+  ],
+  "filter_scale_note": "P0-04 cell-DAG mass-conserving operator is implemented; interpretation remains sampling-conditional sensitivity under sparse sync coverage.",
+  "flux_estimand_note": "frozen_flux_area_sum_mol_d is an overlapping sample-area diagnostic, not a watershed spatial total (audit P0-03).",
+  "status": "post_fix_20260919_frozen_run",
+  "run_id": "20260919_remediation",
+  "data_stance": "reanalysis of publicly archived Saccardi/Winnick observations + public NHD/USGS; not self-collected",
+  "preferred_claim": "Practical equifinality of S_sgs and k under concentration-only East River observations (model-free profile SSE); grouped leave-one-reach-out CV with fold-local targets gives Residual-AI MLP RMSE 0.0507 vs Baseline 0.0485, and RF is worse (0.0557); flux diagnostics remain unstable sample-support quantities — not a study-area total."
+}

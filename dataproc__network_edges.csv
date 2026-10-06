@@ -1,0 +1,9 @@
+reach_id,stream_name,upstream_id,downstream_id,length_m,slope,width_m,area_m2,forest_frac,wetland_frac,meadow_frac,lon,lat,nhd_segments,length_source,slope_source
+R001,Bradley Creek,,R002,100.0,0.168846627,5.208887846530491,520.8887846530491,,,,-107.004754,38.98546496,0,sample_gps_utm_span_provisional,nhd_slopetable_basin_median
+R002,Bradley Meadow,R001,R003,170.21612912321464,0.168846627,5.208887846530491,886.6367262733775,,,,-107.004766,38.98589898,0,sample_gps_utm_span_provisional,nhd_slopetable_basin_median
+R003,Rock Creek,R002,R004,3297.9427594491453,0.168846627,3.500539790283162,11544.579855527983,,,,-107.029103,38.97947098,0,sample_gps_utm_span_provisional,nhd_slopetable_basin_median
+R004,Copper Creek,R003,R005,9914.863000000001,0.270933148,12.348297267055107,122431.67568612582,,,,-106.971086,38.962174000000005,23,nhd_gnis,nhd_slopetable
+R005,Gothic Creek,R004,R006,1934.3709203830674,0.168846627,1.7320554913348485,3350.437774927937,,,,-107.0148,38.97309604,0,sample_gps_utm_span_provisional,nhd_slopetable_basin_median
+R006,Quigley Creek,R005,R007,2821.124,0.251178873,3.625854617807335,10228.9854828071,,,,-107.013282,38.99371603,6,nhd_gnis,nhd_slopetable
+R007,Rustlers Gulch,R006,R008,100.0,0.168846627,10.07367972890527,1007.3679728905271,,,,-107.007641,38.988952,0,sample_gps_utm_span_provisional,nhd_slopetable_basin_median
+R008,East River,R007,,20212.287,0.161875132,19.65188829330636,397209.60627624835,,,,-107.0063385,38.985282025000004,46,nhd_gnis,nhd_slopetable

@@ -1,0 +1,224 @@
+{
+  "geometry_version": "nhdplus_hr_directed_path_v2",
+  "purpose": "verified directed path domains for production routing (P0-02)",
+  "paths": {
+    "R008": {
+      "flowline_ids": [
+        195,
+        227,
+        71,
+        72,
+        182,
+        222,
+        215,
+        220,
+        162,
+        165,
+        142,
+        156,
+        153,
+        234,
+        217,
+        50,
+        79,
+        66,
+        109,
+        2,
+        202,
+        100,
+        29,
+        170,
+        154,
+        80,
+        180,
+        145,
+        208,
+        16,
+        28,
+        48,
+        149,
+        101,
+        157,
+        83,
+        151
+      ],
+      "n_flowlines": 37,
+      "path_length_m": 13132.004755718204,
+      "subgraph_length_m": 13132.004755718208,
+      "coverage": 0.9999999999999998,
+      "n_branches_excluded": 0,
+      "direction_status": "with_digitized"
+    },
+    "R001": {
+      "flowline_ids": [
+        150,
+        33
+      ],
+      "n_flowlines": 2,
+      "path_length_m": 754.3539478795117,
+      "subgraph_length_m": 1515.4023251193578,
+      "coverage": 0.4977912039432145,
+      "n_branches_excluded": 3,
+      "direction_status": "with_digitized"
+    },
+    "R002": {
+      "flowline_ids": [
+        150,
+        33
+      ],
+      "n_flowlines": 2,
+      "path_length_m": 754.3539478795117,
+      "subgraph_length_m": 1515.4023251193578,
+      "coverage": 0.4977912039432145,
+      "n_branches_excluded": 3,
+      "direction_status": "with_digitized"
+    },
+    "R003": {
+      "flowline_ids": [
+        76,
+        78,
+        130,
+        122,
+        199,
+        132,
+        134,
+        39,
+        118,
+        53
+      ],
+      "n_flowlines": 10,
+      "path_length_m": 4567.850491130942,
+      "subgraph_length_m": 7828.453642076156,
+      "coverage": 0.5834933308641933,
+      "n_branches_excluded": 9,
+      "direction_status": "with_digitized"
+    },
+    "R004": {
+      "flowline_ids": [
+        60,
+        206,
+        85,
+        169,
+        3,
+        119,
+        143,
+        6,
+        102,
+        187,
+        92
+      ],
+      "n_flowlines": 11,
+      "path_length_m": 5220.226497622043,
+      "subgraph_length_m": 10072.371808218842,
+      "coverage": 0.518271822865241,
+      "n_branches_excluded": 9,
+      "direction_status": "with_digitized"
+    },
+    "R005": {
+      "flowline_ids": [
+        133,
+        193,
+        125,
+        188
+      ],
+      "n_flowlines": 4,
+      "path_length_m": 2589.0019374492776,
+      "subgraph_length_m": 4138.265615912021,
+      "coverage": 0.6256248819540055,
+      "n_branches_excluded": 3,
+      "direction_status": "with_digitized"
+    },
+    "R006": {
+      "flowline_ids": [
+        224,
+        189,
+        174,
+        68,
+        31,
+        42
+      ],
+      "n_flowlines": 6,
+      "path_length_m": 2824.2339040904285,
+      "subgraph_length_m": 3193.7556151102854,
+      "coverage": 0.884298689207284,
+      "n_branches_excluded": 2,
+      "direction_status": "with_digitized"
+    },
+    "R007": {
+      "flowline_ids": [
+        54
+      ],
+      "n_flowlines": 1,
+      "path_length_m": 240.6123752892759,
+      "subgraph_length_m": 2599.2047101571775,
+      "coverage": 0.09257153711249073,
+      "n_branches_excluded": 2,
+      "direction_status": "with_digitized"
+    }
+  },
+  "continuity_tol_m": 2.0,
+  "junction_tol_m": 2.0,
+  "duplicate_tol_m": 1.0,
+  "snap_max_m": 500.0,
+  "confluence_chainage_m": {
+    "R006": 3642.561915075844,
+    "R007": 4486.295099110856,
+    "R001": 5425.31871699153,
+    "R002": 5425.31871699153,
+    "R003": 6320.090028841091,
+    "R005": 6441.629737342816,
+    "R004": 10986.766710483647
+  },
+  "recorded_support_m": {
+    "R001": 100.0,
+    "R002": 170.216129,
+    "R003": 3297.942759,
+    "R004": 9914.863,
+    "R005": 1934.37092,
+    "R006": 2821.124,
+    "R007": 100.0,
+    "R008": 20212.287
+  },
+  "recorded_support_basis": {
+    "R001": "provisional_sample_gps_span",
+    "R002": "provisional_sample_gps_span",
+    "R003": "verified_path_domain",
+    "R004": "verified_path_domain",
+    "R005": "provisional_sample_gps_span",
+    "R006": "unverified_nhd_name_absent",
+    "R007": "provisional_sample_gps_span",
+    "R008": "verified_path_domain"
+  },
+  "reach_support_basis": {
+    "R008": "gnis_named_directed_lines",
+    "R001": "unnamed_directed_lines_nearest_samples",
+    "R002": "unnamed_directed_lines_nearest_samples",
+    "R003": "gnis_named_directed_lines",
+    "R004": "gnis_named_directed_lines",
+    "R005": "unnamed_directed_lines_nearest_samples",
+    "R006": "gnis_named_directed_lines",
+    "R007": "unnamed_directed_lines_nearest_samples"
+  },
+  "n_inconsistent_reaches": 6,
+  "reach_path_overlaps": [
+    {
+      "reach_a": "R001",
+      "reach_b": "R002",
+      "n_shared_flowlines": 2,
+      "n_flowlines_a": 2,
+      "n_flowlines_b": 2,
+      "jaccard": 1.0,
+      "paths_identical": true,
+      "separable_domain": false,
+      "collision": true
+    }
+  ],
+  "non_separable_reaches": {
+    "R001": [
+      "R002"
+    ],
+    "R002": [
+      "R001"
+    ]
+  }
+}
